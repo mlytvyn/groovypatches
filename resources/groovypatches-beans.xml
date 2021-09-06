@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="beans.xsd">
+
+    <enum class="com.github.mlytvyn.patches.groovy.EnvironmentEnum">
+        <description>Define property for each new value: `patches.groovy.environment.%VALUE%.id=id`</description>
+        <value>DUMMY</value>
+    </enum>
+
+    <enum class="com.github.mlytvyn.patches.groovy.SolrEnum">
+        <description>Define property for each new value: `patches.groovy.solr.index.%VALUE%.id=id`</description>
+        <value>DUMMY</value>
+    </enum>
+
+    <enum class="com.github.mlytvyn.patches.groovy.SiteEnum">
+        <description>Define property for each new value: `patches.groovy.site.%VALUE%.uid=uid`</description>
+        <value>DUMMY</value>
+    </enum>
+
+    <enum class="com.github.mlytvyn.patches.groovy.EmailTemplateEnum">
+        <description>Define property for each new value: `patches.groovy.emailTemplate.%VALUE%.template=%email template.impex%`</description>
+        <value>DUMMY</value>
+    </enum>
+
+    <enum class="com.github.mlytvyn.patches.groovy.EmailComponentTemplateEnum">
+        <description>Define property for each new value: `patches.groovy.emailComponentTemplate.%VALUE%.template=%email template.impex%`</description>
+        <value>DUMMY</value>
+    </enum>
+
+    <enum class="com.github.mlytvyn.patches.groovy.ProductCatalogEnum">
+        <description>Define property for each new value: `patches.groovy.catalog.product.%VALUE%.id=id`</description>
+        <value>DUMMY</value>
+    </enum>
+
+    <enum class="com.github.mlytvyn.patches.groovy.ContentCatalogEnum">
+        <description>Define property for each new value: `patches.groovy.catalog.content.%VALUE%.id=id`</description>
+        <value>DUMMY</value>
+    </enum>
+</beans>

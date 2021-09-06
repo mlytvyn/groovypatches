@@ -1,0 +1,42 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Java template
+*.class
+
+### Editing copy
+*~
+
+### node modules
+node_modules
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+.externalToolBuilders/
+platformhome.properties
+*-testclasses.xml
+*-webtestclasses.xml
+rebel.xml
+*.prefs
+.DS_Store
+*.iml
+velocity.log
+ruleset.xml
+classes/
+
+README
+# idea
+.idea
+.history
+
+beans.xsd
+extensioninfo.xsd
+items.xsd
+
+gensrc/
+eclipsebin/
+lib/
+build/
+
+build.xml

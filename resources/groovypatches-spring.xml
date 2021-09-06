@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+
+    <alias name="defaultCurrentEnvironmentProvider" alias="currentEnvironmentProvider"/>
+    <bean id="defaultCurrentEnvironmentProvider" class="com.github.mlytvyn.patches.groovy.context.patch.DefaultCurrentEnvironmentProvider"/>
+
+    <alias name="defaultReleasesCollector" alias="releasesCollector"/>
+    <bean id="defaultReleasesCollector" class="com.github.mlytvyn.patches.groovy.context.release.impl.DefaultReleasesCollector"/>
+
+    <alias name="defaultConfigurationProvider" alias="configurationProvider"/>
+    <bean id="defaultConfigurationProvider" class="com.github.mlytvyn.patches.groovy.util.impl.DefaultConfigurationProvider"/>
+
+    <bean id="extendedScriptingLanguagesService" parent="defaultScriptingLanguagesService"
+          class="com.github.mlytvyn.patches.groovy.scripting.engine.impl.ExtendedScriptingLanguagesService"/>
+
+    <alias name="defaultExtendedSetupSyncJobService" alias="extendedSetupSyncJobService"/>
+    <bean id="defaultExtendedSetupSyncJobService" parent="defaultSetupSyncJobService"
+          class="com.github.mlytvyn.patches.groovy.setup.impl.ExtendedSetupSyncJobService"/>
+
+    <alias name="defaultPatchesCollector" alias="patchesCollector"/>
+    <bean id="defaultPatchesCollector" class="com.github.mlytvyn.patches.groovy.context.patch.impl.DefaultPatchesCollector"/>
+
+    <alias name="defaultReleaseImporter" alias="releaseImporter"/>
+    <bean id="defaultReleaseImporter" class="com.github.mlytvyn.patches.groovy.context.release.impl.DefaultReleaseImporter"/>
+
+    <alias name="defaultEmailTemplateImporter" alias="emailTemplateImporter"/>
+    <bean id="defaultEmailTemplateImporter" class="com.github.mlytvyn.patches.groovy.util.impl.DefaultEmailTemplateImporter"/>
+
+    <alias name="defaultContentCatalogSynchronizer" alias="contentCatalogSynchronizer"/>
+    <bean id="defaultContentCatalogSynchronizer" class="com.github.mlytvyn.patches.groovy.util.impl.DefaultContentCatalogSynchronizer"/>
+
+    <alias name="defaultGroovyPatchContextService" alias="groovyPatchContextService"/>
+    <bean id="defaultGroovyPatchContextService" class="com.github.mlytvyn.patches.groovy.context.impl.DefaultGroovyPatchContextService"/>
+
+    <alias name="defaultGroovyPatchesLogReporter" alias="logReporter"/>
+    <alias name="defaultGroovyPatchesLogReporter" alias="groovyPatchesLogReporter"/>
+    <bean id="defaultGroovyPatchesLogReporter" class="com.github.mlytvyn.patches.groovy.util.impl.DefaultLogReporter"/>
+
+    <alias name="defaultGroovyPatchesParallelPoolExecutor" alias="groovyPatchesParallelPoolExecutor"/>
+    <bean id="defaultGroovyPatchesParallelPoolExecutor" class="com.github.mlytvyn.patches.groovy.util.impl.DefaultParallelPoolExecutor"/>
+
+    <alias name="defaultGroovyPatchContextFactory" alias="groovyPatchContextFactory"/>
+    <bean id="defaultGroovyPatchContextFactory" class="com.github.mlytvyn.patches.groovy.context.patch.impl.DefaultPatchContextFactory"/>
+
+    <alias name="defaultGroovyGlobalContextFactory" alias="groovyGlobalContextFactory"/>
+    <bean id="defaultGroovyGlobalContextFactory" class="com.github.mlytvyn.patches.groovy.context.global.impl.DefaultGlobalContextFactory"/>
+
+    <alias name="defaultGroovyPatchesImpexImporter" alias="groovyPatchesImpexImporter"/>
+    <bean id="defaultGroovyPatchesImpexImporter" class="com.github.mlytvyn.patches.groovy.util.impl.DefaultImpexImporter"/>
+
+    <alias name="defaultPatchSaveSystemSetupAuditAction" alias="patchSaveSystemSetupAuditAction"/>
+    <bean id="defaultPatchSaveSystemSetupAuditAction" class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchSaveSystemSetupAuditAction"/>
+
+    <alias name="defaultPatchValidateAction" alias="patchValidateAction"/>
+    <bean id="defaultPatchValidateAction" class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchValidateAction"/>
+
+    <alias name="defaultReleaseContextValidateAction" alias="releaseContextValidateAction"/>
+    <bean id="defaultReleaseContextValidateAction" class="com.github.mlytvyn.patches.groovy.context.release.actions.impl.ReleaseContextValidateAction"/>
+
+    <alias name="defaultReleaseContextApplyPatchesAction" alias="releaseContextApplyPatchesAction"/>
+    <bean id="defaultReleaseContextApplyPatchesAction" class="com.github.mlytvyn.patches.groovy.context.release.actions.impl.ReleaseContextApplyPatchesAction"/>
+
+    <alias name="globalGroovyPatchesGlobalContextBeforeActions" alias="groovyPatchesGlobalContextBeforeActions"/>
+    <util:list id="globalGroovyPatchesGlobalContextBeforeActions">
+        <bean class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextValidateAction"/>
+        <bean class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalRemoveOrphanedTypesContextAction"/>
+    </util:list>
+
+    <alias name="globalGroovyPatchesGlobalContextAfterActions" alias="groovyPatchesGlobalContextAfterActions"/>
+    <util:list id="globalGroovyPatchesGlobalContextAfterActions">
+        <bean class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextImportEmailComponentTemplateAction"/>
+        <bean class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextImportEmailTemplateAction"/>
+    </util:list>
+
+    <alias name="globalGroovyPatchesReleaseContextBeforeActions" alias="groovyPatchesReleaseContextBeforeActions"/>
+    <util:list id="globalGroovyPatchesReleaseContextBeforeActions">
+    </util:list>
+
+    <alias name="defaultReleaseContextRemoveContentCatalogsAction" alias="releaseContextRemoveContentCatalogsAction"/>
+    <bean id="defaultReleaseContextRemoveContentCatalogsAction" class="com.github.mlytvyn.patches.groovy.context.release.actions.impl.ReleaseContextRemoveContentCatalogsAction"/>
+
+    <alias name="globalGroovyPatchesReleaseContextAfterActions" alias="groovyPatchesReleaseContextAfterActions"/>
+    <util:list id="globalGroovyPatchesReleaseContextAfterActions">
+        <ref bean="releaseContextRemoveContentCatalogsAction"/>
+        <bean class="com.github.mlytvyn.patches.groovy.context.release.actions.impl.ReleaseContextSyncContentCatalogsAction"/>
+    </util:list>
+
+    <alias name="globalGroovyPatchesPatchContextActions" alias="groovyPatchesPatchContextActions"/>
+    <util:list id="globalGroovyPatchesPatchContextActions">
+        <bean class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchBeforeConsumerAction"/>
+        <bean class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchChangeFieldTypeAction"/>
+        <bean class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchImpexImportAction"/>
+        <bean class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchSyncContentCatalogNowAction"/>
+        <bean class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchAfterConsumerAction"/>
+    </util:list>
+</beans>

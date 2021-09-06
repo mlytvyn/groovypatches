@@ -1,0 +1,11 @@
+#Ant properties
+#Wed Sep 09 11:26:39 CEST 2020
+version.api=2005
+vendor=hybris
+group.id=de.hybris.platform
+name=groovypatches
+description=groovypatches
+builddate=20200909 1126
+releasedate=20200513 1957
+version=2005.3
+module.name=platform-module
