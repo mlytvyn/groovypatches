@@ -112,8 +112,10 @@ patches.groovy.catalog.content.TEST_CONTENT_CATALOG.id=${test.content.catalog}
 # Sites configuration
 # --------
 patches.groovy.site.TEST_SITE_ID.uid=${test.site.uid}
+```
 
 # Sample Groovy patch
+
 ```groovy
 //import com.custompatches.patches.context.patch.PatchContextDescriber
 import com.github.mlytvyn.patches.groovy.ContentCatalogEnum
