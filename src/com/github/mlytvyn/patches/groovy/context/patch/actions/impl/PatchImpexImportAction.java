@@ -43,11 +43,11 @@ public class PatchImpexImportAction implements PatchAction<PatchContextDescripto
             }
         } else {
             for (final ImpexContext impexContext : patch.getImpexContexts()) {
-                logReporter.logInfo(context, "Importing with impex context: " + impexContext.getName());
+                logReporter.logInfo(context, "Importing with impex context: " + impexContext.name());
                 if (CollectionUtils.isEmpty(patch.getImpexes())) {
-                    importAllImpexes(context, patch, patchesFolder, impexContext.getMacroParameters());
+                    importAllImpexes(context, patch, patchesFolder, impexContext.macroParameters());
                 } else {
-                    importSpecifiedImpexes(context, patchesFolder, patch.getImpexes(), impexContext.getMacroParameters());
+                    importSpecifiedImpexes(context, patchesFolder, patch.getImpexes(), impexContext.macroParameters());
                 }
             }
         }

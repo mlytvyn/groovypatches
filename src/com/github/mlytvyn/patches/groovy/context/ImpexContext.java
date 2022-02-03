@@ -1,31 +1,27 @@
 package com.github.mlytvyn.patches.groovy.context;
 
-import java.util.HashMap;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Singular;
+import lombok.experimental.Accessors;
+
 import java.util.Map;
 
+@Data
+@Accessors(chain = true, fluent = true)
+@Builder(builderMethodName = "internalBuilder")
+@RequiredArgsConstructor
 public class ImpexContext {
 
+    @NonNull
     private final String name;
-    private final Map<String, Object> macroParameters = new HashMap<>();
+    @Singular
+    private final Map<String, Object> macroParameters;
 
-    private ImpexContext(final String name) {
-        this.name = name;
+    public static ImpexContextBuilder builder(final String name) {
+        return internalBuilder().name(name);
     }
 
-    public static ImpexContext prepare(final String name) {
-        return new ImpexContext(name);
-    }
-
-    public ImpexContext put(final String key, final String value) {
-        macroParameters.put(key, value);
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Map<String, Object> getMacroParameters() {
-        return macroParameters;
-    }
 }

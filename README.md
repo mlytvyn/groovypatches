@@ -122,11 +122,14 @@ import com.github.mlytvyn.patches.groovy.EmailComponentTemplateEnum
 import com.github.mlytvyn.patches.groovy.EmailTemplateEnum
 import com.github.mlytvyn.patches.groovy.EnvironmentEnum
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext
+import com.github.mlytvyn.patches.groovy.context.ImpexContext
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriber
+import com.github.mlytvyn.patches.groovy.SiteEnum
 import de.hybris.platform.core.model.product.ProductModel
 import de.hybris.platform.util.Config
 
-patch = (patchContext as PatchContextDescriber)
+def cp = (configurationProvider as ConfigurationProvider)
+def patch = (patchContext as PatchContextDescriber)
 patch
 // By extending PatchContextDescriptor and customizing Patch creation via PatchFactory it is possible to add own operations to default PatchContext, which will be executed according to defined order
 //.customOperation(...)
@@ -155,8 +158,16 @@ patch
         .description("<Optional description of the patch>")
 // If specified without any parameters, all impexes will be imported in natural order, otherwise only specified impexes will be imported according to defined order  
         .withImpexes()
-// It is possible to specify custom Impex Contexts 
-        .withImpexContexts()
+// It is possible to specify custom Impex Contexts, it will lead to import of all impexes specified via `.withImpexes` with each defined ImpexContext
+// enables possibility to create "template" based impexes and pass different params as a Map
+        .withImpexContexts(
+                ImpexContext.builder("Site Dummy")
+                        .macroParameter("siteUid", cp.getSiteCode(SiteEnum.DUMMY))
+                        .build(),
+                ImpexContext.builder("Site Not Dummy")
+                        .macroParameter("siteUid", cp.getSiteCode(SiteEnum.NOT_DUMMY))
+                        .build()
+        )
 // Executes custom groovy logic before anything else, `setup` argument points to `SystemSetupContext`
         .before({ setup -> })
 // Executes custom groovy logic after everything else, `setup` argument points to `SystemSetupContext`
