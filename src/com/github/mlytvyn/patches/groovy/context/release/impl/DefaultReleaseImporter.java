@@ -1,5 +1,3 @@
-
-
 package com.github.mlytvyn.patches.groovy.context.release.impl;
 
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;

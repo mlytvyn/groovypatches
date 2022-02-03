@@ -1,5 +1,3 @@
-
-
 package com.github.mlytvyn.patches.groovy.context.global;
 
 public class GlobalPatchesException extends RuntimeException {

@@ -1,5 +1,3 @@
-
-
 package com.github.mlytvyn.patches.groovy.context.global.actions;
 
 import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;

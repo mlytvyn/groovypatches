@@ -1,5 +1,3 @@
-
-
 package com.github.mlytvyn.patches.groovy.setup.impl;
 
 import com.github.mlytvyn.patches.groovy.setup.SetupSyncJobService;

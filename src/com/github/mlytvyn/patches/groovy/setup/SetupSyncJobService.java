@@ -1,5 +1,3 @@
-
-
 package com.github.mlytvyn.patches.groovy.setup;
 
 import de.hybris.platform.servicelayer.cronjob.PerformResult;

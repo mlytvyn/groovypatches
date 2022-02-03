@@ -1,5 +1,3 @@
-
-
 package com.github.mlytvyn.patches.groovy.context.patch.actions;
 
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;

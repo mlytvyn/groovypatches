@@ -1,5 +1,3 @@
-
-
 package com.github.mlytvyn.patches.groovy.util.impl;
 
 import com.github.mlytvyn.patches.groovy.util.ImpexImporter;

@@ -1,5 +1,3 @@
-
-
 package com.github.mlytvyn.patches.groovy.context;
 
 public class ContextSerializationException extends RuntimeException {

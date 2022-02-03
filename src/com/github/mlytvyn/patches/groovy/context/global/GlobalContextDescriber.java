@@ -1,5 +1,3 @@
-
-
 package com.github.mlytvyn.patches.groovy.context.global;
 
 import com.github.mlytvyn.patches.groovy.EmailComponentTemplateEnum;

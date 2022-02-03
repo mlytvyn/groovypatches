@@ -1,5 +1,3 @@
-
-
 package com.github.mlytvyn.patches.groovy.context.patch;
 
 public class PatchValidationException extends PatchException {

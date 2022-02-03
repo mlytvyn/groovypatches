@@ -1,5 +1,3 @@
-
-
 package com.github.mlytvyn.patches.groovy.context.patch.actions.impl;
 
 import com.github.mlytvyn.patches.groovy.context.patch.PatchException;
@@ -9,6 +7,11 @@ import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;
 import com.github.mlytvyn.patches.groovy.util.LogReporter;
 import de.hybris.platform.core.Registry;
 import de.hybris.platform.core.initialization.SystemSetupContext;
+import de.hybris.platform.core.model.product.ProductModel;
+import de.hybris.platform.core.model.type.AttributeDescriptorModel;
+import de.hybris.platform.core.model.type.ComposedTypeModel;
+import de.hybris.platform.servicelayer.exceptions.SystemException;
+import de.hybris.platform.servicelayer.type.TypeService;
 import de.hybris.platform.util.Config;
 import de.hybris.platform.util.Utilities;
 import org.fest.util.Collections;
@@ -22,6 +25,8 @@ public class PatchChangeFieldTypeAction implements PatchAction<PatchContextDescr
 
     @Resource(name = "logReporter")
     private LogReporter logReporter;
+    @Resource(name = "typeService")
+    private TypeService typeService;
 
     @Override
     public void execute(final SystemSetupContext context, final PatchContextDescriptor patch) {
@@ -39,28 +44,33 @@ public class PatchChangeFieldTypeAction implements PatchAction<PatchContextDescr
             conn = Registry.getCurrentTenant().getDataSource().getConnection();
             final String statement;
             final Config.DatabaseName databaseName = Config.getDatabaseName();
-            final ChangeFieldTypeContext dbFieldContext = changeFieldTypeContext.getDatabaseSpecificContexts().get(databaseName);
-            if (dbFieldContext == null) {
+            final String newFieldType = changeFieldTypeContext.dbFieldTypes().get(databaseName);
+            if (newFieldType == null) {
                 // not configured for target DB
                 return;
             }
+            final ComposedTypeModel composedType = typeService.getComposedTypeForClass(changeFieldTypeContext.targetClass());
+            final AttributeDescriptorModel attributeDescriptor = typeService.getAttributeDescriptor(composedType, changeFieldTypeContext.fieldName());
+            final String table = composedType.getTable();
+            final String databaseColumn = attributeDescriptor.getDatabaseColumn();
+
             switch (databaseName) {
                 case MYSQL:
-                    statement = String.format("ALTER TABLE %s MODIFY %s %s;", dbFieldContext.getTableName(), dbFieldContext.getFieldName(), dbFieldContext.getNewFieldType());
+                    statement = String.format("ALTER TABLE %s MODIFY %s %s;", table, databaseColumn, newFieldType);
                     break;
                 case HANA:
-                    statement = String.format("ALTER TABLE %s ALTER(%s %s);", dbFieldContext.getTableName(), dbFieldContext.getFieldName(), dbFieldContext.getNewFieldType());
+                    statement = String.format("ALTER TABLE %s ALTER(%s %s);", table, databaseColumn, newFieldType);
                     break;
                 case SQLSERVER:
-                    statement = String.format("ALTER TABLE %s ALTER COLUMN %s %s;", dbFieldContext.getTableName(), dbFieldContext.getFieldName(), dbFieldContext.getNewFieldType());
+                    statement = String.format("ALTER TABLE %s ALTER COLUMN %s %s;", table, databaseColumn, newFieldType);
                     break;
                 default:
                     throw new PatchException(patch, "Unsupported DB Server. DB: " + Config.getDatabase());
             }
             pstmt = conn.prepareStatement(statement);
             pstmt.execute();
-        } catch (final SQLException e) {
-            throw new PatchException(patch, String.format("Cannot change '%s' column '%s' type", changeFieldTypeContext.getTableName(), changeFieldTypeContext.getFieldName()), e);
+        } catch (final SQLException | SystemException e) {
+            throw new PatchException(patch, String.format("Cannot change '%s' column '%s' type", changeFieldTypeContext.targetClass().getTypeName(), changeFieldTypeContext.fieldName()), e);
         } finally {
             Utilities.tryToCloseJDBC(conn, pstmt, null);
         }

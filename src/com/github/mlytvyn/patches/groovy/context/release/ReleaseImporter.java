@@ -1,5 +1,3 @@
-
-
 package com.github.mlytvyn.patches.groovy.context.release;
 
 import de.hybris.platform.core.initialization.SystemSetupContext;

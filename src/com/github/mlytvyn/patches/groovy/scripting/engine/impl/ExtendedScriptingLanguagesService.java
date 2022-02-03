@@ -1,5 +1,3 @@
-
-
 package com.github.mlytvyn.patches.groovy.scripting.engine.impl;
 
 import com.github.mlytvyn.patches.groovy.scripting.engine.ScriptingLanguagesService;
