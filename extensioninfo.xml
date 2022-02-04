@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <extensioninfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="extensioninfo.xsd">
 
-    <extension abstractclassprefix="Generated" classprefix="Groovypatches" jaloLogicFree="true" managername="GroovypatchesManager" managersuperclass="de.hybris.platform.jalo.extension.Extension" name="groovypatches" usemaven="true">
+    <extension abstractclassprefix="Generated" classprefix="Groovypatches" managername="GroovypatchesManager" managersuperclass="de.hybris.platform.jalo.extension.Extension" name="groovypatches" usemaven="true">
         <requires-extension name="core"/>
+        <requires-extension name="scripting"/>
         <requires-extension name="commerceservices"/>
 
         <coremodule generated="true" manager="com.github.mlytvyn.patches.groovy.jalo.GroovypatchesManager" packageroot="com.github.mlytvyn.patches.groovy"/>

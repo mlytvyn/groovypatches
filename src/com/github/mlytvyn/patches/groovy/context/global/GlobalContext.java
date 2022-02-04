@@ -92,7 +92,7 @@ public class GlobalContext implements Serializable, GlobalContextDescriber, Glob
 
     @Override
     public GlobalContext fullReIndex(final SolrEnum solrIndex) {
-        getIndexesToBeReindexed().addAll(List.of(solrIndex));
+        getIndexesToBeReindexed().add(solrIndex);
         return this;
     }
 

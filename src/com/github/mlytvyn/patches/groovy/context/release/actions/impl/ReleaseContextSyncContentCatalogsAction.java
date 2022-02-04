@@ -14,7 +14,7 @@ public class ReleaseContextSyncContentCatalogsAction implements ReleaseContextAc
 
     @Override
     public void execute(final SystemSetupContext context, final ReleaseContext release) {
-        contentCatalogSynchronizer.synchronize(context, release.getContentCatalogsToBeSynced(), true);
+        contentCatalogSynchronizer.synchronize(context, release.contentCatalogsToBeSynced(), true);
     }
 
 }

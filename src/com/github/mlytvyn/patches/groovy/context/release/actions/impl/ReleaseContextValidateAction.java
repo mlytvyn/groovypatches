@@ -15,7 +15,7 @@ public class ReleaseContextValidateAction implements ReleaseContextAction {
 
     @Override
     public void execute(final SystemSetupContext context, final ReleaseContext release) {
-        release.getPatches().forEach(patch -> patchValidateAction.execute(context, patch));
+        release.patches().forEach(patch -> patchValidateAction.execute(context, patch));
     }
 
 }

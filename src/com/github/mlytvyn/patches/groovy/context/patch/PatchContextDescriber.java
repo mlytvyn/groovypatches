@@ -121,14 +121,6 @@ public interface PatchContextDescriber {
     PatchContextDescriber importEmailComponentTemplates(EmailComponentTemplateEnum... emailComponentTemplates);
 
     /**
-     * Do not use it as it does not respect multicountry
-     *
-     * @return current patch
-     */
-    @Deprecated(forRemoval = true, since = "Must not be used as it does not respect multicountry catalog setup")
-    PatchContextDescriber syncAllContentCatalogs();
-
-    /**
      * This method will register specified content catalogs to be synced AFTER current Patch release
      * <p>
      * By default such catalog sync will not be FORCED

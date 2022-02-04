@@ -12,6 +12,7 @@ Groovy-based patching framework for SAP Commerce Cloud (Hybris)
 * Create custom beans.xml template for Enums based on `global-enumtemplate.vm`, which will support declaration without
   any default values
 * Improve readme
+* Create hybris specific branches, implement version specific `ExtendedSetupSyncJobService`
 
 # How to use
 

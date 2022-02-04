@@ -25,7 +25,7 @@ public class GlobalContextImportEmailTemplateAction implements GlobalContextActi
 
         globalContext.getImportEmailTemplates()
             .forEach(emailTemplate -> {
-                final var template = configurationProvider.getEmailTemplate(emailTemplate);
+                final String template = configurationProvider.getEmailTemplate(emailTemplate);
                 emailTemplateImporter.importEmailTemplate(context, globalContext, template, Collections.emptyMap());
             });
 

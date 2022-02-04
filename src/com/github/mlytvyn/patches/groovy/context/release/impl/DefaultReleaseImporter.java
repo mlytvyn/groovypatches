@@ -30,18 +30,18 @@ public class DefaultReleaseImporter implements ReleaseImporter {
     public void execute(final SystemSetupContext context, final List<ReleaseContext> releases) {
         for (final ReleaseContext release : releases) {
             try {
-                final Set<PatchContextDescriptor> patches = release.getPatches();
+                final Set<PatchContextDescriptor> patches = release.patches();
 
                 if (configurationService.getConfiguration().getBoolean("log4j2.threadContext.PatchesId.enabled", false)) {
-                    ThreadContext.put("PatchesId", release.getId());
+                    ThreadContext.put("PatchesId", release.id());
                 }
-                logReporter.logInfo(context, String.format("[Release: %s] started [%s] patches", release.getId(), patches.size()), "green");
+                logReporter.logInfo(context, String.format("[Release: %s] started [%s] patches", release.id(), patches.size()), "green");
 
                 executeActions(context, release, beforeActions, "before");
                 releaseApplyPatchesAction.execute(context, release);
                 executeActions(context, release, afterActions, "after");
 
-                logReporter.logInfo(context, String.format("[Release: %s] completed [%s] patches", release.getId(), patches.size()), "green");
+                logReporter.logInfo(context, String.format("[Release: %s] completed [%s] patches", release.id(), patches.size()), "green");
             } finally {
                 ThreadContext.remove("PatchesId");
             }
@@ -49,11 +49,11 @@ public class DefaultReleaseImporter implements ReleaseImporter {
     }
 
     private void executeActions(final SystemSetupContext context, final ReleaseContext release, final List<ReleaseContextAction> actions, final String name) {
-        logReporter.logInfo(context, String.format("[Release: %s] started %s actions", release.getId(), name), "darkviolet");
+        logReporter.logInfo(context, String.format("[Release: %s] started %s actions", release.id(), name), "darkviolet");
 
         actions.forEach(action -> action.execute(context, release));
 
-        logReporter.logInfo(context, String.format("[Release: %s] completed %s actions", release.getId(), name), "darkviolet");
+        logReporter.logInfo(context, String.format("[Release: %s] completed %s actions", release.id(), name), "darkviolet");
     }
 
 

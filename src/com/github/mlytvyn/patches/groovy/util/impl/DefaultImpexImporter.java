@@ -32,8 +32,8 @@ public class DefaultImpexImporter implements ImpexImporter {
 
     @Override
     public String getPatchDataFolder(final PatchContextDescriptor patch) {
-        final var extensionName = configurationService.getConfiguration().getString("patches.groovy.project.extension.name");
-        return Paths.get(extensionName, "import", "patchdata", patch.getReleaseContext().getId(), patch.getPatchDataFolder()).toString();
+        final String extensionName = configurationService.getConfiguration().getString("patches.groovy.project.extension.name");
+        return Paths.get(extensionName, "import", "patchdata", patch.getReleaseContext().id(), patch.getPatchDataFolder()).toString();
     }
 
     @Override

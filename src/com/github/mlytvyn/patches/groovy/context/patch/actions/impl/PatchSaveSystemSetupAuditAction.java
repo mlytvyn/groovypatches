@@ -26,7 +26,7 @@ public class PatchSaveSystemSetupAuditAction implements PatchAction<PatchContext
         systemPatch.setDescription(patch.getDescription());
         systemPatch.setName(patch.getName());
         systemPatch.setUser(userService.getCurrentUser());
-        systemPatch.setClassName(patch.getReleaseContext().getId());
+        systemPatch.setClassName(patch.getReleaseContext().id());
         systemPatch.setMethodName(patch.getId());
         systemPatch.setRequired(true);
         systemPatch.setExtensionName(configurationService.getConfiguration().getString("patches.groovy.project.extension.name"));

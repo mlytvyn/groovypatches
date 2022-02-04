@@ -61,7 +61,7 @@ public class DefaultGroovyPatchContextService implements GroovyPatchContextServi
 
     @Override
     public <T extends ReleaseContext> void serializeReleaseContext(final T releaseContext) throws ContextSerializationException {
-        serializeContext(releaseContext, getReleaseContextMediaID(releaseContext.getVersion(), releaseContext.getId()));
+        serializeContext(releaseContext, getReleaseContextMediaID(releaseContext.version(), releaseContext.id()));
     }
 
     private String getGlobalContextMediaId() {

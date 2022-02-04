@@ -35,7 +35,7 @@ public class ReleaseContextRemoveContentCatalogsAction implements ReleaseContext
 
     @Override
     public void execute(final SystemSetupContext context, final ReleaseContext release) {
-        release.getContentCatalogsToBeRemoved().forEach(contentCatalog -> {
+        release.contentCatalogsToBeRemoved().forEach(contentCatalog -> {
             if (checkIfCatalogCanBeRemoved(contentCatalog)) {
                 final String catalogUid = configurationProvider.getContentCatalogId(contentCatalog);
                 logReporter.logInfo(context, String.format("Starting catalog %s removal", catalogUid));

@@ -182,17 +182,6 @@ public class PatchContext<G extends GlobalContext> implements PatchContextDescri
     }
 
     @Override
-    @Deprecated(forRemoval = true, since = "Must not be used as it does not respect multicountry catalog setup")
-    public PatchContextDescriber syncAllContentCatalogs() {
-        if (isNotApplicable()) {
-            return this;
-        }
-
-        releaseContext.syncAllContentCatalogs();
-        return this;
-    }
-
-    @Override
     public PatchContextDescriber syncContentCatalogs(final ContentCatalogEnum... contentCatalogs) {
         if (isNotApplicable()) {
             return this;
@@ -346,7 +335,7 @@ public class PatchContext<G extends GlobalContext> implements PatchContextDescri
     public String hash() {
         return Optional.ofNullable(hash)
             .orElseGet(() -> {
-                final String releaseId = releaseContext.getId();
+                final String releaseId = releaseContext.id();
                 // almost copy-paste from SystemSetupCollectorResult
                 // already applied patches will use original hash value retrieved from upper env
                 final String key = extensionName + "-" + releaseId + "-" + number;
@@ -361,7 +350,7 @@ public class PatchContext<G extends GlobalContext> implements PatchContextDescri
 
     @Override
     public String getName() {
-        return getReleaseContext().getId() + " | " + getNumber() + " | " + getId();
+        return getReleaseContext().id() + " | " + getNumber() + " | " + getId();
     }
 
     @Override
