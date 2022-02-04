@@ -7,6 +7,7 @@ import com.github.mlytvyn.patches.groovy.EnvironmentEnum;
 import com.github.mlytvyn.patches.groovy.context.ContextSerializationException;
 import com.github.mlytvyn.patches.groovy.context.CurrentEnvironmentProvider;
 import com.github.mlytvyn.patches.groovy.context.GroovyPatchContextService;
+import com.github.mlytvyn.patches.groovy.context.release.ReleaseContextFactory;
 import de.hybris.platform.catalog.model.CatalogUnawareMediaModel;
 import de.hybris.platform.core.model.media.MediaModel;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
@@ -38,6 +39,8 @@ public class DefaultGroovyPatchContextService implements GroovyPatchContextServi
     private ConfigurationService configurationService;
     @Resource(name = "groovyGlobalContextFactory")
     private GlobalContextFactory<GlobalContext> groovyGlobalContextFactory;
+    @Resource(name = "groovyReleaseContextFactory")
+    private ReleaseContextFactory<ReleaseContext> groovyReleaseContextFactory;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -56,7 +59,7 @@ public class DefaultGroovyPatchContextService implements GroovyPatchContextServi
     @Override
     @SuppressWarnings("unchecked")
     public <T extends ReleaseContext> T restoreOrCreateReleaseContext(final String releaseVersion, final String releaseId) throws ContextSerializationException {
-        return (T) restoreOrCreateContext(getReleaseContextMediaID(releaseVersion, releaseId), () -> new ReleaseContext(releaseVersion, releaseId));
+        return (T) restoreOrCreateContext(getReleaseContextMediaID(releaseVersion, releaseId), () -> groovyReleaseContextFactory.createContext(releaseVersion, releaseId));
     }
 
     @Override

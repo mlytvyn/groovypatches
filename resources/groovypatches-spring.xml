@@ -64,6 +64,9 @@
     <alias name="defaultReleaseContextApplyPatchesAction" alias="releaseContextApplyPatchesAction"/>
     <bean id="defaultReleaseContextApplyPatchesAction" class="com.github.mlytvyn.patches.groovy.context.release.actions.impl.ReleaseContextApplyPatchesAction"/>
 
+    <alias name="defaultGroovyReleaseContextFactory" alias="groovyReleaseContextFactory"/>
+    <bean id="defaultGroovyReleaseContextFactory" class="com.github.mlytvyn.patches.groovy.context.release.impl.DefaultReleaseContextFactory"/>
+
     <alias name="globalGroovyPatchesGlobalContextBeforeActions" alias="groovyPatchesGlobalContextBeforeActions"/>
     <util:list id="globalGroovyPatchesGlobalContextBeforeActions">
         <bean class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextValidateAction"/>

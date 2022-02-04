@@ -1,7 +1,9 @@
 package com.github.mlytvyn.patches.groovy.context.release;
 
 import com.github.mlytvyn.patches.groovy.ContentCatalogEnum;
+import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;
+import de.hybris.platform.core.model.ItemModel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,6 +39,10 @@ public class ReleaseContext implements Serializable {
     private Map<ContentCatalogEnum, Boolean> contentCatalogsToBeSynced = new LinkedHashMap<>();
     private Set<ContentCatalogEnum> contentCatalogsToBeRemoved = new LinkedHashSet<>();
     private transient LinkedHashSet<PatchContextDescriptor> patches = new LinkedHashSet<>();
+
+    public static ReleaseContextBuilder builder(final String version, final String id) {
+        return internalBuilder().version(version).id(id);
+    }
 
     public ReleaseContext removeContentCatalogs(final ContentCatalogEnum... contentCatalogs) {
         if (ArrayUtils.isNotEmpty(contentCatalogs)) {

@@ -5,7 +5,6 @@ Groovy-based patching framework for SAP Commerce Cloud (Hybris)
 
 * Create template extension for project specific implementation
 * Introduce default `CurrentEnvironmentProvider` for default CCv2 setup
-* Introduce extendable Factory for `ReleaseContext`
 * Introduce Product Catalog syncronization action
 * Add `Reset BackOffice` action
 * Add possibility to fail patch if Impex import failed
