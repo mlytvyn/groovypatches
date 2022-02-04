@@ -190,31 +190,31 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
 
     @Override
     public PatchContextDescriber syncContentCatalogs(final ContentCatalogEnum... contentCatalogs) {
-        if (isNotApplicable()) {
+        if (isNotApplicable() || ArrayUtils.isEmpty(contentCatalogs)) {
             return this;
         }
 
-        releaseContext.syncContentCatalogs(contentCatalogs);
+        releaseContext.syncContentCatalogs(Arrays.asList(contentCatalogs));
         return this;
     }
 
     @Override
     public PatchContextDescriber forcedSyncContentCatalogs(final ContentCatalogEnum... contentCatalogs) {
-        if (isNotApplicable()) {
+        if (isNotApplicable() || ArrayUtils.isEmpty(contentCatalogs)) {
             return this;
         }
 
-        releaseContext.forcedSyncContentCatalogs(contentCatalogs);
+        releaseContext.forcedSyncContentCatalogs(Arrays.asList(contentCatalogs));
         return this;
     }
 
     @Override
     public PatchContextDescriber removeContentCatalogs(final ContentCatalogEnum... contentCatalogs) {
-        if (isNotApplicable()) {
+        if (isNotApplicable() || ArrayUtils.isEmpty(contentCatalogs)) {
             return this;
         }
 
-        releaseContext.removeContentCatalogs(contentCatalogs);
+        releaseContext.contentCatalogsToBeRemoved().addAll(Arrays.asList(contentCatalogs));
         return this;
     }
 

@@ -75,7 +75,7 @@ public class DefaultReleasesCollector implements ReleasesCollector<GlobalContext
             .map(Map.Entry::getKey)
             .collect(Collectors.toList());
 
-        globalContext.setReleases(releases);
+        globalContext.releases(releases);
     }
 
     private String getReleasesHome() {

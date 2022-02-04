@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,6 +27,9 @@ import java.util.Set;
 @Accessors(chain = true, fluent = true)
 @Builder(builderMethodName = "internalBuilder")
 @RequiredArgsConstructor
+/*
+  List of Content Catalogs for syncrhonization can be updated in a way that: FORCED sync will always override previous value
+ */
 public class ReleaseContext implements Serializable {
 
     private static final long serialVersionUID = 1196114181425770979L;
@@ -46,27 +50,12 @@ public class ReleaseContext implements Serializable {
         return internalBuilder().version(version).id(id);
     }
 
-    public ReleaseContext removeContentCatalogs(final ContentCatalogEnum... contentCatalogs) {
-        if (ArrayUtils.isNotEmpty(contentCatalogs)) {
-            contentCatalogsToBeRemoved().addAll(Arrays.asList(contentCatalogs));
-        }
-        return this;
+    public void syncContentCatalogs(final List<ContentCatalogEnum> contentCatalogs) {
+        contentCatalogs.forEach((final ContentCatalogEnum contentCatalog) -> contentCatalogsToBeSynced().putIfAbsent(contentCatalog, false));
     }
 
-    public ReleaseContext syncContentCatalogs(final ContentCatalogEnum... contentCatalogs) {
-        if (ArrayUtils.isNotEmpty(contentCatalogs)) {
-            Arrays.stream(contentCatalogs)
-                    .forEach((final ContentCatalogEnum contentCatalog) -> contentCatalogsToBeSynced().putIfAbsent(contentCatalog, false));
-        }
-        return this;
-    }
-
-    public ReleaseContext forcedSyncContentCatalogs(final ContentCatalogEnum... contentCatalogs) {
-        if (ArrayUtils.isNotEmpty(contentCatalogs)) {
-            Arrays.stream(contentCatalogs)
-                    .forEach((final ContentCatalogEnum contentCatalog) -> contentCatalogsToBeSynced().put(contentCatalog, true));
-        }
-        return this;
+    public void forcedSyncContentCatalogs(final List<ContentCatalogEnum> contentCatalogs) {
+        contentCatalogs.forEach((final ContentCatalogEnum contentCatalog) -> contentCatalogsToBeSynced().put(contentCatalog, true));
     }
 
 }
