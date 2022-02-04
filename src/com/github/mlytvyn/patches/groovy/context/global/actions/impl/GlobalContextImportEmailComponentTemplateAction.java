@@ -26,7 +26,7 @@ public class GlobalContextImportEmailComponentTemplateAction implements GlobalCo
     public void execute(final SystemSetupContext context, final GlobalContext globalContext) {
         logReporter.logInfo(context, "[Global] started Email Component Templates import");
 
-        globalContext.getImportEmailComponentTemplates()
+        globalContext.importEmailComponentTemplates()
             .forEach((key, value) -> importEmailComponentTemplate(context, globalContext, key, value));
 
         logReporter.logInfo(context, "[Global] completed Email Component Templates import");

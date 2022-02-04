@@ -54,13 +54,13 @@ public abstract class GroovyPatchesSystemSetup {
 
             releasesCollector.collect(globalContext, locationPattern);
 
-            if (globalContext.getReleases().isEmpty()) {
+            if (globalContext.releases().isEmpty()) {
                 logReporter.logInfo(context, "No pending patches found.");
                 return;
             }
 
             executeActions(context, globalContext, beforeActions, "before");
-            releaseImporter.execute(context, globalContext.getReleases());
+            releaseImporter.execute(context, globalContext.releases());
             executeActions(context, globalContext, afterActions, "after");
 
         } catch (final PatchValidationException e) {

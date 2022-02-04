@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -27,21 +27,22 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-public class PatchContext<G extends GlobalContext> implements PatchContextDescriber, PatchContextDescriptor {
+public class PatchContext<G extends GlobalContext, R extends ReleaseContext> implements PatchContextDescriber, PatchContextDescriptor {
 
     protected final List<ImpexContext> impexContexts = new ArrayList<>();
     protected final List<ChangeFieldTypeContext> changeFieldTypeContexts = new ArrayList<>();
-    protected final Map<ContentCatalogEnum, Boolean> contentCatalogsToBeSyncedNow = new HashMap<>();
+    protected final Map<ContentCatalogEnum, Boolean> contentCatalogsToBeSyncedNow = new LinkedHashMap<>();
 
     protected final G globalContext;
-    protected final ReleaseContext releaseContext;
+    protected final R releaseContext;
     protected final String extensionName;
     protected final String number;
     protected final String id;
 
-    protected PatchContext<G> nestedPatch;
-    protected PatchContext<G> environmentPatch;
+    protected PatchContext<G, R> nestedPatch;
+    protected PatchContext<G, R> environmentPatch;
 
     protected String hash;
     protected String customPatchDataFolder;
@@ -51,7 +52,7 @@ public class PatchContext<G extends GlobalContext> implements PatchContextDescri
     protected Consumer<SystemSetupContext> beforeConsumer;
     protected Consumer<SystemSetupContext> afterConsumer;
 
-    public PatchContext(final G globalContext, final ReleaseContext releaseContext, final String extensionName, final String number, final String id) {
+    public PatchContext(final G globalContext, final R releaseContext, final String extensionName, final String number, final String id) {
         this.globalContext = globalContext;
         this.releaseContext = releaseContext;
         this.extensionName = extensionName;
@@ -64,7 +65,7 @@ public class PatchContext<G extends GlobalContext> implements PatchContextDescri
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final PatchContext<G> patchContext = (PatchContext<G>) o;
+        final PatchContext<G, R> patchContext = (PatchContext<G, R>) o;
         return hash().equals(patchContext.hash());
     }
 
@@ -127,7 +128,7 @@ public class PatchContext<G extends GlobalContext> implements PatchContextDescri
             return this;
         }
 
-        this.nestedPatch = (PatchContext<G>) nested;
+        this.nestedPatch = (PatchContext<G, R>) nested;
         return this;
     }
 
@@ -153,32 +154,38 @@ public class PatchContext<G extends GlobalContext> implements PatchContextDescri
 
     @Override
     public PatchContextDescriber importEmailTemplates(final EmailTemplateEnum... emailTemplates) {
-        if (isNotApplicable()) {
+        if (isNotApplicable() || ArrayUtils.isEmpty(emailTemplates)) {
             return this;
         }
 
-        globalContext.importEmailTemplates(emailTemplates);
+        globalContext.importEmailTemplates().addAll(Arrays.asList(emailTemplates));
         return this;
     }
 
     @Override
-    public PatchContextDescriber importEmailComponentTemplates(final EnumSet<SiteEnum> sites, final EnumSet<EmailComponentTemplateEnum> emailComponentTemplates) {
-        if (isNotApplicable()) {
+    public PatchContextDescriber importEmailComponentTemplates(final EnumSet<SiteEnum> sites, final EmailComponentTemplateEnum... emailComponentTemplates) {
+        if (isNotApplicable() || sites.isEmpty() || ArrayUtils.isEmpty(emailComponentTemplates)) {
             return this;
         }
 
-        globalContext.importEmailComponentTemplates(sites, emailComponentTemplates);
+        final Map<EmailComponentTemplateEnum, EnumSet<SiteEnum>> importEmailComponentTemplates = globalContext.importEmailComponentTemplates();
+        Stream.of(emailComponentTemplates).forEach(emailComponentTemplate -> {
+            if (importEmailComponentTemplates.containsKey(emailComponentTemplate)) {
+                importEmailComponentTemplates.get(emailComponentTemplate).addAll(sites);
+            } else {
+                importEmailComponentTemplates.put(emailComponentTemplate, sites);
+            }
+        });
         return this;
     }
 
     @Override
     public PatchContextDescriber importEmailComponentTemplates(final EmailComponentTemplateEnum... emailComponentTemplates) {
-        if (isNotApplicable()) {
+        if (isNotApplicable() || ArrayUtils.isEmpty(emailComponentTemplates)) {
             return this;
         }
 
-        globalContext.importEmailComponentTemplates(emailComponentTemplates);
-        return this;
+        return importEmailComponentTemplates(EnumSet.allOf(SiteEnum.class), emailComponentTemplates);
     }
 
     @Override
@@ -277,7 +284,7 @@ public class PatchContext<G extends GlobalContext> implements PatchContextDescri
             return this;
         }
 
-        globalContext.removeOrphanedTypes();
+        globalContext.removeOrphanedTypes(true);
         return this;
     }
 
@@ -325,7 +332,7 @@ public class PatchContext<G extends GlobalContext> implements PatchContextDescri
         final PatchContextDescriber environmentPatch = supplier.get();
 
         if (environments.contains(getCurrentEnvironment()) && PatchContext.class.isAssignableFrom(environmentPatch.getClass())) {
-            this.environmentPatch = (PatchContext<G>) environmentPatch;
+            this.environmentPatch = (PatchContext<G, R>) environmentPatch;
             this.environmentPatch.environments = EnumSet.of(getCurrentEnvironment());
         }
         return this;
@@ -355,7 +362,7 @@ public class PatchContext<G extends GlobalContext> implements PatchContextDescri
 
     @Override
     public EnvironmentEnum getCurrentEnvironment() {
-        return globalContext.getCurrentEnvironment();
+        return globalContext.currentEnvironment();
     }
 
     @Override

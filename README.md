@@ -134,13 +134,12 @@ patch
 // By extending PatchContextDescriptor and customizing Patch creation via PatchFactory it is possible to add own operations to default PatchContext, which will be executed according to defined order
 //.customOperation(...)
 // Or it is possible to define patch specific custom operations, which will be executed right away 
-//.with(true,  { it -> })
 // Specify hash in case of long-live shared branches, with unknown release date, otherwise hash will be generated based on release id + patch id  
         .hash("<your custom internal Identifier of the patch")
 // It is possible to adjust patch data folder, it will be still in the same release, but if you'd like to place all impexes from different patches to the same folder it will be possible
         .customPatchDataFolder("<custom patch folder within the release folder>")
 // Limits patch to specific environments, by default - applicable to all 
-        .environment()
+        .environment(EnvironmentEnum.LOCAL)
 // Allows creation of the environment specific patch, corresponding Related Patch have to be created in that case to create new context 
         .environmentPatch(EnumSet.allOf(EnvironmentEnum), { -> patch.createRelatedPatch() })
 // Allows creation of the nested patches, corresponding Related Patch have to be created in that case to create new context
@@ -158,6 +157,10 @@ patch
         .description("<Optional description of the patch>")
 // If specified without any parameters, all impexes will be imported in natural order, otherwise only specified impexes will be imported according to defined order  
         .withImpexes()
+        .withImpexes(
+                "import_1.impex",
+                "import_2.impex"
+        )
 // It is possible to specify custom Impex Contexts, it will lead to import of all impexes specified via `.withImpexes` with each defined ImpexContext
 // enables possibility to create "template" based impexes and pass different params as a Map
         .withImpexContexts(
@@ -186,4 +189,9 @@ patch
         .importEmailTemplates(EmailTemplateEnum.DUMMY)
 // Specify email component templates which should be re-imported
         .importEmailComponentTemplates(EmailComponentTemplateEnum.DUMMY)
+// Specify email component templates which should be re-imported for defined sites
+        .importEmailComponentTemplates(EnumSet.allOf(SiteEnum.class),
+                EmailComponentTemplateEnum.DUMMY,
+                EmailComponentTemplateEnum.DUMMY
+        )
 ```

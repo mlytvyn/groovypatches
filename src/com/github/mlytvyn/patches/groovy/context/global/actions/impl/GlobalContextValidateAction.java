@@ -19,7 +19,7 @@ public class GlobalContextValidateAction implements GlobalContextAction<GlobalCo
     public void execute(final SystemSetupContext context, final GlobalContext globalContext) {
         logReporter.logInfo(context, "Started patches validation");
 
-        globalContext.getReleases().forEach(release -> releaseValidateAction.execute(context, release));
+        globalContext.releases().forEach(release -> releaseValidateAction.execute(context, release));
 
         logReporter.logInfo(context, "Completed patches validation");
     }

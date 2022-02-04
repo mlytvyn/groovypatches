@@ -6,10 +6,15 @@ import com.github.mlytvyn.patches.groovy.EnvironmentEnum;
 import com.github.mlytvyn.patches.groovy.SiteEnum;
 import com.github.mlytvyn.patches.groovy.SolrEnum;
 import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
-import org.apache.commons.lang3.ArrayUtils;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -20,150 +25,45 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class GlobalContext implements Serializable, GlobalContextDescriber, GlobalContextDescriptor {
+@Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Accessors(chain = true, fluent = true)
+@Builder(builderMethodName = "internalBuilder")
+@RequiredArgsConstructor
+public class GlobalContext implements Serializable {
 
     private static final long serialVersionUID = 1302845848288028643L;
+    @NonNull
+    @ToString.Include
     private final EnvironmentEnum currentEnvironment;
-    private Set<SolrEnum> indexesToBeReindexed;
-    private Set<SolrEnum> coresToBeRemoved;
-    private Set<EmailTemplateEnum> importEmailTemplates;
-    private Map<SolrEnum, Set<String>> partialUpdateProperties;
-    private Map<EmailComponentTemplateEnum, EnumSet<SiteEnum>> importEmailComponentTemplates;
+    private Set<SolrEnum> indexesToBeReindexed = new LinkedHashSet<>();
+    private Set<SolrEnum> coresToBeRemoved = new LinkedHashSet<>();
+    private Set<EmailTemplateEnum> importEmailTemplates = new LinkedHashSet<>();
+    private Map<SolrEnum, Set<String>> partialUpdateProperties = new HashMap<>();
+    private Map<EmailComponentTemplateEnum, EnumSet<SiteEnum>> importEmailComponentTemplates = new LinkedHashMap<>();
     // following values executed Before all patches and can be skipped
-    private transient List<ReleaseContext> releases;
+    @ToString.Include
+    private transient List<ReleaseContext> releases = Collections.emptyList();
     private transient boolean removeOrphanedTypes;
 
-    public GlobalContext(final EnvironmentEnum currentEnvironment) {
-        this.currentEnvironment = currentEnvironment;
-    }
-
-    @Override
-    public String toString() {
-        return "GlobalContext{" +
-            "currentEnvironment=" + currentEnvironment +
-            ", releases=" + getReleases() +
-            '}';
-    }
-
-    @Override
-    public GlobalContext removeOrphanedTypes() {
-        this.removeOrphanedTypes = true;
-        return this;
-    }
-
-    @Override
-    public GlobalContext importEmailTemplates(final EmailTemplateEnum... emailTemplates) {
-        if (ArrayUtils.isNotEmpty(emailTemplates)) {
-            getImportEmailTemplates().addAll(Arrays.asList(emailTemplates));
-        }
-        return this;
-    }
-
-    @Override
-    public GlobalContext importEmailComponentTemplates(final EnumSet<SiteEnum> sites, final EnumSet<EmailComponentTemplateEnum> emailComponentTemplates) {
-        emailComponentTemplates.forEach(emailComponentTemplate -> {
-            if (getImportEmailComponentTemplates().containsKey(emailComponentTemplate)) {
-                getImportEmailComponentTemplates().get(emailComponentTemplate).addAll(sites);
-            } else {
-                getImportEmailComponentTemplates().put(emailComponentTemplate, sites);
-            }
-        });
-        return this;
-    }
-
-    @Override
-    public GlobalContext importEmailComponentTemplates(final EmailComponentTemplateEnum... emailComponentTemplates) {
-        if (ArrayUtils.isNotEmpty(emailComponentTemplates)) {
-            Arrays.stream(emailComponentTemplates)
-                .forEach(emailComponentTemplate -> getImportEmailComponentTemplates().put(emailComponentTemplate, EnumSet.allOf(SiteEnum.class)));
-        }
-        return this;
-    }
-
-    @Override
-    public GlobalContext schedulePartialUpdate(final SolrEnum solrIndex, final Set<String> indexedProperties) {
+    public void schedulePartialUpdate(final SolrEnum solrIndex, final Set<String> indexedProperties) {
         if (indexedProperties.isEmpty()) {
-            return this;
+            return;
         }
-        getPartialUpdateProperties().computeIfAbsent(solrIndex, index -> new HashSet<>())
-            .addAll(indexedProperties);
-        return this;
+        partialUpdateProperties().computeIfAbsent(solrIndex, index -> new HashSet<>())
+                .addAll(indexedProperties);
     }
 
-    @Override
-    public GlobalContext fullReIndex(final SolrEnum solrIndex) {
-        getIndexesToBeReindexed().add(solrIndex);
-        return this;
+    public void fullReIndex(final SolrEnum solrIndex) {
+        indexesToBeReindexed().add(solrIndex);
     }
 
-    @Override
-    public GlobalContext fullReIndex(final List<SolrEnum> solrIndexes) {
-        getIndexesToBeReindexed().addAll(solrIndexes);
-        return this;
+    public void fullReIndex(final List<SolrEnum> solrIndexes) {
+        indexesToBeReindexed().addAll(solrIndexes);
     }
 
-    @Override
-    public GlobalContext removeSolrCores(final List<SolrEnum> solrIndexes) {
-        getCoresToBeRemoved().addAll(solrIndexes);
-        return this;
+    public void removeSolrCores(final List<SolrEnum> solrIndexes) {
+        coresToBeRemoved().addAll(solrIndexes);
     }
 
-    @Override
-    public Set<SolrEnum> getIndexesToBeReindexed() {
-        if (indexesToBeReindexed == null) {
-            indexesToBeReindexed = new LinkedHashSet<>();
-        }
-        return indexesToBeReindexed;
-    }
-
-    @Override
-    public Set<SolrEnum> getCoresToBeRemoved() {
-        if (coresToBeRemoved == null) {
-            coresToBeRemoved = new LinkedHashSet<>();
-        }
-        return coresToBeRemoved;
-    }
-
-    @Override
-    public Map<SolrEnum, Set<String>> getPartialUpdateProperties() {
-        if (partialUpdateProperties == null) {
-            partialUpdateProperties = new HashMap<>();
-        }
-        return partialUpdateProperties;
-    }
-
-    @Override
-    public EnvironmentEnum getCurrentEnvironment() {
-        return currentEnvironment;
-    }
-
-    @Override
-    public boolean isRemoveOrphanedTypes() {
-        return removeOrphanedTypes;
-    }
-
-    @Override
-    public Map<EmailComponentTemplateEnum, EnumSet<SiteEnum>> getImportEmailComponentTemplates() {
-        if (importEmailComponentTemplates == null) {
-            importEmailComponentTemplates = new LinkedHashMap<>();
-        }
-        return importEmailComponentTemplates;
-    }
-
-    @Override
-    public Set<EmailTemplateEnum> getImportEmailTemplates() {
-        if (importEmailTemplates == null) {
-            importEmailTemplates = new LinkedHashSet<>();
-        }
-        return importEmailTemplates;
-    }
-
-    @Override
-    public List<ReleaseContext> getReleases() {
-        return releases == null ? Collections.emptyList() : releases;
-    }
-
-    public void setReleases(final List<ReleaseContext> releases) {
-        this.releases = releases;
-    }
 }

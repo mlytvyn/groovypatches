@@ -16,7 +16,7 @@ public class GlobalRemoveOrphanedTypesContextAction implements GlobalContextActi
 
     @Override
     public void execute(final SystemSetupContext context, final GlobalContext globalContext) {
-        if (globalContext.isRemoveOrphanedTypes()) {
+        if (globalContext.removeOrphanedTypes()) {
             logReporter.logInfo(context, "Started orphaned types removal");
 
             final Map<String, String> removedTypes = TypeRemovalUtil.removeOrphanedTypes(true, true);

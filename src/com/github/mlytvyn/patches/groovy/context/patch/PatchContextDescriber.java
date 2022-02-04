@@ -108,7 +108,7 @@ public interface PatchContextDescriber {
      * @param emailComponentTemplates templates
      * @return current patch
      */
-    PatchContextDescriber importEmailComponentTemplates(EnumSet<SiteEnum> sites, EnumSet<EmailComponentTemplateEnum> emailComponentTemplates);
+    PatchContextDescriber importEmailComponentTemplates(EnumSet<SiteEnum> sites, EmailComponentTemplateEnum... emailComponentTemplates);
 
     /**
      * This method will register following email component templates for import, they will be added to {@link GlobalContext}

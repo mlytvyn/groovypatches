@@ -29,7 +29,7 @@ public class DefaultPatchesCollector implements PatchesCollector<GlobalContext> 
     @Resource(name = "extendedScriptingLanguagesService")
     protected ScriptingLanguagesService scriptingLanguagesService;
     @Resource(name = "groovyPatchContextFactory")
-    protected PatchContextFactory<GlobalContext, PatchContext<GlobalContext>> patchContextFactory;
+    protected PatchContextFactory<GlobalContext, ReleaseContext, PatchContext<GlobalContext, ReleaseContext>> patchContextFactory;
 
     @Override
     public LinkedHashSet<PatchContextDescriptor> collect(final GlobalContext globalContext, final ReleaseContext release, final List<String> plainPatches) {
@@ -46,18 +46,18 @@ public class DefaultPatchesCollector implements PatchesCollector<GlobalContext> 
             .filter(patch -> !systemSetupAuditDAO.isPatchApplied(patch.hash()))
             // filter out Patches per applicable environment
             // this will filter out only MAIN Patch, we still can have main patch for all envs and few env specific patches assigned or even nested one (which also may be env specific)
-            .filter(patchContext -> patchContext.getEnvironments().contains(globalContext.getCurrentEnvironment()))
+            .filter(patchContext -> patchContext.getEnvironments().contains(globalContext.currentEnvironment()))
             // TODO: any additional checks can be added here
             .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    protected PatchContext<GlobalContext> createPatchContext(final GlobalContext globalContext, final ReleaseContext release, final String[] patchNumber2patchId) {
+    protected PatchContext<GlobalContext, ReleaseContext> createPatchContext(final GlobalContext globalContext, final ReleaseContext release, final String[] patchNumber2patchId) {
         final String patchNumber = patchNumber2patchId[0];
         final String patchId = patchNumber2patchId[1];
         return patchContextFactory.createContext(globalContext, release, patchNumber, patchId);
     }
 
-    protected void precompilePatchScript(final ReleaseContext release, final PatchContext<GlobalContext> patchContext) {
+    protected void precompilePatchScript(final ReleaseContext release, final PatchContext<GlobalContext, ReleaseContext> patchContext) {
         final String extensionName = configurationService.getConfiguration().getString("patches.groovy.project.extension.name");
         final String scriptPath = "classpath://" + extensionName + "/releases/" + release.version() + "/" + release.id() + "/" + patchContext.getNumber() + "_" + patchContext.getId() + ".groovy";
 

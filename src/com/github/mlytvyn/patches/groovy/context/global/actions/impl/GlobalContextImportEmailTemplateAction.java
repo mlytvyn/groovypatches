@@ -23,7 +23,7 @@ public class GlobalContextImportEmailTemplateAction implements GlobalContextActi
     public void execute(final SystemSetupContext context, final GlobalContext globalContext) {
         logReporter.logInfo(context, "Starting Email Templates import");
 
-        globalContext.getImportEmailTemplates()
+        globalContext.importEmailTemplates()
             .forEach(emailTemplate -> {
                 final String template = configurationProvider.getEmailTemplate(emailTemplate);
                 emailTemplateImporter.importEmailTemplate(context, globalContext, template, Collections.emptyMap());

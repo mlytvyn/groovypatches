@@ -28,6 +28,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ReleaseContext implements Serializable {
 
+    private static final long serialVersionUID = 1196114181425770979L;
+
     @NonNull
     @ToString.Include
     @EqualsAndHashCode.Include
