@@ -24,7 +24,10 @@
 
     <enum class="com.github.mlytvyn.patches.groovy.EmailComponentTemplateEnum">
         <description>Define property for each new value: `patches.groovy.emailComponentTemplate.%VALUE%.template=%email template.impex%`</description>
-        <value>DUMMY</value>
+        <value>BANNER_COMPONENT</value>
+        <value>CMS_IMAGE_COMPONENT</value>
+        <value>CMS_LINK_COMPONENT</value>
+        <value>CMS_PARAGRAPH_COMPONENT</value>
     </enum>
 
     <enum class="com.github.mlytvyn.patches.groovy.ProductCatalogEnum">

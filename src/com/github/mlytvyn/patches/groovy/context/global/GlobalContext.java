@@ -7,15 +7,6 @@ import com.github.mlytvyn.patches.groovy.SiteEnum;
 import com.github.mlytvyn.patches.groovy.SolrEnum;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
 import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -28,17 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Accessors(chain = true, fluent = true)
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(builderMethodName = "internalBuilder")
 public class GlobalContext implements Serializable {
 
     private static final long serialVersionUID = 1302845848288028643L;
-    @NonNull
-    @ToString.Include
     private final EnvironmentEnum currentEnvironment;
     private ImpexImportConfig impexImportConfig;
     private boolean removeOrphanedTypes;
@@ -48,11 +31,14 @@ public class GlobalContext implements Serializable {
     private final Map<SolrEnum, Set<String>> partialUpdateProperties = new HashMap<>();
     private final Map<EmailComponentTemplateEnum, EnumSet<SiteEnum>> importEmailComponentTemplates = new LinkedHashMap<>();
     // following values executed Before all patches and can be skipped
-    @ToString.Include
     private transient List<ReleaseContext> releases = Collections.emptyList();
 
-    public static GlobalContextBuilder builder(final EnvironmentEnum environment) {
-        return GlobalContext.internalBuilder().currentEnvironment(environment);
+    private GlobalContext(final EnvironmentEnum currentEnvironment) {
+        this.currentEnvironment = currentEnvironment;
+    }
+
+    public static GlobalContext of(final EnvironmentEnum environment) {
+        return new GlobalContext(environment);
     }
 
     public void schedulePartialUpdate(final SolrEnum solrIndex, final Set<String> indexedProperties) {
@@ -63,4 +49,62 @@ public class GlobalContext implements Serializable {
                 .addAll(indexedProperties);
     }
 
+    public ImpexImportConfig impexImportConfig() {
+        return impexImportConfig;
+    }
+
+    public GlobalContext impexImportConfig(final ImpexImportConfig impexImportConfig) {
+        this.impexImportConfig = impexImportConfig;
+        return this;
+    }
+
+    public Map<SolrEnum, Set<String>> partialUpdateProperties() {
+        return partialUpdateProperties;
+    }
+
+    public Set<EmailTemplateEnum> importEmailTemplates() {
+        return importEmailTemplates;
+    }
+
+    public Set<SolrEnum> coresToBeRemoved() {
+        return coresToBeRemoved;
+    }
+
+    public Set<SolrEnum> indexesToBeReindexed() {
+        return indexesToBeReindexed;
+    }
+
+    public boolean removeOrphanedTypes() {
+        return removeOrphanedTypes;
+    }
+
+    public GlobalContext removeOrphanedTypes(final boolean removeOrphanedTypes) {
+        this.removeOrphanedTypes = removeOrphanedTypes;
+        return this;
+    }
+
+    public List<ReleaseContext> releases() {
+        return releases;
+    }
+
+    public GlobalContext releases(final List<ReleaseContext> releases) {
+        this.releases = releases;
+        return this;
+    }
+
+    public EnvironmentEnum currentEnvironment() {
+        return currentEnvironment;
+    }
+
+    public Map<EmailComponentTemplateEnum, EnumSet<SiteEnum>> importEmailComponentTemplates() {
+        return importEmailComponentTemplates;
+    }
+
+    @Override
+    public String toString() {
+        return "GlobalContext{" +
+                "currentEnvironment=" + currentEnvironment +
+                ", releases=" + releases +
+                '}';
+    }
 }

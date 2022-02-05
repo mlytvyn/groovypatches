@@ -3,18 +3,15 @@ Groovy-based patching framework for SAP Commerce Cloud (Hybris)
 
 # TODO's
 
-* Create template extension for project specific implementation
 * Introduce default `CurrentEnvironmentProvider` for default CCv2 setup
-* Introduce Product Catalog syncronization action
+* Introduce Product Catalog synchronization action
 * Add `Reset BackOffice` action
-* Add possibility to fail patch if Impex import failed
 * Improve readme
 * Create hybris specific branches, implement version specific `ExtendedSetupSyncJobService`
 
 # How to use
 
-* Create new blank extension
-* Add new extension dependency on `groovypatches`
+* Create new blank extension from `ygroovypatches` template extension - https://github.com/mlytvyn/ygroovypatches
 * Create/customize `SystemSetup` class in the newly created custom extension. It is possible to have different set of
   patches for `Init` and `Update` (just in case of existing solution)
 
@@ -147,19 +144,16 @@ patch
 // Allows simple modification of the field type in the DB, it will execute SQL query, customize `PatchChangeFieldTypeAction` to adjust SQL or introduce new DB
 // see OOTB `core-advanced-deployment.xml` for allowed DB specific column types, use DB value, not Hybris one
         .changeFieldType(
-                ChangeFieldTypeContext.builder(ProductModel.class, ProductModel.NAME)
+                ChangeFieldTypeContext.of(ProductModel.class, ProductModel.NAME)
                         .dbFieldType(Config.DatabaseName.HANA, "TEXT")
                         .dbFieldType(Config.DatabaseName.MYSQL, "TEXT")
                         .dbFieldType(Config.DatabaseName.SQLSERVER, "NCLOB")
-                        .build()
         )
 // Specify optional description, which will be
         .description("<Optional description of the patch>")
 // If specified will override default Impex Import Configuration set via properties for current Patch only, can be overridden for individual Impex via ImpexContext
         .impexImportConfig(
-                ImpexImportConfig.builder()
-                        .failOnError(true)
-                        .build()
+                ImpexImportConfig.create().failOnError(true)
         )
 // If specified without any parameters, all impexes will be imported in natural order, otherwise only specified impexes will be imported according to defined order  
         .withImpexes()
@@ -175,12 +169,10 @@ patch
 // It is possible to specify custom Impex Template Contexts, it will lead to import of all impexes specified via `.withImpexes` with each defined ImpexTemplateContext
 // enables possibility to create "template" based impexes and pass different params as a Map
         .withImpexTemplateContexts(
-                ImpexTemplateContext.builder("Site Dummy")
-                        .macroParameter("siteUid", cp.getSiteCode(SiteEnum.DUMMY))
-                        .build(),
-                ImpexTemplateContext.builder("Site Not Dummy")
+                ImpexTemplateContext.of("Site Dummy")
+                        .macroParameter("siteUid", cp.getSiteCode(SiteEnum.DUMMY)),
+                ImpexTemplateContext.of("Site Not Dummy")
                         .macroParameter("siteUid", cp.getSiteCode(SiteEnum.NOT_DUMMY))
-                        .build()
         )
 // Executes custom groovy logic before anything else, `setup` argument points to `SystemSetupContext`
         .before({ setup -> })
@@ -198,11 +190,13 @@ patch
         .removeOrphanedTypes()
 // Specify email templates which should be re-imported
         .importEmailTemplates(EmailTemplateEnum.DUMMY)
-// Specify email component templates which should be re-imported
-        .importEmailComponentTemplates(EmailComponentTemplateEnum.DUMMY)
+// Specify email component templates which should be re-imported for all Sites
+        .importEmailComponentTemplates(EmailComponentTemplateEnum.BANNER_COMPONENT)
 // Specify email component templates which should be re-imported for defined sites
         .importEmailComponentTemplates(EnumSet.allOf(SiteEnum.class),
-                EmailComponentTemplateEnum.DUMMY,
-                EmailComponentTemplateEnum.DUMMY
+                EmailComponentTemplateEnum.BANNER_COMPONENT,
+                EmailComponentTemplateEnum.CMS_IMAGE_COMPONENT,
+                EmailComponentTemplateEnum.CMS_LINK_COMPONENT,
+                EmailComponentTemplateEnum.CMS_PARAGRAPH_COMPONENT
         )
 ```

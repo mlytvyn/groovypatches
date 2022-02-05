@@ -7,6 +7,6 @@ public class DefaultReleaseContextFactory implements ReleaseContextFactory<Relea
 
     @Override
     public ReleaseContext createContext(final String releaseVersion, final String releaseId) {
-        return ReleaseContext.builder(releaseVersion, releaseId).build();
+        return ReleaseContext.of(releaseVersion, releaseId);
     }
 }

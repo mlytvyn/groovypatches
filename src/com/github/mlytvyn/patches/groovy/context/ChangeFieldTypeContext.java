@@ -2,13 +2,8 @@ package com.github.mlytvyn.patches.groovy.context;
 
 import de.hybris.platform.core.model.ItemModel;
 import de.hybris.platform.util.Config;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Singular;
-import lombok.experimental.Accessors;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -21,20 +16,35 @@ import java.util.Map;
  *                         .build()
  * }</pre>
  */
-@Data
-@Accessors(chain = true, fluent = true)
-@Builder(builderMethodName = "internalBuilder")
-@RequiredArgsConstructor
 public class ChangeFieldTypeContext {
-    @NonNull
-    private final Class<? extends ItemModel> targetClass;
-    @NonNull
-    private final String fieldName;
-    @Singular
-    private final Map<Config.DatabaseName, String> dbFieldTypes;
 
-    public static ChangeFieldTypeContextBuilder builder(final Class<? extends ItemModel> targetClass, final String fieldName) {
-        return internalBuilder().targetClass(targetClass).fieldName(fieldName);
+    private final Class<? extends ItemModel> targetClass;
+    private final String fieldName;
+    private final Map<Config.DatabaseName, String> dbFieldTypes = new HashMap<>();
+
+    private ChangeFieldTypeContext(final Class<? extends ItemModel> targetClass, final String fieldName) {
+        this.targetClass = targetClass;
+        this.fieldName = fieldName;
     }
 
+    public static ChangeFieldTypeContext of(final Class<? extends ItemModel> targetClass, final String fieldName) {
+        return new ChangeFieldTypeContext(targetClass, fieldName);
+    }
+
+    public Class<? extends ItemModel> targetClass() {
+        return targetClass;
+    }
+
+    public String fieldName() {
+        return fieldName;
+    }
+
+    public Map<Config.DatabaseName, String> dbFieldTypes() {
+        return dbFieldTypes;
+    }
+
+    public ChangeFieldTypeContext dbFieldType(final Config.DatabaseName databaseName, final String fieldType) {
+        dbFieldTypes().put(databaseName, fieldType);
+        return this;
+    }
 }

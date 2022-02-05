@@ -16,19 +16,19 @@ public class DefaultGlobalContextFactory implements GlobalContextFactory<GlobalC
 
     @Override
     public GlobalContext createContext(final EnvironmentEnum currentEnvironment) {
-        return prepareContext(currentEnvironment).build();
+        return prepareContext(currentEnvironment);
     }
 
-    protected GlobalContext.GlobalContextBuilder prepareContext(final EnvironmentEnum currentEnvironment) {
+    protected GlobalContext prepareContext(final EnvironmentEnum currentEnvironment) {
         final Configuration configuration = configurationService.getConfiguration();
-        return GlobalContext.builder(currentEnvironment)
-                .impexImportConfig(ImpexImportConfig.builder()
+        return GlobalContext.of(currentEnvironment)
+                .impexImportConfig(ImpexImportConfig.create()
                         .failOnError(configuration.getBoolean("patches.groovy.impex.import.configuration.failOnError", true))
                         .enableCodeExecution(configuration.getBoolean("patches.groovy.impex.import.configuration.enableCodeExecution", true))
                         .legacyMode(configuration.getBoolean("patches.groovy.impex.import.configuration.legacyMode", false))
                         .removeOnSuccess(configuration.getBoolean("patches.groovy.impex.import.configuration.removeOnSuccess", false))
                         .synchronous(configuration.getBoolean("patches.groovy.impex.import.configuration.synchronous", true))
                         .errorIfMissing(configuration.getBoolean("patches.groovy.impex.import.configuration.errorIfMissing", true))
-                        .build());
+                );
     }
 }
