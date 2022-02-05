@@ -2,6 +2,7 @@ package com.github.mlytvyn.patches.groovy.setup;
 
 import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalPatchesException;
+import com.github.mlytvyn.patches.groovy.context.global.GlobalPatchesValidationException;
 import com.github.mlytvyn.patches.groovy.context.global.actions.GlobalContextAction;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchException;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchValidationException;
@@ -62,7 +63,8 @@ public abstract class GroovyPatchesSystemSetup {
             executeActions(context, globalContext, beforeActions, "before");
             releaseImporter.execute(context, globalContext.releases());
             executeActions(context, globalContext, afterActions, "after");
-
+        } catch (final GlobalPatchesValidationException e) {
+            logReporter.logError(context, e.getMessage(), e);
         } catch (final PatchValidationException e) {
             logReporter.logError(context, e.getMessage(), e);
             groovyPatchContextService.serializeGlobalContext(e.getGlobalContext());

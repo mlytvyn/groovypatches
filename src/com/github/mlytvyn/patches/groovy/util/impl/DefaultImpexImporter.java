@@ -1,9 +1,11 @@
 package com.github.mlytvyn.patches.groovy.util.impl;
 
+import com.github.mlytvyn.patches.groovy.commerceservices.setup.SetupImpexService;
+import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext;
+import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
+import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;
 import com.github.mlytvyn.patches.groovy.util.ImpexImporter;
 import com.github.mlytvyn.patches.groovy.util.LogReporter;
-import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;
-import de.hybris.platform.commerceservices.setup.SetupImpexService;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 
@@ -16,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class DefaultImpexImporter implements ImpexImporter {
 
-    @Resource(name = "setupImpexService")
+    @Resource(name = "extendedSetupImpexService")
     protected SetupImpexService setupImpexService;
     @Resource(name = "logReporter")
     private LogReporter logReporter;
@@ -24,10 +26,10 @@ public class DefaultImpexImporter implements ImpexImporter {
     private ConfigurationService configurationService;
 
     @Override
-    public boolean importSingleImpex(final SystemSetupContext context, final String impexFile, final Map<String, Object> macroParameters) {
-        logReporter.logInfo(context, String.format("Import: %s", impexFile));
-        final String file = impexFile.startsWith("/") ? impexFile : String.format("/%s", impexFile);
-        return setupImpexService.importImpexFile(file, macroParameters, true);
+    public void importSingleImpex(final SystemSetupContext context, final String patchesFolder, final ImpexContext impex, final ImpexImportConfig impexImportConfig, final Map<String, Object> macroParameters) {
+        logReporter.logInfo(context, String.format("Import: %s", impex.name()));
+        final String impexPath = getImpexPath(patchesFolder, impex);
+        setupImpexService.importImpexFile(impexPath, impexImportConfig, macroParameters);
     }
 
     @Override
@@ -37,9 +39,13 @@ public class DefaultImpexImporter implements ImpexImporter {
     }
 
     @Override
-    public List<String> getImpexesForPatch(final String patchesFolder, final List<String> impexes) {
+    public List<String> getImpexesForPatch(final String patchesFolder, final List<ImpexContext> impexes) {
         return impexes.stream()
-            .map(impex -> String.format("/%s%s%s", patchesFolder, File.separator, impex)).collect(Collectors.toList());
+                .map(impex -> getImpexPath(patchesFolder, impex))
+                .collect(Collectors.toList());
     }
 
+    private String getImpexPath(final String patchesFolder, final ImpexContext impex) {
+        return String.format("/%s%s%s", patchesFolder, File.separator, impex.name());
+    }
 }

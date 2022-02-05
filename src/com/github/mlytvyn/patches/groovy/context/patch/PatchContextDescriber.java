@@ -7,12 +7,13 @@ import com.github.mlytvyn.patches.groovy.EnvironmentEnum;
 import com.github.mlytvyn.patches.groovy.SiteEnum;
 import com.github.mlytvyn.patches.groovy.SolrEnum;
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext;
-import com.github.mlytvyn.patches.groovy.context.ImpexContext;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
+import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext;
+import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
+import com.github.mlytvyn.patches.groovy.context.impex.ImpexTemplateContext;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -78,7 +79,17 @@ public interface PatchContextDescriber {
     PatchContextDescriber customPatchDataFolder(String customPatchDataFolder);
 
     /**
+     * By using this method it will be possible to override default Impex Import Configuration set via properties for individual Patch.
+     * Take a note, that Impex Import Configuration can be Impex specific, see {@link PatchContextDescriber#withImpexes(ImpexContext...)}
+     *
+     * @param config Impex Import Configuration
+     * @return current patch
+     */
+    PatchContextDescriber impexImportConfig(ImpexImportConfig config);
+
+    /**
      * This method will register ALL impexes of defined impexes for importing.
+     * Default {@link ImpexContext} will be created for each passed impex
      * <p>
      * If no args provided - all impexes will be imported according to default sort by file name
      * If some args provided - those specific impexes in exact order will be imported
@@ -88,6 +99,19 @@ public interface PatchContextDescriber {
      * @return current patch
      */
     PatchContextDescriber withImpexes(String... impexes);
+
+    /**
+     * This method will register ALL impexes of defined impexes for importing.
+     * This method gives more flexibility for import configuration for individual Impex
+     * <p>
+     * If no args provided - all impexes will be imported according to default sort by file name
+     * If some args provided - those specific impexes in exact order will be imported
+     * If method IS NOT used in the patch - impexes will not be imported at all
+     *
+     * @param impexContexts blank | array of Impex Contexts
+     * @return current patch
+     */
+    PatchContextDescriber withImpexes(ImpexContext... impexContexts);
 
     /**
      * This method will register following email templates for import, they will be added to {@link GlobalContext}
@@ -167,18 +191,10 @@ public interface PatchContextDescriber {
     /**
      * This method will register additional impex contexts for current Patch which should be used during impex import
      *
-     * @param impexContexts impex contexts
+     * @param impexTemplateContexts impex contexts
      * @return current patch
      */
-    PatchContextDescriber withImpexContexts(ImpexContext... impexContexts);
-
-    /**
-     * Same as {@link PatchContextDescriber#withImpexContexts(ImpexContext...)}
-     *
-     * @param impexContexts impex contenxts
-     * @return current patch
-     */
-    PatchContextDescriber withImpexContexts(List<ImpexContext> impexContexts);
+    PatchContextDescriber withImpexTemplateContexts(ImpexTemplateContext... impexTemplateContexts);
 
     /**
      * This method will register specified field type changes which will be executed AFTER current Patch

@@ -1,11 +1,13 @@
 package com.github.mlytvyn.patches.groovy.context.patch;
 
-import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
-import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
 import com.github.mlytvyn.patches.groovy.ContentCatalogEnum;
 import com.github.mlytvyn.patches.groovy.EnvironmentEnum;
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext;
-import com.github.mlytvyn.patches.groovy.context.ImpexContext;
+import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
+import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext;
+import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
+import com.github.mlytvyn.patches.groovy.context.impex.ImpexTemplateContext;
+import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 
 import java.util.List;
@@ -35,7 +37,7 @@ public interface PatchContextDescriptor {
     String getName();
 
     /**
-     * Acts as a decorator for {@link GlobalContext#getCurrentEnvironment()} and return current environment, which was identified via {@link EnvironmentInfoService#getEnvironment()}
+     * Acts as a decorator for {@link GlobalContext#currentEnvironment()} and return current environment, which was identified via {@link EnvironmentInfoService#getEnvironment()}
      *
      * @return current {@link EnvironmentEnum}
      */
@@ -58,13 +60,21 @@ public interface PatchContextDescriptor {
     String getNumber();
 
     /**
+     * This method will return optional Patch specific Impex Import Configuration, which will override one defined via properties
+     * and which can be overridden individually per Impex via {@link ImpexContext}
+     *
+     * @return optional Impex Import Configuration
+     */
+    Optional<ImpexImportConfig> getImpexImportConfig();
+
+    /**
      * This method will return list of registered impex contexts for current patch.
      * <br/>
      * If list is not empty, each impex context will be used during impex import
      *
      * @return unmodifiable list of impex contexts
      */
-    List<ImpexContext> getImpexContexts();
+    List<ImpexTemplateContext> getImpexContexts();
 
     /**
      * This method will return list of requested impex to import.
@@ -74,7 +84,7 @@ public interface PatchContextDescriptor {
      *
      * @return null | unmodifiable list of impexes
      */
-    List<String> getImpexes();
+    List<ImpexContext> getImpexes();
 
     /**
      * This method will return current patch ID

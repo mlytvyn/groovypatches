@@ -8,8 +8,6 @@ Groovy-based patching framework for SAP Commerce Cloud (Hybris)
 * Introduce Product Catalog syncronization action
 * Add `Reset BackOffice` action
 * Add possibility to fail patch if Impex import failed
-* Create custom beans.xml template for Enums based on `global-enumtemplate.vm`, which will support declaration without
-  any default values
 * Improve readme
 * Create hybris specific branches, implement version specific `ExtendedSetupSyncJobService`
 
@@ -32,7 +30,7 @@ public class CustomPatchesSystemSetup extends GroovyPatchesSystemSetup {
     }
 
     @SystemSetup(type = SystemSetup.Type.PROJECT, process = SystemSetup.Process.UPDATE)
-    public void executePatches(final SystemSetupContext context) {
+    public void executeUpdatePatches(final SystemSetupContext context) {
         executePatches(context, "/releases/2.0/**/*.groovy");
     }
 }
@@ -122,7 +120,9 @@ import com.github.mlytvyn.patches.groovy.EmailComponentTemplateEnum
 import com.github.mlytvyn.patches.groovy.EmailTemplateEnum
 import com.github.mlytvyn.patches.groovy.EnvironmentEnum
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext
-import com.github.mlytvyn.patches.groovy.context.ImpexContext
+import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext
+import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig
+import com.github.mlytvyn.patches.groovy.context.impex.ImpexTemplateContext
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriber
 import com.github.mlytvyn.patches.groovy.SiteEnum
 import de.hybris.platform.core.model.product.ProductModel
@@ -155,19 +155,30 @@ patch
         )
 // Specify optional description, which will be
         .description("<Optional description of the patch>")
+// If specified will override default Impex Import Configuration set via properties for current Patch only, can be overridden for individual Impex via ImpexContext
+        .impexImportConfig(
+                ImpexImportConfig.builder()
+                        .failOnError(true)
+                        .build()
+        )
 // If specified without any parameters, all impexes will be imported in natural order, otherwise only specified impexes will be imported according to defined order  
         .withImpexes()
         .withImpexes(
                 "import_1.impex",
                 "import_2.impex"
         )
-// It is possible to specify custom Impex Contexts, it will lead to import of all impexes specified via `.withImpexes` with each defined ImpexContext
+// It is also possible to adjust individual impex import via ImpexContext
+        .withImpexes(
+                ImpexContext.of("import_1.impex").legacyMode(true).enableCodeExecution(true).failOnError(true),
+                ImpexContext.of("import_2.impex")
+        )
+// It is possible to specify custom Impex Template Contexts, it will lead to import of all impexes specified via `.withImpexes` with each defined ImpexTemplateContext
 // enables possibility to create "template" based impexes and pass different params as a Map
-        .withImpexContexts(
-                ImpexContext.builder("Site Dummy")
+        .withImpexTemplateContexts(
+                ImpexTemplateContext.builder("Site Dummy")
                         .macroParameter("siteUid", cp.getSiteCode(SiteEnum.DUMMY))
                         .build(),
-                ImpexContext.builder("Site Not Dummy")
+                ImpexTemplateContext.builder("Site Not Dummy")
                         .macroParameter("siteUid", cp.getSiteCode(SiteEnum.NOT_DUMMY))
                         .build()
         )

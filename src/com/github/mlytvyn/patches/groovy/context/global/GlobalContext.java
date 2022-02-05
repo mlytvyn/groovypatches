@@ -5,7 +5,10 @@ import com.github.mlytvyn.patches.groovy.EmailTemplateEnum;
 import com.github.mlytvyn.patches.groovy.EnvironmentEnum;
 import com.github.mlytvyn.patches.groovy.SiteEnum;
 import com.github.mlytvyn.patches.groovy.SolrEnum;
+import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
 import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,23 +31,29 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Accessors(chain = true, fluent = true)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(builderMethodName = "internalBuilder")
-@RequiredArgsConstructor
 public class GlobalContext implements Serializable {
 
     private static final long serialVersionUID = 1302845848288028643L;
     @NonNull
     @ToString.Include
     private final EnvironmentEnum currentEnvironment;
-    private Set<SolrEnum> indexesToBeReindexed = new LinkedHashSet<>();
-    private Set<SolrEnum> coresToBeRemoved = new LinkedHashSet<>();
-    private Set<EmailTemplateEnum> importEmailTemplates = new LinkedHashSet<>();
-    private Map<SolrEnum, Set<String>> partialUpdateProperties = new HashMap<>();
-    private Map<EmailComponentTemplateEnum, EnumSet<SiteEnum>> importEmailComponentTemplates = new LinkedHashMap<>();
+    private ImpexImportConfig impexImportConfig;
+    private boolean removeOrphanedTypes;
+    private final Set<SolrEnum> indexesToBeReindexed = new LinkedHashSet<>();
+    private final Set<SolrEnum> coresToBeRemoved = new LinkedHashSet<>();
+    private final Set<EmailTemplateEnum> importEmailTemplates = new LinkedHashSet<>();
+    private final Map<SolrEnum, Set<String>> partialUpdateProperties = new HashMap<>();
+    private final Map<EmailComponentTemplateEnum, EnumSet<SiteEnum>> importEmailComponentTemplates = new LinkedHashMap<>();
     // following values executed Before all patches and can be skipped
     @ToString.Include
     private transient List<ReleaseContext> releases = Collections.emptyList();
-    private transient boolean removeOrphanedTypes;
+
+    public static GlobalContextBuilder builder(final EnvironmentEnum environment) {
+        return GlobalContext.internalBuilder().currentEnvironment(environment);
+    }
 
     public void schedulePartialUpdate(final SolrEnum solrIndex, final Set<String> indexedProperties) {
         if (indexedProperties.isEmpty()) {
@@ -52,18 +61,6 @@ public class GlobalContext implements Serializable {
         }
         partialUpdateProperties().computeIfAbsent(solrIndex, index -> new HashSet<>())
                 .addAll(indexedProperties);
-    }
-
-    public void fullReIndex(final SolrEnum solrIndex) {
-        indexesToBeReindexed().add(solrIndex);
-    }
-
-    public void fullReIndex(final List<SolrEnum> solrIndexes) {
-        indexesToBeReindexed().addAll(solrIndexes);
-    }
-
-    public void removeSolrCores(final List<SolrEnum> solrIndexes) {
-        coresToBeRemoved().addAll(solrIndexes);
     }
 
 }

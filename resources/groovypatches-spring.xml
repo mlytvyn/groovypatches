@@ -5,6 +5,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
 
+    <alias name="extendedDefaultSetupImpexService" alias="extendedSetupImpexService"/>
+    <bean id="extendedDefaultSetupImpexService" parent="defaultSetupImpexService"
+          class="com.github.mlytvyn.patches.groovy.commerceservices.setup.impl.ExtendedSetupImpexService"/>
+
     <alias name="defaultCurrentEnvironmentProvider" alias="currentEnvironmentProvider"/>
     <bean id="defaultCurrentEnvironmentProvider" class="com.github.mlytvyn.patches.groovy.context.patch.DefaultCurrentEnvironmentProvider"/>
 

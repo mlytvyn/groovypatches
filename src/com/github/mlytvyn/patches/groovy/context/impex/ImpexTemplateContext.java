@@ -1,4 +1,4 @@
-package com.github.mlytvyn.patches.groovy.context;
+package com.github.mlytvyn.patches.groovy.context.impex;
 
 import lombok.Builder;
 import lombok.Data;
@@ -13,15 +13,15 @@ import java.util.Map;
 @Accessors(chain = true, fluent = true)
 @Builder(builderMethodName = "internalBuilder")
 @RequiredArgsConstructor
-public class ImpexContext {
+public class ImpexTemplateContext {
 
     @NonNull
-    private final String name;
+    private final String description;
     @Singular
     private final Map<String, Object> macroParameters;
 
-    public static ImpexContextBuilder builder(final String name) {
-        return internalBuilder().name(name);
+    public static ImpexTemplateContextBuilder builder(final String name) {
+        return internalBuilder().description(name);
     }
 
 }
