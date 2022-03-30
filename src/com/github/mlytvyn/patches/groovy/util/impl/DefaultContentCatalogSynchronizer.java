@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class DefaultContentCatalogSynchronizer implements ContentCatalogSynchronizer {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = LogManager.getLogger(DefaultContentCatalogSynchronizer.class);
 
     @Resource(name = "extendedSetupSyncJobService")
     protected SetupSyncJobService extendedSetupSyncJobService;

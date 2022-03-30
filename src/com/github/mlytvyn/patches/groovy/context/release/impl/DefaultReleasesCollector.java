@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 
 public class DefaultReleasesCollector implements ReleasesCollector<GlobalContext> {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = LogManager.getLogger(DefaultReleasesCollector.class);
     @Resource(name = "configurationService")
     protected ConfigurationService configurationService;
     @Resource(name = "patchesCollector")

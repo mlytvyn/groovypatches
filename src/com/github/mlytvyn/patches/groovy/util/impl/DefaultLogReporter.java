@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class DefaultLogReporter implements LogReporter {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = LogManager.getLogger(DefaultLogReporter.class);
 
     @Override
     public void logInfo(final SystemSetupContext context, final String message) {

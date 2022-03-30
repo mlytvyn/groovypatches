@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 
 public class ExtendedScriptingLanguagesService extends DefaultScriptingLanguagesService implements ScriptingLanguagesService {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = LogManager.getLogger(ExtendedScriptingLanguagesService.class);
 
     @Resource(name = "scriptExecutableCacheService")
     private ScriptExecutablesCacheService cacheService;

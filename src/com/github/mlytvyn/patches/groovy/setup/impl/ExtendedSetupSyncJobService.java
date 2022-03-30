@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 // TODO: Hybris 1905+ implementation, adjust accordingly
 public class ExtendedSetupSyncJobService extends DefaultSetupSyncJobService implements SetupSyncJobService {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = LogManager.getLogger(ExtendedSetupSyncJobService.class);
 
     @Override
     public PerformResult executeCatalogSyncJob(final String catalogId, final boolean forcedSync) {

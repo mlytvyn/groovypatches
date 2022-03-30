@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 
 public class DefaultGroovyPatchContextService implements GroovyPatchContextService {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = LogManager.getLogger(DefaultGroovyPatchContextService.class);
 
     @Resource(name = "currentEnvironmentProvider")
     protected CurrentEnvironmentProvider currentEnvironmentProvider;

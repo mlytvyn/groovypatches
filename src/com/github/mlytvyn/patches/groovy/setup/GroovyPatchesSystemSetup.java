@@ -24,7 +24,7 @@ import java.util.List;
 
 public abstract class GroovyPatchesSystemSetup {
     public static final HashFunction MD5 = Hashing.md5();
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = LogManager.getLogger(GroovyPatchesSystemSetup.class);
 
     @Resource(name = "releasesCollector")
     protected ReleasesCollector<GlobalContext> releasesCollector;
