@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
+import java.util.Optional;
 
 public class ExtendedScriptingLanguagesService extends DefaultScriptingLanguagesService implements ScriptingLanguagesService {
 
@@ -38,23 +39,21 @@ public class ExtendedScriptingLanguagesService extends DefaultScriptingLanguages
         if (repository == null) {
             throw new IllegalStateException("Repository must not be null");
         } else {
-            final CacheableScriptsRepository cachingRepository = asCachingRepository(repository);
-            if (cachingRepository != null) {
-                final CacheKey cacheKey = cachingRepository.createCacheKey(protocol, path);
-                cacheService.invalidate(cacheKey);
-            }
+            asCachingRepository(repository)
+                    .ifPresent(cachingRepository -> {
+                        final CacheKey cacheKey = cachingRepository.createCacheKey(protocol, path);
+                        cacheService.invalidate(cacheKey);
+                    });
         }
     }
 
     /*
-    Copy-paste from OOTB
+    Almost opy-paste from OOTB
      */
-    private CacheableScriptsRepository asCachingRepository(ScriptsRepository repository) {
-        try {
-            return (CacheableScriptsRepository) repository;
-        } catch (final ClassCastException var2) {
-            return null;
-        }
+    private Optional<CacheableScriptsRepository> asCachingRepository(ScriptsRepository repository) {
+        return Optional.of(repository)
+                .filter(CacheableScriptsRepository.class::isInstance)
+                .map(CacheableScriptsRepository.class::cast);
     }
 
     /*
