@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,8 +37,7 @@ public class DefaultReleasesCollector implements ReleasesCollector<GlobalContext
         final Map<String, ReleaseContext> cachedReleases = new HashMap<>();
 
         final List<ReleaseContext> releases = Stream.of(new PathMatchingResourcePatternResolver(this.getClass().getClassLoader()).getResources(locationPattern))
-            //TODO: supported only in Spring 5
-            //.filter(org.springframework.core.io.Resource::isFile)
+            .filter(org.springframework.core.io.Resource::isFile)
             .filter(org.springframework.core.io.Resource::isReadable)
             .map(resource -> {
                 try {
@@ -70,7 +70,7 @@ public class DefaultReleasesCollector implements ReleasesCollector<GlobalContext
             ))
             .entrySet().stream()
             // once collected we have to filter out releases without any patches
-            .filter(entry -> !entry.getValue().isEmpty())
+            .filter(Predicate.not(entry -> entry.getValue().isEmpty()))
             .peek(entry -> entry.getKey().patches(entry.getValue()))
             .map(Map.Entry::getKey)
             .collect(Collectors.toList());

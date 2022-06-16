@@ -1,9 +1,11 @@
 package com.github.mlytvyn.patches.groovy.context.impex;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class ImpexImportConfig implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -609475195699174983L;
 
     private boolean legacyMode;

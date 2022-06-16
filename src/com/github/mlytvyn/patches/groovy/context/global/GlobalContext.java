@@ -8,6 +8,7 @@ import com.github.mlytvyn.patches.groovy.SolrEnum;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
 import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -21,6 +22,7 @@ import java.util.Set;
 
 public class GlobalContext implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1302845848288028643L;
     private final EnvironmentEnum currentEnvironment;
     private ImpexImportConfig impexImportConfig;
