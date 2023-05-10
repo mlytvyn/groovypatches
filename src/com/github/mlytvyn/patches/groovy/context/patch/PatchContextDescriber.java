@@ -13,6 +13,7 @@ import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexTemplateContext;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 
+import java.nio.file.Path;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -71,12 +72,32 @@ public interface PatchContextDescriber {
     PatchContextDescriber nested(PatchContextDescriber nested);
 
     /**
-     * This method will override default patch data. It have to be always part of the current patch release
+     * <p>This method will override default patch data folder.</p>
+     * <p>This method calls {@link PatchContextDescriber#customPatchDataFolder(java.nio.file.Path, PatchDataFolderRelation)}
+     * with the {@link PatchDataFolderRelation#RELEASE} dependency</p>
+     *
+     * <p>`patchdata/[release]/[patch]` with `patchdata/[release]/[customPath]`</p>
      *
      * @param customPatchDataFolder patch data folder
      * @return current patch
      */
-    PatchContextDescriber customPatchDataFolder(String customPatchDataFolder);
+    PatchContextDescriber customPatchDataFolder(Path customPatchDataFolder);
+
+    /**
+     * <p>This method will override default patch data folder.</p>
+     * <p>By providing PatchDataFolderDependency parameter it will be possible to specify relation of the custom
+     * patch folder to the ROOT (`patchdata`) folder or release folder of the Patch's (`patchdata/[release]`)
+     * </p>
+     *
+     * Samples of the overrides:
+     * <p>ROOT dependant: `patchdata/[release]/[patch]` with `patchdata/[customPath]`</p>
+     * <p>RELEASE dependant: `patchdata/[release]/[patch]` with `patchdata/[release]/[customPath]`</p>
+     *
+     * @param customPatchDataFolder patch data folder
+     * @param dependency patch data folder dependency relation
+     * @return current patch
+     */
+    PatchContextDescriber customPatchDataFolder(Path customPatchDataFolder, PatchDataFolderRelation dependency);
 
     /**
      * By using this method it will be possible to override default Impex Import Configuration set via properties for individual Patch.

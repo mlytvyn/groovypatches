@@ -5,12 +5,7 @@ import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /*
   List of Content Catalogs for synchronization can be updated in a way that: FORCED sync will always override previous value
@@ -44,7 +39,9 @@ public class ReleaseContext implements Serializable {
     }
 
     public Set<PatchContextDescriptor> patches() {
-        return patches;
+        return patches == null
+                ? Collections.emptySet()
+                : patches;
     }
 
     public ReleaseContext patches(final Set<PatchContextDescriptor> patches) {

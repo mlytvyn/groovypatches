@@ -8,12 +8,17 @@ import com.github.mlytvyn.patches.groovy.context.patch.PatchException;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchesCollector;
 import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
 import com.github.mlytvyn.patches.groovy.scripting.engine.ScriptingLanguagesService;
+import com.github.mlytvyn.patches.groovy.util.impl.DefaultContentCatalogSynchronizer;
 import com.google.common.collect.ImmutableMap;
+import de.hybris.platform.apiregistryservices.action.DynamicProcessEventAction;
 import de.hybris.platform.core.initialization.SystemSetupAuditDAO;
 import de.hybris.platform.scripting.engine.ScriptExecutable;
 import de.hybris.platform.scripting.engine.ScriptExecutionResult;
 import de.hybris.platform.scripting.engine.exception.ScriptingException;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import java.text.MessageFormat;
@@ -25,6 +30,7 @@ import java.util.stream.Collectors;
 
 public class DefaultPatchesCollector implements PatchesCollector<GlobalContext> {
 
+    private static final Logger LOG = LogManager.getLogger(DefaultPatchesCollector.class);
     @Resource(name = "configurationService")
     protected ConfigurationService configurationService;
     @Resource(name = "systemSetupAuditDAO")
@@ -37,32 +43,47 @@ public class DefaultPatchesCollector implements PatchesCollector<GlobalContext> 
     @Override
     public LinkedHashSet<PatchContextDescriptor> collect(final GlobalContext globalContext, final ReleaseContext release, final List<String> plainPatches) {
         return plainPatches.stream()
-            .map(plainPatch -> plainPatch.split("_", 2))
-            .map(patchNumber2patchId -> createPatchContext(globalContext, release, patchNumber2patchId))
-            // filter out Patches which are already applied
-            // we have to filter out by hash two times, this one will be valid for Patches 2.0, implemented directly in Groovy
-            // while legacy Patches will be filtered after script evaluation, as they may have manually set hash via hash() method
-            .filter(Predicate.not(patch -> systemSetupAuditDAO.isPatchApplied(patch.hash())))
-            // ensure that Patch script is compilable, init with exact patch config
-            .peek(patch -> precompilePatchScript(release, patch))
-            // filter out legacy Patches which were applied before Patches 2.0
-            .filter(Predicate.not(patch -> systemSetupAuditDAO.isPatchApplied(patch.hash())))
-            // filter out Patches per applicable environment
-            // this will filter out only MAIN Patch, we still can have main patch for all envs and few env specific patches assigned or even nested one (which also may be env specific)
-            .filter(patchContext -> patchContext.getEnvironments().contains(globalContext.currentEnvironment()))
-            // TODO: any additional checks can be added here
-            .collect(Collectors.toCollection(LinkedHashSet::new));
+                .map(plainPatch -> plainPatch.split("_", 2))
+                .map(patchNumber2patchId -> createPatchContext(globalContext, release, patchNumber2patchId))
+                // filter out Patches which are already applied
+                // we have to filter out by hash two times, this one will be valid for Patches 2.0, implemented directly in Groovy
+                // while legacy Patches will be filtered after script evaluation, as they may have manually set hash via hash() method
+                .filter(Predicate.not(patch -> systemSetupAuditDAO.isPatchApplied(patch.hash())))
+                // ensure that Patch script is compilable, init with exact patch config
+                .peek(patch -> precompilePatchScript(release, patch))
+                // filter out legacy Patches which were applied before Patches 2.0
+                .filter(Predicate.not(patch -> systemSetupAuditDAO.isPatchApplied(patch.hash())))
+                // filter out Patches per applicable environment
+                // this will filter out only MAIN Patch, we still can have main patch for all envs and few env specific patches assigned or even nested one (which also may be env specific)
+                .filter(patchContext -> patchContext.getEnvironments().contains(globalContext.currentEnvironment()))
+                // TODO: any additional checks can be added here
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     protected PatchContext<GlobalContext, ReleaseContext> createPatchContext(final GlobalContext globalContext, final ReleaseContext release, final String[] patchNumber2patchId) {
-        final String patchNumber = patchNumber2patchId[0];
-        final String patchId = patchNumber2patchId[1];
+        final String patchNumber;
+        final String patchId;
+
+        if (patchNumber2patchId.length == 1) {
+            patchNumber = "";
+            patchId = patchNumber2patchId[0];
+        } else {
+            patchNumber = patchNumber2patchId[0];
+            patchId = patchNumber2patchId[1];
+        }
+
+        if (patchId.isEmpty()) {
+            LOG.warn("Patch {}/{} has no patch number prefix, please follow naming convention: `0000_<name>.groovy`", release.id(), patchId);
+        }
         return patchContextFactory.createContext(globalContext, release, patchNumber, patchId);
     }
 
     protected void precompilePatchScript(final ReleaseContext release, final PatchContext<GlobalContext, ReleaseContext> patchContext) {
         final String extensionName = configurationService.getConfiguration().getString("patches.groovy.project.extension.name");
-        final String scriptPath = "classpath://" + extensionName + "/releases/" + release.version() + "/" + release.id() + "/" + patchContext.getNumber() + "_" + patchContext.getId() + ".groovy";
+        final String patchNumber = patchContext.getNumber().isEmpty()
+                ? ""
+                : patchContext.getNumber() + "_";
+        final String scriptPath = "classpath://" + extensionName + "/releases/" + release.version() + "/" + release.id() + "/" + patchNumber + patchContext.getId() + ".groovy";
 
         if (configurationService.getConfiguration().getBoolean("patches.groovy.invalidateCachedScripts", true)) {
             scriptingLanguagesService.invalidateCachedScript(scriptPath);
@@ -72,7 +93,7 @@ public class DefaultPatchesCollector implements PatchesCollector<GlobalContext> 
 
         try {
             final ScriptExecutionResult scriptExecutionResult = scriptExecutable.execute(Map.of(
-                "patchContext", patchContext
+                    "patchContext", patchContext
             ));
             if (!scriptExecutionResult.isSuccessful()) {
                 throw new PatchException(patchContext, "Script evaluation failed with: " + scriptExecutionResult.getErrorWriter().toString());

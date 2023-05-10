@@ -16,6 +16,8 @@ import com.github.mlytvyn.patches.groovy.setup.GroovyPatchesSystemSetup;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,7 +49,8 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     protected PatchContext<G, R> environmentPatch;
 
     protected String hash;
-    protected String customPatchDataFolder;
+    protected Path customPatchDataFolder;
+    protected PatchDataFolderRelation patchDataFolderRelation = PatchDataFolderRelation.RELEASE;
     protected String description;
     protected ImpexImportConfig impexImportConfig;
     protected List<ImpexContext> impexes;
@@ -136,12 +139,18 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     }
 
     @Override
-    public PatchContextDescriber customPatchDataFolder(final String customPatchDataFolder) {
+    public PatchContextDescriber customPatchDataFolder(final Path customPatchDataFolder) {
+        return customPatchDataFolder(customPatchDataFolder, PatchDataFolderRelation.RELEASE);
+    }
+
+    @Override
+    public PatchContextDescriber customPatchDataFolder(final Path customPatchDataFolder, final PatchDataFolderRelation patchDataFolderRelation) {
         if (isNotApplicable()) {
             return this;
         }
 
         this.customPatchDataFolder = customPatchDataFolder;
+        this.patchDataFolderRelation = patchDataFolderRelation;
         return this;
     }
 
@@ -470,8 +479,13 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     }
 
     @Override
-    public String getPatchDataFolder() {
+    public Path getPatchDataFolder() {
         return Optional.ofNullable(customPatchDataFolder)
-                .orElseGet(this::getId);
+                .orElseGet(() -> Paths.get(getId()));
+    }
+
+    @Override
+    public PatchDataFolderRelation getPatchDataFolderRelation() {
+        return patchDataFolderRelation;
     }
 }

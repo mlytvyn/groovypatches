@@ -108,6 +108,9 @@ patches.groovy.catalog.content.TEST_CONTENT_CATALOG.id=${test.content.catalog}
 patches.groovy.site.TEST_SITE_ID.uid=${test.site.uid}
 ```
 
+* Create new groovy-based Patch files and optional related impexes.
+  * Each patch name must follow naming pattern: `<int number>`.`<patch name>`.groovy, sample `0001_HYB-1.groovy`
+
 # Sample Groovy patch
 
 ```groovy
@@ -122,8 +125,11 @@ import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexTemplateContext
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriber
 import com.github.mlytvyn.patches.groovy.SiteEnum
+import com.github.mlytvyn.patches.groovy.context.patch.PatchDataFolderRelation
 import de.hybris.platform.core.model.product.ProductModel
 import de.hybris.platform.util.Config
+
+import java.nio.file.Paths
 
 def cp = (configurationProvider as ConfigurationProvider)
 def patch = (patchContext as PatchContextDescriber)
@@ -134,7 +140,9 @@ patch
 // Specify hash in case of long-live shared branches, with unknown release date, otherwise hash will be generated based on release id + patch id  
         .hash("<your custom internal Identifier of the patch")
 // It is possible to adjust patch data folder, it will be still in the same release, but if you'd like to place all impexes from different patches to the same folder it will be possible
-        .customPatchDataFolder("<custom patch folder within the release folder>")
+        .customPatchDataFolder(Paths.get("<custom patch folder within the release folder>"))
+// It is also possible to adjust patch data folder in a way it will be root patch folder related (`patchdata`)
+        .customPatchDataFolder(Paths.get("<custom patch folder within the release folder>"), PatchDataFolderRelation.ROOT)
 // Limits patch to specific environments, by default - applicable to all 
         .environment(EnvironmentEnum.LOCAL)
 // Allows creation of the environment specific patch, corresponding Related Patch have to be created in that case to create new context 
@@ -168,6 +176,8 @@ patch
         )
 // It is possible to specify custom Impex Template Contexts, it will lead to import of all impexes specified via `.withImpexes` with each defined ImpexTemplateContext
 // enables possibility to create "template" based impexes and pass different params as a Map
+// similar approach is used for Impexes imported via Addon, see AddOnConfigDataImportService
+// in the Impex file each parameter will be injected as `$parameterName`
         .withImpexTemplateContexts(
                 ImpexTemplateContext.of("Site Dummy")
                         .macroParameter("siteUid", cp.getSiteCode(SiteEnum.DUMMY)),

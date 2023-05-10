@@ -86,7 +86,9 @@ public class GlobalContext implements Serializable {
     }
 
     public List<ReleaseContext> releases() {
-        return releases;
+        return releases == null
+                ? Collections.emptyList()
+                : releases;
     }
 
     public GlobalContext releases(final List<ReleaseContext> releases) {

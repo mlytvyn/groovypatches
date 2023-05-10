@@ -4,6 +4,7 @@ import com.github.mlytvyn.patches.groovy.commerceservices.setup.SetupImpexServic
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;
+import com.github.mlytvyn.patches.groovy.context.patch.PatchDataFolderRelation;
 import com.github.mlytvyn.patches.groovy.util.ImpexImporter;
 import com.github.mlytvyn.patches.groovy.util.LogReporter;
 import de.hybris.platform.core.initialization.SystemSetupContext;
@@ -35,7 +36,12 @@ public class DefaultImpexImporter implements ImpexImporter {
     @Override
     public String getPatchDataFolder(final PatchContextDescriptor patch) {
         final String extensionName = configurationService.getConfiguration().getString("patches.groovy.project.extension.name");
-        return Paths.get(extensionName, "import", "patchdata", patch.getReleaseContext().id(), patch.getPatchDataFolder()).toString();
+
+        if (patch.getPatchDataFolderRelation() == PatchDataFolderRelation.ROOT) {
+            return Paths.get(extensionName, "import", "patchdata", patch.getPatchDataFolder().toString()).toString();
+        } else {
+            return Paths.get(extensionName, "import", "patchdata", patch.getReleaseContext().id(), patch.getPatchDataFolder().toString()).toString();
+        }
     }
 
     @Override

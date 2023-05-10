@@ -10,6 +10,7 @@ import com.github.mlytvyn.patches.groovy.context.impex.ImpexTemplateContext;
 import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -188,12 +189,26 @@ public interface PatchContextDescriptor {
     /**
      * This method will return target patch folder for current Patch.
      * <p>
-     * Take a not that this patch folder always must be part of the current release returned by {@link PatchContextDescriptor#getReleaseContext()}
+     * Take a note, that patch folder may be related to:
+     * - (`patchdata/[release]`) current release, returned by {@link PatchContextDescriptor#getReleaseContext()}
+     * - (`patchdata`) root dependant
+     * <p>
+     * By default, each patch is Release related, but this can be changed with {@link PatchContextDescriber#customPatchDataFolder(Path, PatchDataFolderRelation)}
+     *
      * <p>
      * By default {@link PatchContextDescriptor#getId()} will be used. sample: SAPHYBRIS-1234
-     * It can be overridden via {@link PatchContextDescriber#customPatchDataFolder(String)}
+     * It can be overridden via {@link PatchContextDescriber#customPatchDataFolder(java.nio.file.Path)}
      *
      * @return patch folder for current patch
      */
-    String getPatchDataFolder();
+    Path getPatchDataFolder();
+
+    /**
+     * This method will return patch specific relation to the root folder `patchdata`
+     * <p>
+     * By default, each Patch is related to own Release
+     *
+     * @return current value of the relation to root folder, represented as Enum of the {@link PatchDataFolderRelation}
+     */
+    PatchDataFolderRelation getPatchDataFolderRelation();
 }
