@@ -3,6 +3,7 @@ package com.github.mlytvyn.patches.groovy.context.release;
 import com.github.mlytvyn.patches.groovy.ContentCatalogEnum;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -16,13 +17,14 @@ import java.util.Set;
  */
 public class ReleaseContext implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1196114181425770979L;
 
     private final String version;
     private final String id;
     private final Map<ContentCatalogEnum, Boolean> contentCatalogsToBeSynced = new LinkedHashMap<>();
     private final Set<ContentCatalogEnum> contentCatalogsToBeRemoved = new LinkedHashSet<>();
-    private transient LinkedHashSet<PatchContextDescriptor> patches = new LinkedHashSet<>();
+    private transient Set<PatchContextDescriptor> patches = new LinkedHashSet<>();
 
     private ReleaseContext(final String version, final String id) {
         this.version = version;
@@ -41,11 +43,11 @@ public class ReleaseContext implements Serializable {
         contentCatalogs.forEach((final ContentCatalogEnum contentCatalog) -> contentCatalogsToBeSynced().put(contentCatalog, true));
     }
 
-    public LinkedHashSet<PatchContextDescriptor> patches() {
+    public Set<PatchContextDescriptor> patches() {
         return patches;
     }
 
-    public ReleaseContext patches(final LinkedHashSet<PatchContextDescriptor> patches) {
+    public ReleaseContext patches(final Set<PatchContextDescriptor> patches) {
         this.patches = patches;
         return this;
     }

@@ -16,8 +16,11 @@ import de.hybris.platform.scripting.engine.exception.ScriptingException;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 
 import javax.annotation.Resource;
+import java.text.MessageFormat;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class DefaultPatchesCollector implements PatchesCollector<GlobalContext> {
@@ -39,11 +42,11 @@ public class DefaultPatchesCollector implements PatchesCollector<GlobalContext> 
             // filter out Patches which are already applied
             // we have to filter out by hash two times, this one will be valid for Patches 2.0, implemented directly in Groovy
             // while legacy Patches will be filtered after script evaluation, as they may have manually set hash via hash() method
-            .filter(patch -> !systemSetupAuditDAO.isPatchApplied(patch.hash()))
+            .filter(Predicate.not(patch -> systemSetupAuditDAO.isPatchApplied(patch.hash())))
             // ensure that Patch script is compilable, init with exact patch config
             .peek(patch -> precompilePatchScript(release, patch))
             // filter out legacy Patches which were applied before Patches 2.0
-            .filter(patch -> !systemSetupAuditDAO.isPatchApplied(patch.hash()))
+            .filter(Predicate.not(patch -> systemSetupAuditDAO.isPatchApplied(patch.hash())))
             // filter out Patches per applicable environment
             // this will filter out only MAIN Patch, we still can have main patch for all envs and few env specific patches assigned or even nested one (which also may be env specific)
             .filter(patchContext -> patchContext.getEnvironments().contains(globalContext.currentEnvironment()))
@@ -68,7 +71,7 @@ public class DefaultPatchesCollector implements PatchesCollector<GlobalContext> 
         final ScriptExecutable scriptExecutable = scriptingLanguagesService.getExecutableByURI(scriptPath);
 
         try {
-            final ScriptExecutionResult scriptExecutionResult = scriptExecutable.execute(ImmutableMap.of(
+            final ScriptExecutionResult scriptExecutionResult = scriptExecutable.execute(Map.of(
                 "patchContext", patchContext
             ));
             if (!scriptExecutionResult.isSuccessful()) {
