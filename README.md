@@ -110,6 +110,7 @@ patches.groovy.site.TEST_SITE_ID.uid=${test.site.uid}
 
 * Create new groovy-based Patch files and optional related impexes.
   * Each patch name must follow naming pattern: `<int number>`.`<patch name>`.groovy, sample `0001_HYB-1.groovy`
+* Provided with `ygroovypatches` `patch_contributor.gdsl` should provide Script context specific variable `patchContext` in the Intellij IDEA
 
 # Sample Groovy patch
 
@@ -132,6 +133,7 @@ import de.hybris.platform.util.Config
 import java.nio.file.Paths
 
 def cp = (configurationProvider as ConfigurationProvider)
+// if `patchContext` is not properly registered in the IDE, use the following cast
 def patch = (patchContext as PatchContextDescriber)
 patch
 // By extending PatchContextDescriptor and customizing Patch creation via PatchFactory it is possible to add own operations to default PatchContext, which will be executed according to defined order
@@ -146,6 +148,7 @@ patch
 // Limits patch to specific environments, by default - applicable to all 
         .environment(EnvironmentEnum.LOCAL)
 // Allows creation of the environment specific patch, corresponding Related Patch have to be created in that case to create new context
+// Supplied environment specific patch will be lazily evaluated only in the environment it was registered for
         .withEnvironmentPatch(EnumSet.allOf(EnvironmentEnum), { -> patch.createRelatedPatch() })
 // Allows creation of the nested patches, which can be created via `patch.createRelatedPatch()`
         .withNestedPatch(patch.createRelatedPatch())
