@@ -145,10 +145,10 @@ patch
         .customPatchDataFolder(Paths.get("<custom patch folder within the release folder>"), PatchDataFolderRelation.ROOT)
 // Limits patch to specific environments, by default - applicable to all 
         .environment(EnvironmentEnum.LOCAL)
-// Allows creation of the environment specific patch, corresponding Related Patch have to be created in that case to create new context 
-        .environmentPatch(EnumSet.allOf(EnvironmentEnum), { -> patch.createRelatedPatch() })
-// Allows creation of the nested patches, corresponding Related Patch have to be created in that case to create new context
-        .nested(patch.createRelatedPatch())
+// Allows creation of the environment specific patch, corresponding Related Patch have to be created in that case to create new context
+        .withEnvironmentPatch(EnumSet.allOf(EnvironmentEnum), { -> patch.createRelatedPatch() })
+// Allows creation of the nested patches, which can be created via `patch.createRelatedPatch()`
+        .withNestedPatch(patch.createRelatedPatch())
 // Allows simple modification of the field type in the DB, it will execute SQL query, customize `PatchChangeFieldTypeAction` to adjust SQL or introduce new DB
 // see OOTB `core-advanced-deployment.xml` for allowed DB specific column types, use DB value, not Hybris one
         .changeFieldType(

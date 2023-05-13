@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface PatchesCollector<G extends GlobalContext> {
 
+    String PATCH_CONTEXT_PARAM = "patchContext";
+
     LinkedHashSet<PatchContextDescriptor> collect(G globalContext, ReleaseContext release, List<String> plainPatches);
 }

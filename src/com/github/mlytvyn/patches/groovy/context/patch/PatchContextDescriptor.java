@@ -148,7 +148,7 @@ public interface PatchContextDescriptor {
      *
      * @return optional nested patch
      */
-    Optional<PatchContextDescriptor> getNestedPatch();
+    List<PatchContextDescriptor> getNestedPatches();
 
     /**
      * Each patch must be associated with specific release. This method will return current release context.
@@ -184,7 +184,7 @@ public interface PatchContextDescriptor {
      *
      * @return optional environment patch
      */
-    Optional<PatchContextDescriptor> getEnvironmentPatch();
+    List<PatchContextDescriptor> getEnvironmentPatches();
 
     /**
      * This method will return target patch folder for current Patch.

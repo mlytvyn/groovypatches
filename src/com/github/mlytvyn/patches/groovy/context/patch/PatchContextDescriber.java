@@ -64,12 +64,14 @@ public interface PatchContextDescriber {
     PatchContextDescriber after(Consumer<SystemSetupContext> consumer);
 
     /**
-     * This method will add new nested patch to current patch, which will be executed AFTER applying current patch and BEFORE environment specific patch
+     * This method will add a new nested patch to current patch, which will be executed AFTER applying current patch and BEFORE environment specific patch.
+     * <p>
+     * It is possible to register multiple nested Patches, they will be executed according to registration order.
      *
      * @param nested new nested patch
      * @return current patch
      */
-    PatchContextDescriber nested(PatchContextDescriber nested);
+    PatchContextDescriber withNestedPatch(PatchContextDescriber nested);
 
     /**
      * <p>This method will override default patch data folder.</p>
@@ -88,16 +90,16 @@ public interface PatchContextDescriber {
      * <p>By providing PatchDataFolderDependency parameter it will be possible to specify relation of the custom
      * patch folder to the ROOT (`patchdata`) folder or release folder of the Patch's (`patchdata/[release]`)
      * </p>
-     *
+     * <p>
      * Samples of the overrides:
      * <p>ROOT dependant: `patchdata/[release]/[patch]` with `patchdata/[customPath]`</p>
      * <p>RELEASE dependant: `patchdata/[release]/[patch]` with `patchdata/[release]/[customPath]`</p>
      *
      * @param customPatchDataFolder patch data folder
-     * @param dependency patch data folder dependency relation
+     * @param relation              patch data folder relation
      * @return current patch
      */
-    PatchContextDescriber customPatchDataFolder(Path customPatchDataFolder, PatchDataFolderRelation dependency);
+    PatchContextDescriber customPatchDataFolder(Path customPatchDataFolder, PatchDataFolderRelation relation);
 
     /**
      * By using this method it will be possible to override default Impex Import Configuration set via properties for individual Patch.
@@ -110,11 +112,14 @@ public interface PatchContextDescriber {
 
     /**
      * This method will register ALL impexes of defined impexes for importing.
-     * Default {@link ImpexContext} will be created for each passed impex
+     * Default {@link ImpexContext} will be created for each passed impex.
      * <p>
      * If no args provided - all impexes will be imported according to default sort by file name
+     * <br>
      * If some args provided - those specific impexes in exact order will be imported
+     * <br>
      * If method IS NOT used in the patch - impexes will not be imported at all
+     * <p>
      *
      * @param impexes blank | array of impexes
      * @return current patch
@@ -126,7 +131,9 @@ public interface PatchContextDescriber {
      * This method gives more flexibility for import configuration for individual Impex
      * <p>
      * If no args provided - all impexes will be imported according to default sort by file name
+     * <br>
      * If some args provided - those specific impexes in exact order will be imported
+     * <br>
      * If method IS NOT used in the patch - impexes will not be imported at all
      *
      * @param impexContexts blank | array of Impex Contexts
@@ -258,9 +265,10 @@ public interface PatchContextDescriber {
     PatchContextDescriber removeSolrCore(SolrEnum... solrIndexes);
 
     /**
-     * This method will prepare and register environment specific patch. Only 1 environment patch can exist for current patch.
+     * This method will prepare and register environment specific patch.
+     * It is possible to register multiple environment specific patches, they will be executed according to registration order.
      * <p>
-     * It will be executed AFTER current patch and AFTER nested patch, which can be registered via {@link PatchContextDescriber#nested(PatchContextDescriber)}
+     * It will be executed AFTER current patch and AFTER nested patch, which can be registered via {@link PatchContextDescriber#withNestedPatch(PatchContextDescriber)}
      * <p>
      * patch will be created only if environment matches
      *
@@ -268,12 +276,12 @@ public interface PatchContextDescriber {
      * @param supplier     patch supplier
      * @return current patch
      */
-    PatchContextDescriber environmentPatch(EnumSet<EnvironmentEnum> environments, Supplier<PatchContextDescriber> supplier);
+    PatchContextDescriber withEnvironmentPatch(EnumSet<EnvironmentEnum> environments, Supplier<PatchContextDescriber> supplier);
 
     /**
      * This is helper method which will created related Patch to be used as nested or environment patch.
      * <p>
-     * By default newly created patch will have same Release, ID & Number
+     * By default, newly created patch will have same Release, ID & Number
      *
      * @return current patch
      */

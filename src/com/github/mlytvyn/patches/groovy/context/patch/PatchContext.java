@@ -18,16 +18,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -45,13 +36,13 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     protected final String number;
     protected final String id;
 
-    protected PatchContext<G, R> nestedPatch;
-    protected PatchContext<G, R> environmentPatch;
+    protected List<? super PatchContext<G, R>> nestedPatches = new LinkedList<>();
+    protected List<? super PatchContext<G, R>> environmentPatches = new LinkedList<>();
 
     protected String hash;
+    protected String description;
     protected Path customPatchDataFolder;
     protected PatchDataFolderRelation patchDataFolderRelation = PatchDataFolderRelation.RELEASE;
-    protected String description;
     protected ImpexImportConfig impexImportConfig;
     protected List<ImpexContext> impexes;
     protected EnumSet<EnvironmentEnum> environments = EnumSet.allOf(EnvironmentEnum.class);
@@ -129,12 +120,12 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
 
     @Override
     @SuppressWarnings("unchecked")
-    public PatchContextDescriber nested(final PatchContextDescriber nested) {
+    public PatchContextDescriber withNestedPatch(final PatchContextDescriber nested) {
         if (isNotApplicable() || !PatchContext.class.isAssignableFrom(nested.getClass())) {
             return this;
         }
 
-        this.nestedPatch = (PatchContext<G, R>) nested;
+        this.nestedPatches.add((PatchContext<G, R>) nested);
         return this;
     }
 
@@ -144,13 +135,13 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     }
 
     @Override
-    public PatchContextDescriber customPatchDataFolder(final Path customPatchDataFolder, final PatchDataFolderRelation patchDataFolderRelation) {
+    public PatchContextDescriber customPatchDataFolder(final Path customPatchDataFolder, final PatchDataFolderRelation relation) {
         if (isNotApplicable()) {
             return this;
         }
 
         this.customPatchDataFolder = customPatchDataFolder;
-        this.patchDataFolderRelation = patchDataFolderRelation;
+        this.patchDataFolderRelation = relation;
         return this;
     }
 
@@ -350,7 +341,7 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
 
     @Override
     @SuppressWarnings("unchecked")
-    public PatchContextDescriber environmentPatch(final EnumSet<EnvironmentEnum> environments, final Supplier<PatchContextDescriber> supplier) {
+    public PatchContextDescriber withEnvironmentPatch(final EnumSet<EnvironmentEnum> environments, final Supplier<PatchContextDescriber> supplier) {
         if (isNotApplicable()) {
             return this;
         }
@@ -358,8 +349,9 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
         final PatchContextDescriber environmentPatch = supplier.get();
 
         if (environments.contains(getCurrentEnvironment()) && PatchContext.class.isAssignableFrom(environmentPatch.getClass())) {
-            this.environmentPatch = (PatchContext<G, R>) environmentPatch;
-            this.environmentPatch.environments = EnumSet.of(getCurrentEnvironment());
+            var envPatch = (PatchContext<G, R>) environmentPatch;
+            envPatch.environments = EnumSet.of(getCurrentEnvironment());
+            this.environmentPatches.add(envPatch);
         }
         return this;
     }
@@ -449,8 +441,8 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     }
 
     @Override
-    public Optional<PatchContextDescriptor> getNestedPatch() {
-        return Optional.ofNullable(nestedPatch);
+    public List<PatchContextDescriptor> getNestedPatches() {
+        return (List<PatchContextDescriptor>) nestedPatches;
     }
 
     @Override
@@ -474,8 +466,8 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     }
 
     @Override
-    public Optional<PatchContextDescriptor> getEnvironmentPatch() {
-        return Optional.ofNullable(environmentPatch);
+    public List<PatchContextDescriptor> getEnvironmentPatches() {
+        return (List<PatchContextDescriptor>) environmentPatches;
     }
 
     @Override

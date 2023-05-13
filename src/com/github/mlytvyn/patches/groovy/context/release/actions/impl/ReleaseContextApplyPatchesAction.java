@@ -60,11 +60,11 @@ public class ReleaseContextApplyPatchesAction implements ReleaseContextAction {
         }
         actions.forEach(action -> action.execute(context, patch));
 
-        patch.getNestedPatch()
-            .ifPresent(nestedPatch -> executeSinglePatch(context, nestedPatch));
+        patch.getNestedPatches()
+            .forEach(nestedPatch -> executeSinglePatch(context, nestedPatch));
 
-        patch.getEnvironmentPatch()
-            .ifPresent(environmentPatch -> executeSinglePatch(context, environmentPatch));
+        patch.getEnvironmentPatches()
+            .forEach(environmentPatch -> executeSinglePatch(context, environmentPatch));
     }
 
 }

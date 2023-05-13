@@ -93,7 +93,7 @@ public class DefaultPatchesCollector implements PatchesCollector<GlobalContext> 
 
         try {
             final ScriptExecutionResult scriptExecutionResult = scriptExecutable.execute(Map.of(
-                    "patchContext", patchContext
+                    PATCH_CONTEXT_PARAM, patchContext
             ));
             if (!scriptExecutionResult.isSuccessful()) {
                 throw new PatchException(patchContext, "Script evaluation failed with: " + scriptExecutionResult.getErrorWriter().toString());
