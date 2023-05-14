@@ -4,6 +4,7 @@
     <extension abstractclassprefix="Generated" classprefix="Groovypatches" managername="GroovypatchesManager" managersuperclass="de.hybris.platform.jalo.extension.Extension" name="groovypatches" usemaven="true">
         <requires-extension name="core"/>
         <requires-extension name="scripting"/>
+        <requires-extension name="groovynature"/>
         <requires-extension name="commerceservices"/>
 
         <coremodule generated="true" manager="com.github.mlytvyn.patches.groovy.jalo.GroovypatchesManager" packageroot="com.github.mlytvyn.patches.groovy"/>

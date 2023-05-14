@@ -110,7 +110,7 @@ patches.groovy.site.TEST_SITE_ID.uid=${test.site.uid}
 
 * Create new groovy-based Patch files and optional related impexes.
   * Each patch name must follow naming pattern: `<int number>`.`<patch name>`.groovy, sample `0001_HYB-1.groovy`
-* Provided with `ygroovypatches` `patch_contributor.gdsl` should provide Script context specific variable `patchContext` in the Intellij IDEA
+* Provided with `ygroovypatches` `com.github.mlytvyn.patches.groovy.dsl.patch_contributor.gdsl` should provide Script context specific variable `patchContext` in the Intellij IDEA
 
 # Sample Groovy patch
 
