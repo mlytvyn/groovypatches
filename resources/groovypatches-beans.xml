@@ -5,9 +5,6 @@
     <enum class="com.github.mlytvyn.patches.groovy.EnvironmentEnum">
         <description>Define property for each new value: `patches.groovy.environment.%VALUE%.id=id`</description>
         <value>LOCAL</value>
-        <value>D1</value>
-        <value>S1</value>
-        <value>P1</value>
     </enum>
 
     <enum class="com.github.mlytvyn.patches.groovy.SolrEnum">
