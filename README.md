@@ -3,7 +3,6 @@ Groovy-based patching framework for SAP Commerce Cloud (Hybris)
 
 # TODO's
 
-* Introduce default `CurrentEnvironmentProvider` for default CCv2 setup
 * Introduce Product Catalog synchronization action
 * Add `Reset BackOffice` action
 * Improve readme

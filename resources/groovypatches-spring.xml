@@ -12,6 +12,8 @@
     <alias name="defaultCurrentEnvironmentProvider" alias="currentEnvironmentProvider"/>
     <bean id="defaultCurrentEnvironmentProvider" class="com.github.mlytvyn.patches.groovy.context.patch.DefaultCurrentEnvironmentProvider"/>
 
+    <bean id="defaultCCv2CurrentEnvironmentProvider" class="com.github.mlytvyn.patches.groovy.context.patch.DefaultCCv2CurrentEnvironmentProvider"/>
+
     <alias name="defaultReleasesCollector" alias="releasesCollector"/>
     <bean id="defaultReleasesCollector" class="com.github.mlytvyn.patches.groovy.context.release.impl.DefaultReleasesCollector"/>
 
