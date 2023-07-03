@@ -27,9 +27,9 @@ public class DefaultImpexImporter implements ImpexImporter {
     private ConfigurationService configurationService;
 
     @Override
-    public void importSingleImpex(final SystemSetupContext context, final String patchesFolder, final ImpexContext impex, final ImpexImportConfig impexImportConfig, final Map<String, Object> macroParameters) {
+    public void importSingleImpex(final SystemSetupContext context, final ImpexContext impex, final ImpexImportConfig impexImportConfig, final Map<String, Object> macroParameters) {
         logReporter.logInfo(context, String.format("Import: %s", impex.name()));
-        final String impexPath = getImpexPath(patchesFolder, impex);
+        final String impexPath = impex.name().startsWith("/") ? impex.name() : String.format("/%s", impex.name());
         setupImpexService.importImpexFile(impexPath, impexImportConfig, macroParameters);
     }
 

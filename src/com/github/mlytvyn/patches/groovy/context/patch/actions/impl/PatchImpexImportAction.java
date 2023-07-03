@@ -43,7 +43,7 @@ public class PatchImpexImportAction implements PatchAction<PatchContextDescripto
             if (CollectionUtils.isEmpty(patch.getImpexes())) {
                 importAllImpexes(context, patch, patchesFolder, Collections.emptyMap());
             } else {
-                importSpecifiedImpexes(context, patch, patch.getImpexes(), patchesFolder, Collections.emptyMap());
+                importSpecifiedImpexes(context, patch, patch.getImpexes(), Collections.emptyMap());
             }
         } else {
             for (final ImpexTemplateContext impexTemplateContext : patch.getImpexContexts()) {
@@ -51,7 +51,7 @@ public class PatchImpexImportAction implements PatchAction<PatchContextDescripto
                 if (CollectionUtils.isEmpty(patch.getImpexes())) {
                     importAllImpexes(context, patch, patchesFolder, impexTemplateContext.macroParameters());
                 } else {
-                    importSpecifiedImpexes(context, patch, patch.getImpexes(), patchesFolder, impexTemplateContext.macroParameters());
+                    importSpecifiedImpexes(context, patch, patch.getImpexes(), impexTemplateContext.macroParameters());
                 }
             }
         }
@@ -70,7 +70,7 @@ public class PatchImpexImportAction implements PatchAction<PatchContextDescripto
                     .map(path -> path.substring(path.indexOf(patchesFolder)))
                     .map(ImpexContext::of)
                     .collect(Collectors.toList());
-            importSpecifiedImpexes(context, patch, impexes, patchesFolder, macroParameters);
+            importSpecifiedImpexes(context, patch, impexes, macroParameters);
         } catch (final IOException | ImpexImportException e) {
             throw new PatchException(patch, e.getMessage(), e);
         }
@@ -79,15 +79,14 @@ public class PatchImpexImportAction implements PatchAction<PatchContextDescripto
     /**
      * No need to check is specific impex exists as it should be already checked by {@link PatchValidateAction}
      */
-    private void importSpecifiedImpexes(final SystemSetupContext context, final PatchContextDescriptor patch, final List<ImpexContext> impexes, final String patchesFolder, final Map<String, Object> macroParameters) {
+    private void importSpecifiedImpexes(final SystemSetupContext context, final PatchContextDescriptor patch, final List<ImpexContext> impexes, final Map<String, Object> macroParameters) {
         impexes.forEach(impex -> {
-            // TODO: improve Optionals usage for Java 9+ project
             final ImpexImportConfig impexImportConfig = impex.config()
                     .orElseGet(() -> patch.getImpexImportConfig()
                             .orElseGet(() -> patch.getGlobalContext().impexImportConfig())
                     );
 
-            impexImporter.importSingleImpex(context, patchesFolder, impex, impexImportConfig, macroParameters);
+            impexImporter.importSingleImpex(context, impex, impexImportConfig, macroParameters);
         });
     }
 

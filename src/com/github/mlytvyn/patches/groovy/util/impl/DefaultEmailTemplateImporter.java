@@ -10,6 +10,7 @@ import de.hybris.platform.core.initialization.SystemSetupContext;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.Map;
 
 public class DefaultEmailTemplateImporter implements EmailTemplateImporter {
@@ -23,7 +24,8 @@ public class DefaultEmailTemplateImporter implements EmailTemplateImporter {
     public void importEmailTemplate(final SystemSetupContext context, final GlobalContext globalContext, final String template, final Map<String, Object> macroParameters) {
         try {
             final String patchesFolder = configurationService.getConfiguration().getString("patches.groovy.emails.folder");
-            impexImporter.importSingleImpex(context, patchesFolder, ImpexContext.of(template), globalContext.impexImportConfig(), macroParameters);
+            final String impex = String.format("%s%s%s", patchesFolder, File.separator, template);
+            impexImporter.importSingleImpex(context, ImpexContext.of(impex), globalContext.impexImportConfig(), macroParameters);
         } catch (final ImpexImportException e) {
             throw new GlobalPatchesException(globalContext, e.getMessage(), e);
         }

@@ -143,7 +143,7 @@ patch
 // It is possible to adjust patch data folder, it will be still in the same release, but if you'd like to place all impexes from different patches to the same folder it will be possible
         .customPatchDataFolder(Paths.get("<custom patch folder within the release folder>"))
 // It is also possible to adjust patch data folder in a way it will be root patch folder related (`patchdata`)
-        .customPatchDataFolder(Paths.get("<custom patch folder within the release folder>"), PatchDataFolderRelation.ROOT)
+        .customPatchDataFolder(Paths.get("<custom patch folder within the patchdata folder>"), PatchDataFolderRelation.ROOT)
 // Limits patch to specific environments, by default - applicable to all 
         .environment(EnvironmentEnum.LOCAL)
 // Allows creation of the environment specific patch, corresponding Related Patch have to be created in that case to create new context
