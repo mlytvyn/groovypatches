@@ -14,5 +14,5 @@ public interface ImpexImporter {
 
     List<String> getImpexesForPatch(String patchesFolder, List<ImpexContext> impexes);
 
-    void importSingleImpex(SystemSetupContext context, ImpexContext impex, ImpexImportConfig impexImportConfig, Map<String, Object> macroParameters);
+    void importSingleImpex(SystemSetupContext context, String patchesFolder, ImpexContext impex, ImpexImportConfig impexImportConfig, Map<String, Object> macroParameters);
 }

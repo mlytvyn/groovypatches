@@ -27,9 +27,12 @@ public class DefaultImpexImporter implements ImpexImporter {
     private ConfigurationService configurationService;
 
     @Override
-    public void importSingleImpex(final SystemSetupContext context, final ImpexContext impex, final ImpexImportConfig impexImportConfig, final Map<String, Object> macroParameters) {
+    public void importSingleImpex(final SystemSetupContext context, final String patchesFolder, final ImpexContext impex, final ImpexImportConfig impexImportConfig, final Map<String, Object> macroParameters) {
         logReporter.logInfo(context, String.format("Import: %s", impex.name()));
-        final String impexPath = impex.name().startsWith("/") ? impex.name() : String.format("/%s", impex.name());
+
+        final String impexPath = impex.name().contains(patchesFolder)
+            ? impex.name().startsWith("/") ? impex.name() : String.format("/%s", impex.name())
+            : getImpexPath(patchesFolder, impex);
         setupImpexService.importImpexFile(impexPath, impexImportConfig, macroParameters);
     }
 
@@ -47,8 +50,8 @@ public class DefaultImpexImporter implements ImpexImporter {
     @Override
     public List<String> getImpexesForPatch(final String patchesFolder, final List<ImpexContext> impexes) {
         return impexes.stream()
-                .map(impex -> getImpexPath(patchesFolder, impex))
-                .collect(Collectors.toList());
+            .map(impex -> getImpexPath(patchesFolder, impex))
+            .collect(Collectors.toList());
     }
 
     private String getImpexPath(final String patchesFolder, final ImpexContext impex) {

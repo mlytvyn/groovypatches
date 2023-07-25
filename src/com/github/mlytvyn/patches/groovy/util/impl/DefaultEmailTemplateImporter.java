@@ -25,7 +25,7 @@ public class DefaultEmailTemplateImporter implements EmailTemplateImporter {
         try {
             final String patchesFolder = configurationService.getConfiguration().getString("patches.groovy.emails.folder");
             final String impex = String.format("%s%s%s", patchesFolder, File.separator, template);
-            impexImporter.importSingleImpex(context, ImpexContext.of(impex), globalContext.impexImportConfig(), macroParameters);
+            impexImporter.importSingleImpex(context, patchesFolder, ImpexContext.of(impex), globalContext.impexImportConfig(), macroParameters);
         } catch (final ImpexImportException e) {
             throw new GlobalPatchesException(globalContext, e.getMessage(), e);
         }
