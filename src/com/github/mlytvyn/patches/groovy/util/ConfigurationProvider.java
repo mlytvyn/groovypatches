@@ -5,6 +5,7 @@ import com.github.mlytvyn.patches.groovy.EmailComponentTemplateEnum;
 import com.github.mlytvyn.patches.groovy.EmailTemplateEnum;
 import com.github.mlytvyn.patches.groovy.SiteEnum;
 import com.github.mlytvyn.patches.groovy.SolrEnum;
+import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum;
 
 public interface ConfigurationProvider {
 
@@ -17,4 +18,8 @@ public interface ConfigurationProvider {
     String getEmailComponentTemplate(EmailComponentTemplateEnum emailComponentTemplate);
 
     String getSolrCoreName(SolrEnum solr);
+
+    String getSolrIndexedTypeName(SolrIndexedTypeEnum indexedType);
+
+    String getSolrIndexedTypePartialCronJobPrefix(SolrIndexedTypeEnum indexedType);
 }

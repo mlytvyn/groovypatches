@@ -73,37 +73,104 @@
     <alias name="defaultGroovyReleaseContextFactory" alias="groovyReleaseContextFactory"/>
     <bean id="defaultGroovyReleaseContextFactory" class="com.github.mlytvyn.patches.groovy.context.release.impl.DefaultReleaseContextFactory"/>
 
+    <alias name="defaultGlobalContextValidateAction" alias="groovyGlobalContextValidateAction"/>
+    <bean id="defaultGlobalContextValidateAction" class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextValidateAction"/>
+
+    <alias name="defaultGlobalContextRemoveOrphanedTypesAction" alias="groovyGlobalContextRemoveOrphanedTypesAction"/>
+    <bean id="defaultGlobalContextRemoveOrphanedTypesAction" class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextRemoveOrphanedTypesAction"/>
+
+    <alias name="defaultGlobalContextSolrRemoveCoreAction" alias="groovyGlobalContextSolrRemoveCoreAction"/>
+    <bean id="defaultGlobalContextSolrRemoveCoreAction" class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextSolrRemoveCoreAction"/>
+
+    <alias name="defaultGlobalContextSolrFullReIndexAction" alias="groovyGlobalContextSolrFullReIndexAction"/>
+    <bean id="defaultGlobalContextSolrFullReIndexAction" class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextSolrFullReIndexAction"/>
+
+    <alias name="defaultGlobalContextSolrPartialReIndexAction" alias="groovyGlobalContextSolrPartialReIndexAction"/>
+    <bean id="defaultGlobalContextSolrPartialReIndexAction" class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextSolrPartialReIndexAction"/>
+
+    <alias name="defaultGlobalContextImportEmailComponentTemplateAction" alias="groovyGlobalContextImportEmailComponentTemplateAction"/>
+    <bean id="defaultGlobalContextImportEmailComponentTemplateAction" class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextImportEmailComponentTemplateAction"/>
+
+    <alias name="defaultGlobalContextImportEmailTemplateAction" alias="groovyGlobalContextImportEmailTemplateAction"/>
+    <bean id="defaultGlobalContextImportEmailTemplateAction" class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextImportEmailTemplateAction"/>
+
     <alias name="globalGroovyPatchesGlobalContextBeforeActions" alias="groovyPatchesGlobalContextBeforeActions"/>
     <util:list id="globalGroovyPatchesGlobalContextBeforeActions">
-        <bean class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextValidateAction"/>
-        <bean class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalRemoveOrphanedTypesContextAction"/>
+        <ref bean="groovyGlobalContextValidateAction"/>
+        <ref bean="groovyGlobalContextRemoveOrphanedTypesAction"/>
     </util:list>
 
     <alias name="globalGroovyPatchesGlobalContextAfterActions" alias="groovyPatchesGlobalContextAfterActions"/>
     <util:list id="globalGroovyPatchesGlobalContextAfterActions">
-        <bean class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextImportEmailComponentTemplateAction"/>
-        <bean class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextImportEmailTemplateAction"/>
+        <ref bean="groovyGlobalContextImportEmailComponentTemplateAction"/>
+        <ref bean="groovyGlobalContextImportEmailTemplateAction"/>
+        <ref bean="groovyGlobalContextSolrRemoveCoreAction"/>
+        <ref bean="groovyGlobalContextSolrFullReIndexAction"/>
+        <ref bean="groovyGlobalContextSolrPartialReIndexAction"/>
     </util:list>
 
     <alias name="globalGroovyPatchesReleaseContextBeforeActions" alias="groovyPatchesReleaseContextBeforeActions"/>
     <util:list id="globalGroovyPatchesReleaseContextBeforeActions">
     </util:list>
 
-    <alias name="defaultReleaseContextRemoveContentCatalogsAction" alias="releaseContextRemoveContentCatalogsAction"/>
+    <alias name="defaultReleaseContextRemoveContentCatalogsAction" alias="groovyReleaseContextRemoveContentCatalogsAction"/>
     <bean id="defaultReleaseContextRemoveContentCatalogsAction" class="com.github.mlytvyn.patches.groovy.context.release.actions.impl.ReleaseContextRemoveContentCatalogsAction"/>
+
+    <alias name="defaultReleaseContextSyncContentCatalogsAction" alias="groovyReleaseContextSyncContentCatalogsAction"/>
+    <bean id="defaultReleaseContextSyncContentCatalogsAction" class="com.github.mlytvyn.patches.groovy.context.release.actions.impl.ReleaseContextSyncContentCatalogsAction"/>
 
     <alias name="globalGroovyPatchesReleaseContextAfterActions" alias="groovyPatchesReleaseContextAfterActions"/>
     <util:list id="globalGroovyPatchesReleaseContextAfterActions">
-        <ref bean="releaseContextRemoveContentCatalogsAction"/>
-        <bean class="com.github.mlytvyn.patches.groovy.context.release.actions.impl.ReleaseContextSyncContentCatalogsAction"/>
+        <ref bean="groovyReleaseContextRemoveContentCatalogsAction"/>
+        <ref bean="groovyReleaseContextSyncContentCatalogsAction"/>
     </util:list>
+
+    <alias name="defaultPatchBeforeConsumerAction" alias="groovyPatchBeforeConsumerAction"/>
+    <bean id="defaultPatchBeforeConsumerAction" class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchBeforeConsumerAction"/>
+
+    <alias name="defaultPatchChangeFieldTypeAction" alias="groovyPatchChangeFieldTypeAction"/>
+    <bean id="defaultPatchChangeFieldTypeAction" class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchChangeFieldTypeAction"/>
+
+    <alias name="defaultPatchImpexImportAction" alias="groovyPatchImpexImportAction"/>
+    <bean id="defaultPatchImpexImportAction" class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchImpexImportAction"/>
+
+    <alias name="defaultPatchSyncContentCatalogNowAction" alias="groovyPatchSyncContentCatalogNowAction"/>
+    <bean id="defaultPatchSyncContentCatalogNowAction" class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchSyncContentCatalogNowAction"/>
+
+    <alias name="defaultPatchAfterConsumerAction" alias="groovyPatchAfterConsumerAction"/>
+    <bean id="defaultPatchAfterConsumerAction" class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchAfterConsumerAction"/>
 
     <alias name="globalGroovyPatchesPatchContextActions" alias="groovyPatchesPatchContextActions"/>
     <util:list id="globalGroovyPatchesPatchContextActions">
-        <bean class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchBeforeConsumerAction"/>
-        <bean class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchChangeFieldTypeAction"/>
-        <bean class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchImpexImportAction"/>
-        <bean class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchSyncContentCatalogNowAction"/>
-        <bean class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchAfterConsumerAction"/>
+        <ref bean="groovyPatchBeforeConsumerAction"/>
+        <ref bean="groovyPatchChangeFieldTypeAction"/>
+        <ref bean="groovyPatchImpexImportAction"/>
+        <ref bean="groovyPatchSyncContentCatalogNowAction"/>
+        <ref bean="groovyPatchAfterConsumerAction"/>
     </util:list>
+
+    <alias name="defaultPatchesFacetSearchConfigService" alias="patchesFacetSearchConfigService"/>
+    <bean id="defaultPatchesFacetSearchConfigService" parent="defaultFacetSearchConfigService"
+          class="com.github.mlytvyn.patches.groovy.solrfacetsearch.config.impl.DefaultPatchesFacetSearchConfigService"/>
+
+    <alias name="defaultPatchesSolrFacetSearchConfigDao" alias="patchesSolrFacetSearchConfigDao"/>
+    <bean id="defaultPatchesSolrFacetSearchConfigDao" parent="defaultSolrFacetSearchConfigDao"
+          class="com.github.mlytvyn.patches.groovy.solrfacetsearch.daos.impl.DefaultPatchesSolrFacetSearchConfigDao"/>
+
+    <alias name="defaultPatchesPendingFullReIndexEventListener" alias="patchesPendingFullReIndexEventListener"/>
+    <bean id="defaultPatchesPendingFullReIndexEventListener" parent="abstractEventListener"
+          class="com.github.mlytvyn.patches.groovy.event.impl.PatchesPendingFullReIndexEventListener"/>
+
+    <alias name="defaultPatchesSolrIndexScheduler" alias="patchesSolrIndexScheduler"/>
+    <bean id="defaultPatchesSolrIndexScheduler" parent="abstractEventListener"
+          class="com.github.mlytvyn.patches.groovy.event.impl.PatchesPendingPartialReIndexEventListener"/>
+
+    <alias name="defaultPatchesFullReIndexJobPerformable" alias="patchesFullReIndexJobPerformable"/>
+    <bean id="defaultPatchesFullReIndexJobPerformable" parent="abstractJobPerformable"
+          class="com.github.mlytvyn.patches.groovy.cronjob.PatchesFullReIndexJobPerformable"/>
+
+    <alias name="defaultPatchesSetupSolrIndexerService" alias="patchesSetupSolrIndexerService"/>
+    <bean id="defaultPatchesSetupSolrIndexerService" parent="defaultSetupSolrIndexerService"
+          class="com.github.mlytvyn.patches.groovy.setup.impl.DefaultPatchesSetupSolrIndexerService"/>
+
 </beans>

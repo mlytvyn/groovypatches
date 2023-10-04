@@ -6,6 +6,7 @@ import com.github.mlytvyn.patches.groovy.EmailTemplateEnum;
 import com.github.mlytvyn.patches.groovy.EnvironmentEnum;
 import com.github.mlytvyn.patches.groovy.SiteEnum;
 import com.github.mlytvyn.patches.groovy.SolrEnum;
+import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum;
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext;
@@ -18,7 +19,17 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -306,12 +317,14 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     }
 
     @Override
-    public PatchContextDescriber schedulePartialUpdate(final SolrEnum solrIndex, final Set<String> indexedProperties) {
+    public PatchContextDescriber partialReIndex(final SolrIndexedTypeEnum indexedType, final String... indexedProperties) {
         if (isNotApplicable()) {
             return this;
         }
 
-        globalContext.schedulePartialUpdate(solrIndex, indexedProperties);
+        if (ArrayUtils.isNotEmpty(indexedProperties)) {
+            globalContext.scheduleSolrIndexedTypePartialReIndex(indexedType, Arrays.asList(indexedProperties));
+        }
         return this;
     }
 
@@ -322,7 +335,7 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
         }
 
         if (ArrayUtils.isNotEmpty(solrIndexes)) {
-            globalContext.indexesToBeReindexed().addAll(Arrays.asList(solrIndexes));
+            globalContext.scheduleSolrCoreFullReIndex(Arrays.asList(solrIndexes));
         }
         return this;
     }
@@ -334,7 +347,7 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
         }
 
         if (ArrayUtils.isNotEmpty(solrIndexes)) {
-            globalContext.coresToBeRemoved().addAll(Arrays.asList(solrIndexes));
+            globalContext.scheduleSolrCoresForRemoval(Arrays.asList(solrIndexes));
         }
         return this;
     }
@@ -363,7 +376,7 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
                     final String releaseId = releaseContext.id();
                     // almost copy-paste from SystemSetupCollectorResult
                     // already applied patches will use original hash value retrieved from upper env
-                    final String key = extensionName + "-" + releaseId + "-" + number;
+                    final String key = extensionName + "-" + releaseId + "-" + number + "-" + id;
                     return GroovyPatchesSystemSetup.MD5.hashBytes(key.getBytes()).toString();
                 });
     }

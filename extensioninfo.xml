@@ -6,6 +6,7 @@
         <requires-extension name="scripting"/>
         <requires-extension name="groovynature"/>
         <requires-extension name="commerceservices"/>
+        <requires-extension name="solrfacetsearch"/>
 
         <coremodule generated="true" manager="com.github.mlytvyn.patches.groovy.jalo.GroovypatchesManager" packageroot="com.github.mlytvyn.patches.groovy"/>
     </extension>

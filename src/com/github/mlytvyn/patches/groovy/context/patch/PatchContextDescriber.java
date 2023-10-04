@@ -6,6 +6,7 @@ import com.github.mlytvyn.patches.groovy.EmailTemplateEnum;
 import com.github.mlytvyn.patches.groovy.EnvironmentEnum;
 import com.github.mlytvyn.patches.groovy.SiteEnum;
 import com.github.mlytvyn.patches.groovy.SolrEnum;
+import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum;
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext;
@@ -15,7 +16,6 @@ import de.hybris.platform.core.initialization.SystemSetupContext;
 
 import java.nio.file.Path;
 import java.util.EnumSet;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -240,13 +240,13 @@ public interface PatchContextDescriber {
     PatchContextDescriber removeOrphanedTypes();
 
     /**
-     * This method will register reindex for specific Solr Core and specific indexed properties
+     * This method will register partial reindex for specific Solr Core and indexed properties of the Indexed Type
      *
-     * @param solrIndex         solr core
+     * @param indexedType       indexed type
      * @param indexedProperties solr indexed properties
      * @return current patch
      */
-    PatchContextDescriber schedulePartialUpdate(SolrEnum solrIndex, Set<String> indexedProperties);
+    PatchContextDescriber partialReIndex(SolrIndexedTypeEnum indexedType, String... indexedProperties);
 
     /**
      * This method will register request for full reindex of the Solr Core

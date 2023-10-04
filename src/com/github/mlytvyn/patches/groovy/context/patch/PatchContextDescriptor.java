@@ -90,7 +90,7 @@ public interface PatchContextDescriptor {
     /**
      * This method will return current patch ID
      * <br/>
-     * Usually should be represented as a JIRA ticket ID: SAPHYBRIS-XXX, GP-YYY, SAPECOM-ZZZ
+     * Usually should be represented as a JIRA ticket ID: ECOM-XXX, GP-YYY, PRJ-ZZZ
      *
      * @return current patch ID
      */

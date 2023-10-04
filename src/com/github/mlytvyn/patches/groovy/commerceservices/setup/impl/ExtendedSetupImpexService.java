@@ -25,7 +25,7 @@ public class ExtendedSetupImpexService extends DefaultSetupImpexService implemen
 
     @Override
     public void importImpexFile(final String impexPath, final ImpexImportConfig impexImportConfig, final Map<String, Object> macroParameters) {
-        try (final var resourceAsStream = getClass().getResourceAsStream(impexPath)) {
+        try (final InputStream resourceAsStream = getClass().getResourceAsStream(impexPath)) {
             if (resourceAsStream == null) {
                 if (impexImportConfig.errorIfMissing()) {
                     throw new ImpexImportException("Required Impex file is missing: " + impexPath);
@@ -35,7 +35,7 @@ public class ExtendedSetupImpexService extends DefaultSetupImpexService implemen
                 return;
             }
 
-            try (final var stream = getMergedInputStream(macroParameters, resourceAsStream)) {
+            try (final InputStream stream = getMergedInputStream(macroParameters, resourceAsStream)) {
                 importImpex(impexPath, impexImportConfig, stream);
 
                 // Try to import language specific impex files
@@ -52,7 +52,7 @@ public class ExtendedSetupImpexService extends DefaultSetupImpexService implemen
         try {
             LOG.info("Importing [{}]...", impexPath);
 
-            final var importConfig = new ImportConfig();
+            final ImportConfig importConfig = new ImportConfig();
             importConfig.setScript(new StreamBasedImpExResource(stream, getFileEncoding()));
             importConfig.setEnableCodeExecution(impexImportConfig.enableCodeExecution());
             importConfig.setLegacyMode(impexImportConfig.legacyMode());
@@ -61,7 +61,7 @@ public class ExtendedSetupImpexService extends DefaultSetupImpexService implemen
             importConfig.setSynchronous(impexImportConfig.synchronous());
             importConfig.setLegacyMode(impexImportConfig.legacyMode());
 
-            final var importResult = getImportService().importData(importConfig);
+            final ImportResult importResult = getImportService().importData(importConfig);
             if (importResult.isError()) {
                 if (impexImportConfig.failOnError()) {
                     throw new ImpexImportException("Non-failing impex importing [" + impexPath + "]... FAILED");
@@ -79,11 +79,11 @@ public class ExtendedSetupImpexService extends DefaultSetupImpexService implemen
     }
 
     private void importLanguageImpexes(final String impexPath, final ImpexImportConfig impexImportConfig, final Map<String, Object> macroParameters) {
-        final var filePath = impexPath.substring(0, impexPath.length() - getImpexExt().length());
+        final String filePath = impexPath.substring(0, impexPath.length() - getImpexExt().length());
 
         getCommonI18NService().getAllLanguages().forEach(language -> {
-            final var languageFilePath = filePath + "_" + language.getIsocode() + getImpexExt();
-            try (final var languageResourceAsStream = getClass().getResourceAsStream(languageFilePath)) {
+            final String languageFilePath = filePath + "_" + language.getIsocode() + getImpexExt();
+            try (final InputStream languageResourceAsStream = getClass().getResourceAsStream(languageFilePath)) {
                 if (languageResourceAsStream != null) {
                     try (var mergeInputStream = getMergedInputStream(macroParameters, languageResourceAsStream)) {
                         importImpex(languageFilePath, impexImportConfig, mergeInputStream);
@@ -97,14 +97,14 @@ public class ExtendedSetupImpexService extends DefaultSetupImpexService implemen
 
     protected String buildMacroHeader(final Map<String, Object> macroParameters) {
         // no pun intended with this method name
-        final var builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
 
-        for (final var entry : macroParameters.entrySet()) {
-            final var macroName = entry.getKey().charAt(0) == '$'
+        for (final Map.Entry<String, Object> entry : macroParameters.entrySet()) {
+            final String macroName = entry.getKey().charAt(0) == '$'
                     ? entry.getKey()
                     : '$' + entry.getKey();
 
-            final var val = Optional.ofNullable(entry.getValue())
+            final String val = Optional.ofNullable(entry.getValue())
                     .map(String::valueOf)
                     .orElse(StringUtils.EMPTY);
 
@@ -115,7 +115,7 @@ public class ExtendedSetupImpexService extends DefaultSetupImpexService implemen
 
     protected InputStream getMergedInputStream(final Map<String, Object> macroParameters, final InputStream fileStream) {
         if (macroParameters != null && !macroParameters.isEmpty()) {
-            final var header = buildMacroHeader(macroParameters);
+            final String header = buildMacroHeader(macroParameters);
             return new SequenceInputStream(IOUtils.toInputStream(header, StandardCharsets.UTF_8), fileStream);
         } else {
             return fileStream;
