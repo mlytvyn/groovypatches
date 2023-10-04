@@ -72,7 +72,7 @@ public class PatchesPendingFullReIndexEventListener extends AbstractPatchesPendi
         if (serviceLayerJobs.isEmpty()) {
             final ServicelayerJobModel servicelayerJob = modelService.create(ServicelayerJobModel.class);
             servicelayerJob.setCode(serviceLayerJobCode);
-            servicelayerJob.setSpringId("patchesFullReIndexJobPerformable");
+            servicelayerJob.setSpringId(configurationService.getConfiguration().getString("patches.groovy.solr.index.full.serviceLayerJob.springId", "patchesFullReIndexJobPerformable"));
 
             modelService.save(servicelayerJob);
             return servicelayerJob;

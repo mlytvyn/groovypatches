@@ -189,7 +189,7 @@ public class GlobalContextSolrPartialReIndexAction implements GlobalContextActio
         if (serviceLayerJobs.isEmpty()) {
             final ServicelayerJobModel servicelayerJob = modelService.create(ServicelayerJobModel.class);
             servicelayerJob.setCode(serviceLayerJobCode);
-            servicelayerJob.setSpringId("solrExtIndexerJob");
+            servicelayerJob.setSpringId(configurationService.getConfiguration().getString("patches.groovy.solr.index.partial.serviceLayerJob.springId", "solrExtIndexerJob"));
 
             modelService.save(servicelayerJob);
             return servicelayerJob;

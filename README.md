@@ -27,11 +27,11 @@ public class CustomPatchesSystemSetup extends GroovyPatchesSystemSetup {
 * Introduce project specific implementation for `CurrentEnvironmentProvider` as it may differ from Solution to Solution
 * Folders reference
 
-| Data           | Path                                                                                                 |
-|----------------|------------------------------------------------------------------------------------------------------|
-| Groovy patches | `<custom>patches/resources/<custom>patches/releases/<optional group>/<release>/<JIRA-TICKET>.groovy` |
-| Patch Impexes  | `<custom>patches/resources/<custom>patches/import/patchdata/<release>/<patch id>`                    |
-| Email impexes  | `<custom>patches/resources/<custom>patches/import/patchdata/<emails>`                                |
+| Data              | Path                                                                                                 |
+|-------------------|------------------------------------------------------------------------------------------------------|
+| Groovy patches    | `<custom>patches/resources/<custom>patches/releases/<optional group>/<release>/<JIRA-TICKET>.groovy` |
+| Patch ImpEx files | `<custom>patches/resources/<custom>patches/import/patchdata/<release>/<patch id>`                    |
+| Email ImpEx files | `<custom>patches/resources/<custom>patches/import/patchdata/<emails>`                                |
 
 * Adjust `<custom>patches-beans.xml` according to your project setup
 
@@ -121,11 +121,14 @@ Once requested via groovy Patch, re-index will be executed only once on next ser
 
 If requested via `.fullReIndex(SolrEnum.DUMMY)` custom CronJob `PatchesFullReIndexCronJob` will be started during the server startup and execute synchronously re-index for each `SolrFacetSearchConfig`.
 
-| Property                                              | Description                                                              |
-|-------------------------------------------------------|--------------------------------------------------------------------------|
-| `patches.groovy.solr.index.full.cronJob.name`         | Default name for custom CronJob, instance of `PatchesFullReIndexCronJob` |
-| `patches.groovy.solr.index.full.cronJob.language`     | Default language for CronJob, fallback to `en`                           |
-| `patches.groovy.solr.index.full.serviceLayerJob.name` | Default name for custom ServiceLayerJob                                  |
+It is possible to customize behaviour of the service job by extending `patchesFullReIndexJobPerformable`.
+
+| Property                                                  | Description                                                                                                          |
+|-----------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
+| `patches.groovy.solr.index.full.cronJob.name`             | Default name for custom CronJob, instance of `PatchesFullReIndexCronJob`                                             |
+| `patches.groovy.solr.index.full.cronJob.language`         | Default language for CronJob, fallback to `en`                                                                       |
+| `patches.groovy.solr.index.full.serviceLayerJob.name`     | Default name for custom ServiceLayerJob                                                                              |
+| `patches.groovy.solr.index.full.serviceLayerJob.springId` | Default Spring Bean to be used for partial re-index. By-default set to OOTB `patchesFullReIndexJobPerformable` bean. |
 
 ### SOLR `partial` re-index mode
 
@@ -133,12 +136,15 @@ If requested via `.partialReIndex(SolrIndexedTypeEnum.DUMMY, "indexedProperty")`
 
 If related `full` re-index (for the same `SolrFacetSearchConfig`) was also requested `partial` re-index will be skipped.
 
+It is possible to customize behaviour of the service job by extending `solrExtIndexerJob`.
+
 | Property                                                          | Description                                                                                                                       |
 |-------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
 | `patches.groovy.solr.index.partial.cronJob.indexerType.queryType` | Default type of the IndexerQuery from which FlexibleSearch query for partial re-index will be taken. Fallback to `PARTIAL_INDEX`. |
 | `patches.groovy.solr.index.partial.cronJob.prefix`                | Special prefix for partial re-index CronJobs instance of `SolrExtIndexerCronJob`                                                  |
 | `patches.groovy.solr.index.partial.cronJob.language`              | Default language for CronJob, fallback to `en`                                                                                    |
 | `patches.groovy.solr.index.partial.serviceLayerJob.code`          | Default name for custom ServiceLayerJob                                                                                           |
+| `patches.groovy.solr.index.partial.serviceLayerJob.springId`      | Default Spring Bean to be used for partial re-index. By-default set to OOTB `solrExtIndexerJob` bean.                             |
 
 ## Sample Groovy patch
 
