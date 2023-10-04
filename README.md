@@ -1,11 +1,6 @@
 Groovy-based patching framework for SAP Commerce Cloud (Hybris)
 =====================
 
-## TODO's
-
-* Introduce Product Catalog synchronization action
-* Add `Reset BackOffice` action
-
 ## How to use
 
 * Create new blank extension from `ygroovypatches` template extension - https://github.com/mlytvyn/ygroovypatches
