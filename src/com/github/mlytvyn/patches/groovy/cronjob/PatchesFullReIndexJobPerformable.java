@@ -39,9 +39,9 @@ public class PatchesFullReIndexJobPerformable extends AbstractJobPerformable<Pat
             LOG.info("Starting solr full reindex cronjobs for recently applied patches.");
             configs.forEach(config -> {
                 LOG.info("Starting solr full reindex for {}", config::getName);
+                patchesSetupSolrIndexerService.executeSolrIndexerCronJob(config.getName(), true, true);
                 config.setReIndexAfterStartUp(false);
                 modelService.save(config);
-                patchesSetupSolrIndexerService.executeSolrIndexerCronJob(config.getName(), true, true);
                 LOG.info("Finished solr full reindex for {}", config::getName);
             });
             LOG.info("Finished solr full reindex cronjobs for recently applied patches.");

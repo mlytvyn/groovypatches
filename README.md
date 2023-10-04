@@ -120,7 +120,7 @@ patches.groovy.site.TEST_SITE_ID.uid=${test.site.uid}
 
 It is possible to request SOLR re-index for specific `SolrFacetSearchConfig` in two modes.
 
-Once requested via groovy Patch, re-index will be executed once on next server startup via auto-configured CronJob.
+Once requested via groovy Patch, re-index will be executed only once on next server startup via auto-configured CronJob.
 
 ### SOLR `full` re-index mode
 
