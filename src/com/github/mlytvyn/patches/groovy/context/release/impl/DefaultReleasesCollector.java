@@ -55,7 +55,7 @@ public class DefaultReleasesCollector implements ReleasesCollector<GlobalContext
                 // Release id: <Release number>, 20210512
                 version2release2patch -> getReleaseContext(version2release2patch, cachedReleases),
                 LinkedHashMap::new,
-                // patches represented as: <patch number>_<JIRA project>-<JIRA patch number>, 0002_SAPECOM-1221
+                // patches represented as: <patch number>_<JIRA project>-<JIRA patch number>, 0002_PRJ-1221
                 // `.groovy` file extension will be removed
                 Collectors.mapping(version2release2patch -> version2release2patch[2].substring(0, version2release2patch[2].indexOf(".groovy")), Collectors.toList()))
             )

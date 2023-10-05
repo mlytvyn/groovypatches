@@ -9,7 +9,7 @@ import de.hybris.platform.cronjob.util.TypeRemovalUtil;
 import javax.annotation.Resource;
 import java.util.Map;
 
-public class GlobalRemoveOrphanedTypesContextAction implements GlobalContextAction<GlobalContext> {
+public class GlobalContextRemoveOrphanedTypesAction implements GlobalContextAction<GlobalContext> {
 
     @Resource(name = "logReporter")
     private LogReporter logReporter;

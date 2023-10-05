@@ -8,9 +8,6 @@ import com.github.mlytvyn.patches.groovy.context.patch.PatchException;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchesCollector;
 import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
 import com.github.mlytvyn.patches.groovy.scripting.engine.ScriptingLanguagesService;
-import com.github.mlytvyn.patches.groovy.util.impl.DefaultContentCatalogSynchronizer;
-import com.google.common.collect.ImmutableMap;
-import de.hybris.platform.apiregistryservices.action.DynamicProcessEventAction;
 import de.hybris.platform.core.initialization.SystemSetupAuditDAO;
 import de.hybris.platform.scripting.engine.ScriptExecutable;
 import de.hybris.platform.scripting.engine.ScriptExecutionResult;
@@ -18,10 +15,8 @@ import de.hybris.platform.scripting.engine.exception.ScriptingException;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
-import java.text.MessageFormat;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +46,7 @@ public class DefaultPatchesCollector implements PatchesCollector<GlobalContext> 
                 .filter(Predicate.not(patch -> systemSetupAuditDAO.isPatchApplied(patch.hash())))
                 // ensure that Patch script is compilable, init with exact patch config
                 .peek(patch -> precompilePatchScript(release, patch))
-                // filter out legacy Patches which were applied before Patches 2.0
+                // filter out Patches with hash code specified via Patch itself
                 .filter(Predicate.not(patch -> systemSetupAuditDAO.isPatchApplied(patch.hash())))
                 // filter out Patches per applicable environment
                 // this will filter out only MAIN Patch, we still can have main patch for all envs and few env specific patches assigned or even nested one (which also may be env specific)

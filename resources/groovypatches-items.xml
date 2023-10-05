@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<items xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="items.xsd">
+
+    <itemtypes>
+        <itemtype code="SolrFacetSearchConfig" autocreate="false" generate="false">
+            <attributes>
+                <attribute qualifier="reIndexAfterStartUp" type="boolean">
+                    <persistence type="property"/>
+                    <defaultvalue>Boolean.FALSE</defaultvalue>
+                </attribute>
+            </attributes>
+        </itemtype>
+
+        <itemtype code="PatchesFullReIndexCronJob" extends="CronJob"/>
+    </itemtypes>
+</items>

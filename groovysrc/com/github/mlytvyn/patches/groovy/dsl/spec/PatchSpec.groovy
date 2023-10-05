@@ -1,14 +1,8 @@
 package com.github.mlytvyn.patches.groovy.dsl.spec
 
-import com.github.mlytvyn.patches.groovy.ContentCatalogEnum
-import com.github.mlytvyn.patches.groovy.EmailComponentTemplateEnum
-import com.github.mlytvyn.patches.groovy.EmailTemplateEnum
-import com.github.mlytvyn.patches.groovy.EnvironmentEnum
-import com.github.mlytvyn.patches.groovy.SiteEnum
-import com.github.mlytvyn.patches.groovy.SolrEnum
+import com.github.mlytvyn.patches.groovy.*
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext
-import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexTemplateContext
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriber
 import com.github.mlytvyn.patches.groovy.context.patch.PatchDataFolderRelation
@@ -107,7 +101,7 @@ class PatchSpec {
     void removeOrphanedTypes() { context.removeOrphanedTypes() }
 
     void schedulePartialUpdate(SolrEnum solrIndex, Set<String> indexedProperties) {
-        context.schedulePartialUpdate(solrIndex, indexedProperties)
+        context.partialReIndex(solrIndex, indexedProperties)
     }
 
     void fullReIndex(SolrEnum... solrIndexes) { context.fullReIndex(solrIndexes) }

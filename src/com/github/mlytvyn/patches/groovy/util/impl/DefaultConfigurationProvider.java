@@ -1,11 +1,12 @@
 package com.github.mlytvyn.patches.groovy.util.impl;
 
-import com.github.mlytvyn.patches.groovy.util.ConfigurationProvider;
 import com.github.mlytvyn.patches.groovy.ContentCatalogEnum;
 import com.github.mlytvyn.patches.groovy.EmailComponentTemplateEnum;
 import com.github.mlytvyn.patches.groovy.EmailTemplateEnum;
 import com.github.mlytvyn.patches.groovy.SiteEnum;
 import com.github.mlytvyn.patches.groovy.SolrEnum;
+import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum;
+import com.github.mlytvyn.patches.groovy.util.ConfigurationProvider;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 
 import javax.annotation.Resource;
@@ -38,5 +39,14 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     @Override
     public String getSolrCoreName(final SolrEnum solr) {
         return configurationService.getConfiguration().getString(String.format("patches.groovy.solr.index.%s.name", solr));
+    }
+
+    @Override
+    public String getSolrIndexedTypeName(final SolrIndexedTypeEnum indexedType) {
+        return configurationService.getConfiguration().getString(String.format("patches.groovy.solr.index.type.%s.identifier", indexedType));
+    }
+    @Override
+    public String getSolrIndexedTypePartialCronJobPrefix(final SolrIndexedTypeEnum indexedType) {
+        return configurationService.getConfiguration().getString("patches.groovy.solr.index.partial.cronJob.prefix", "patchesPartialReIndexCronJob_") + indexedType;
     }
 }

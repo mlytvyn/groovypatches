@@ -8,7 +8,12 @@
     </enum>
 
     <enum class="com.github.mlytvyn.patches.groovy.SolrEnum">
-        <description>Define property for each new value: `patches.groovy.solr.index.%VALUE%.id=id`</description>
+        <description>Define property for each new value: `patches.groovy.solr.index.%VALUE%.name=id`</description>
+        <value>DUMMY</value>
+    </enum>
+
+    <enum class="com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum">
+        <description>Define property for each new value: `patches.groovy.solr.index.type.%VALUE%.identifier=id`</description>
         <value>DUMMY</value>
     </enum>
 
