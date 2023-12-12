@@ -12,12 +12,16 @@ import de.hybris.platform.servicelayer.internal.model.ServicelayerJobModel;
 import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Locale;
 
 public class PatchesPendingFullReIndexEventListener extends AbstractPatchesPendingReIndexEventListener<AfterInitializationEndEvent> {
+
+    private static final Logger LOG = LogManager.getLogger(PatchesPendingFullReIndexEventListener.class);
 
     @Resource(name = "cronJobService")
     private CronJobService cronJobService;
@@ -32,6 +36,13 @@ public class PatchesPendingFullReIndexEventListener extends AbstractPatchesPendi
 
     @Override
     protected void onEvent(final AfterInitializationEndEvent event) {
+        final var forceDisable = configurationService.getConfiguration().getBoolean("patches.groovy.solr.index.force.disable", false);
+
+        if (forceDisable) {
+            LOG.info("Index operation is disabled by `patches.groovy.solr.index.force.disable` property.");
+            return;
+        }
+
         final String cronJobName = configurationService.getConfiguration().getString("patches.groovy.solr.index.full.cronJob.name", "patchesFullReIndexCronJob");
         final CronJobModel cronJob = getCronJobModel(cronJobName);
 
