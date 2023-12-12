@@ -129,6 +129,7 @@ It is possible to customize behaviour of the service job by extending `patchesFu
 | `patches.groovy.solr.index.full.cronJob.language`         | Default language for CronJob, fallback to `en`                                                                       |
 | `patches.groovy.solr.index.full.serviceLayerJob.name`     | Default name for custom ServiceLayerJob                                                                              |
 | `patches.groovy.solr.index.full.serviceLayerJob.springId` | Default Spring Bean to be used for partial re-index. By-default set to OOTB `patchesFullReIndexJobPerformable` bean. |
+| `patches.groovy.solr.index.force.disable`                 | Property to force disable index operation even if `fullReIndex` parameter is specified. By-default is set to false.  |
 
 ### SOLR `partial` re-index mode
 
@@ -145,6 +146,7 @@ It is possible to customize behaviour of the service job by extending `solrExtIn
 | `patches.groovy.solr.index.partial.cronJob.language`              | Default language for CronJob, fallback to `en`                                                                                    |
 | `patches.groovy.solr.index.partial.serviceLayerJob.code`          | Default name for custom ServiceLayerJob                                                                                           |
 | `patches.groovy.solr.index.partial.serviceLayerJob.springId`      | Default Spring Bean to be used for partial re-index. By-default set to OOTB `solrExtIndexerJob` bean.                             |
+| `patches.groovy.solr.index.force.disable`                         | Property to force disable index operation even if `partialReIndex` parameter is specified. By-default is set to false.            |
 
 ## Sample Groovy patch
 

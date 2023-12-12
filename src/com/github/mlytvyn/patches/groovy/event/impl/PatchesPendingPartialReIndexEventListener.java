@@ -5,6 +5,7 @@ import com.github.mlytvyn.patches.groovy.solrfacetsearch.config.PatchesFacetSear
 import com.github.mlytvyn.patches.groovy.util.ConfigurationProvider;
 import de.hybris.platform.cronjob.enums.CronJobStatus;
 import de.hybris.platform.cronjob.model.TriggerModel;
+import de.hybris.platform.servicelayer.config.ConfigurationService;
 import de.hybris.platform.servicelayer.cronjob.CronJobService;
 import de.hybris.platform.servicelayer.event.events.AfterInitializationEndEvent;
 import de.hybris.platform.servicelayer.exceptions.UnknownIdentifierException;
@@ -38,9 +39,18 @@ public class PatchesPendingPartialReIndexEventListener extends AbstractPatchesPe
     private ConfigurationProvider configurationProvider;
     @Resource(name = "patchesFacetSearchConfigService")
     private PatchesFacetSearchConfigService patchesFacetSearchConfigService;
+    @Resource(name = "configurationService")
+    protected ConfigurationService configurationService;
 
     @Override
     protected void onEvent(final AfterInitializationEndEvent afterInitializationEndEvent) {
+        final var forceDisable = configurationService.getConfiguration().getBoolean("patches.groovy.solr.index.force.disable", false);
+
+        if (forceDisable) {
+            LOG.info("Index operation is disabled by `patches.groovy.solr.index.force.disable` property.");
+            return;
+        }
+
         final List<SolrExtIndexerCronJobModel> cronJobs = EnumSet.allOf(SolrIndexedTypeEnum.class).stream()
                 .map(this::retrieveIndexingCronJob)
                 .flatMap(Optional::stream)
