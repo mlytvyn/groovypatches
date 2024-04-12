@@ -6,5 +6,5 @@ import java.io.IOException;
 
 public interface ReleasesCollector<G extends GlobalContext> {
 
-    void collect(G globalContext, String locationPattern) throws IOException;
+    void collect(G globalContext, String... patterns) throws IOException;
 }

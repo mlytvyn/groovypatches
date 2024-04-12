@@ -5,12 +5,23 @@
         <itemtype code="SolrFacetSearchConfig" autocreate="false" generate="false">
             <attributes>
                 <attribute qualifier="reIndexAfterStartUp" type="boolean">
+                    <description>
+                        This property is used by GroovyPatches framework to trigger index CronJob after migrating data
+                        and on a next server startup.
+                        It is intentionally delayed to not block the patching process by long-running indexing
+                        operations.
+                    </description>
                     <persistence type="property"/>
                     <defaultvalue>Boolean.FALSE</defaultvalue>
                 </attribute>
             </attributes>
         </itemtype>
 
-        <itemtype code="PatchesFullReIndexCronJob" extends="CronJob"/>
+        <itemtype code="PatchesFullReIndexCronJob" extends="CronJob">
+            <description>
+                CronJob used by the GroovyPatches framework for delayed indexing operations,
+                requested during patching process by applied patches.
+            </description>
+        </itemtype>
     </itemtypes>
 </items>
