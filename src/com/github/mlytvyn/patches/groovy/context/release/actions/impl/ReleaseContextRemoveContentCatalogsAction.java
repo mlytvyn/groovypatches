@@ -1,8 +1,8 @@
 package com.github.mlytvyn.patches.groovy.context.release.actions.impl;
 
+import com.github.mlytvyn.patches.groovy.ContentCatalogEnum;
 import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
 import com.github.mlytvyn.patches.groovy.context.release.actions.ReleaseContextAction;
-import com.github.mlytvyn.patches.groovy.ContentCatalogEnum;
 import com.github.mlytvyn.patches.groovy.util.ConfigurationProvider;
 import com.github.mlytvyn.patches.groovy.util.LogReporter;
 import de.hybris.platform.catalog.CatalogService;
@@ -53,12 +53,12 @@ public class ReleaseContextRemoveContentCatalogsAction implements ReleaseContext
         return true;
     }
 
-    private void removeContentCatalog(final String catalogUid) {
+    protected void removeContentCatalog(final String catalogUid) {
         final RemoveCatalogVersionCronJobModel cronJob = createRemoveCatalogVersionCronJob(catalogUid);
         cronJobService.performCronJob(cronJob, true);
     }
 
-    private RemoveCatalogVersionCronJobModel createRemoveCatalogVersionCronJob(final String catalogUid) {
+    protected RemoveCatalogVersionCronJobModel createRemoveCatalogVersionCronJob(final String catalogUid) {
         final CatalogModel catalog = catalogService.getCatalogForId(catalogUid);
 
         final RemoveCatalogVersionCronJobModel cronJob = modelService.create(RemoveCatalogVersionCronJobModel.class);

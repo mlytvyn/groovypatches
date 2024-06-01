@@ -52,7 +52,7 @@ public class GlobalContextSolrRemoveCoreAction implements GlobalContextAction<Gl
         logReporter.logInfo(context, "[Global] Completed SOLR core's removal");
     }
 
-    private void executeSolrCoreRemove(final SystemSetupContext context, final GlobalContext globalContext, final String solrCoreName) {
+    protected void executeSolrCoreRemove(final SystemSetupContext context, final GlobalContext globalContext, final String solrCoreName) {
         try {
             final FacetSearchConfig facetSearchConfig = facetSearchConfigService.getConfiguration(solrCoreName);
             for (final IndexedType indexedType : facetSearchConfig.getIndexConfig().getIndexedTypes().values()) {

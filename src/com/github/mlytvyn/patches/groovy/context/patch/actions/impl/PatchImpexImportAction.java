@@ -57,7 +57,7 @@ public class PatchImpexImportAction implements PatchAction<PatchContextDescripto
         }
     }
 
-    private void importAllImpexes(final SystemSetupContext context, final PatchContextDescriptor patch, final String patchesFolder, final Map<String, Object> macroParameters) {
+    protected void importAllImpexes(final SystemSetupContext context, final PatchContextDescriptor patch, final String patchesFolder, final Map<String, Object> macroParameters) {
         try {
             final List<ImpexContext> impexes = Stream.of(new PathMatchingResourcePatternResolver(this.getClass().getClassLoader()).getResources(patchesFolder + "/**/*.impex"))
                     .map(resource -> {
@@ -79,7 +79,7 @@ public class PatchImpexImportAction implements PatchAction<PatchContextDescripto
     /**
      * No need to check is specific impex exists as it should be already checked by {@link PatchValidateAction}
      */
-    private void importSpecifiedImpexes(final SystemSetupContext context, final PatchContextDescriptor patch, final List<ImpexContext> impexes, final String patchesFolder, final Map<String, Object> macroParameters) {
+    protected void importSpecifiedImpexes(final SystemSetupContext context, final PatchContextDescriptor patch, final List<ImpexContext> impexes, final String patchesFolder, final Map<String, Object> macroParameters) {
         impexes.forEach(impex -> {
             final ImpexImportConfig impexImportConfig = impex.config()
                     .orElseGet(() -> patch.getImpexImportConfig()

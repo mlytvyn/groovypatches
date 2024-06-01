@@ -53,7 +53,7 @@ public class GlobalContextSolrFullReIndexAction implements GlobalContextAction<G
     }
 
 
-    private Optional<SolrFacetSearchConfigModel> markSolrFacetSearchConfigForReIndex(final SystemSetupContext context, final String configName) {
+    protected Optional<SolrFacetSearchConfigModel> markSolrFacetSearchConfigForReIndex(final SystemSetupContext context, final String configName) {
         try {
             final SolrFacetSearchConfigModel config = solrFacetSearchConfigDao.findFacetSearchConfigByName(configName);
 

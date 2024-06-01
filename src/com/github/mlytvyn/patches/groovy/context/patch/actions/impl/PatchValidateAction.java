@@ -1,8 +1,8 @@
 package com.github.mlytvyn.patches.groovy.context.patch.actions.impl;
 
-import com.github.mlytvyn.patches.groovy.context.patch.actions.PatchAction;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchValidationException;
+import com.github.mlytvyn.patches.groovy.context.patch.actions.PatchAction;
 import com.github.mlytvyn.patches.groovy.util.ImpexImporter;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -23,7 +23,7 @@ public class PatchValidateAction implements PatchAction<PatchContextDescriptor> 
         }
     }
 
-    private void validatePatchImpexes(final PatchContextDescriptor patch) {
+    protected void validatePatchImpexes(final PatchContextDescriptor patch) {
         if (patch.getImpexes() == null) {
             // patch without impexes
             return;

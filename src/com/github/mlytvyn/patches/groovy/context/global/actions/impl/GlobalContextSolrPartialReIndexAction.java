@@ -78,7 +78,7 @@ public class GlobalContextSolrPartialReIndexAction implements GlobalContextActio
         logReporter.logInfo(context, "[Global] Completed SOLR request for partial reindex");
     }
 
-    private Optional<SolrExtIndexerCronJobModel> preparePartialIndexingCronJob(final SystemSetupContext context, final SolrIndexedTypeEnum indexedType, final Set<String> indexedProperties) {
+    protected Optional<SolrExtIndexerCronJobModel> preparePartialIndexingCronJob(final SystemSetupContext context, final SolrIndexedTypeEnum indexedType, final Set<String> indexedProperties) {
         final String cronJobName = configurationProvider.getSolrIndexedTypePartialCronJobPrefix(indexedType);
 
         try {
@@ -101,7 +101,7 @@ public class GlobalContextSolrPartialReIndexAction implements GlobalContextActio
         }
     }
 
-    private Optional<SolrExtIndexerCronJobModel> tryCreatePartialIndexingCronJob(final SystemSetupContext context, final SolrIndexedTypeEnum indexedTypeKey, final Set<String> indexedProperties, final String cronJobName) {
+    protected Optional<SolrExtIndexerCronJobModel> tryCreatePartialIndexingCronJob(final SystemSetupContext context, final SolrIndexedTypeEnum indexedTypeKey, final Set<String> indexedProperties, final String cronJobName) {
         try {
             final SolrIndexedTypeModel indexedType = getSolrIndexedType(indexedTypeKey);
             final SolrFacetSearchConfigModel facetSearchConfig = indexedType.getSolrFacetSearchConfig();
@@ -138,7 +138,7 @@ public class GlobalContextSolrPartialReIndexAction implements GlobalContextActio
         }
     }
 
-    private IndexerOperationValues getIndexerOperationValues(final SystemSetupContext context) {
+    protected IndexerOperationValues getIndexerOperationValues(final SystemSetupContext context) {
         final String indexerOperationValuesCode = configurationService.getConfiguration().getString("patches.groovy.solr.index.partial.cronJob.indexerType.queryType", IndexerOperationValues.PARTIAL_UPDATE.getCode());
 
         try {
@@ -149,7 +149,7 @@ public class GlobalContextSolrPartialReIndexAction implements GlobalContextActio
         }
     }
 
-    private String computeIndexedTypeName(final SolrIndexedTypeModel indexedType) {
+    protected String computeIndexedTypeName(final SolrIndexedTypeModel indexedType) {
         final String indexName = indexedType.getIndexName();
         final String postfix = StringUtils.isEmpty(indexName)
                 ? ""
@@ -158,7 +158,7 @@ public class GlobalContextSolrPartialReIndexAction implements GlobalContextActio
         return indexedType.getType().getCode() + postfix;
     }
 
-    private SolrIndexerQueryModel getSolrIndexerQuery(final SolrIndexedTypeModel solrIndexedType, final IndexerOperationValues indexerOperation) {
+    protected SolrIndexerQueryModel getSolrIndexerQuery(final SolrIndexedTypeModel solrIndexedType, final IndexerOperationValues indexerOperation) {
         final FlexibleSearchQuery fxsQuery = new FlexibleSearchQuery("SELECT {pk} FROM {SolrIndexerQuery} WHERE {solrIndexedType} = ?solrIndexedType and {type} = ?type");
         fxsQuery.addQueryParameter("solrIndexedType", solrIndexedType);
         fxsQuery.addQueryParameter("type", indexerOperation);
@@ -166,7 +166,7 @@ public class GlobalContextSolrPartialReIndexAction implements GlobalContextActio
         return flexibleSearchService.searchUnique(fxsQuery);
     }
 
-    private SolrIndexedTypeModel getSolrIndexedType(final SolrIndexedTypeEnum indexedTypeKey) {
+    protected SolrIndexedTypeModel getSolrIndexedType(final SolrIndexedTypeEnum indexedTypeKey) {
         final String indexedTypeName = configurationProvider.getSolrIndexedTypeName(indexedTypeKey);
 
         final FlexibleSearchQuery fxsQuery = new FlexibleSearchQuery("SELECT {pk} FROM {SolrIndexedType} WHERE {identifier} = ?identifier");
@@ -175,11 +175,11 @@ public class GlobalContextSolrPartialReIndexAction implements GlobalContextActio
         return flexibleSearchService.searchUnique(fxsQuery);
     }
 
-    private LanguageModel getSessionLanguage() {
+    protected LanguageModel getSessionLanguage() {
         return commonI18NService.getLanguage(configurationService.getConfiguration().getString("patches.groovy.solr.index.partial.cronJob.language", "en"));
     }
 
-    private ServicelayerJobModel retrieveServiceLayerJob() {
+    protected ServicelayerJobModel retrieveServiceLayerJob() {
         final String serviceLayerJobCode = configurationService.getConfiguration().getString("patches.groovy.solr.index.partial.serviceLayerJob.code", "patchesPartialSolrExtIndexerJob");
 
         final FlexibleSearchQuery fxsQuery = new FlexibleSearchQuery("SELECT {pk} FROM {ServicelayerJob} WHERE {code} = ?code");

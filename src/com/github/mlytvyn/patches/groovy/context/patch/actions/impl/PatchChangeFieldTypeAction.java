@@ -1,13 +1,12 @@
 package com.github.mlytvyn.patches.groovy.context.patch.actions.impl;
 
-import com.github.mlytvyn.patches.groovy.context.patch.PatchException;
-import com.github.mlytvyn.patches.groovy.context.patch.actions.PatchAction;
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;
+import com.github.mlytvyn.patches.groovy.context.patch.PatchException;
+import com.github.mlytvyn.patches.groovy.context.patch.actions.PatchAction;
 import com.github.mlytvyn.patches.groovy.util.LogReporter;
 import de.hybris.platform.core.Registry;
 import de.hybris.platform.core.initialization.SystemSetupContext;
-import de.hybris.platform.core.model.product.ProductModel;
 import de.hybris.platform.core.model.type.AttributeDescriptorModel;
 import de.hybris.platform.core.model.type.ComposedTypeModel;
 import de.hybris.platform.servicelayer.exceptions.SystemException;
@@ -16,6 +15,7 @@ import de.hybris.platform.util.Config;
 import de.hybris.platform.util.Utilities;
 import org.fest.util.Collections;
 
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -65,7 +65,11 @@ public class PatchChangeFieldTypeAction implements PatchAction<PatchContextDescr
                     statement = String.format("ALTER TABLE %s ALTER COLUMN %s %s;", table, databaseColumn, newFieldType);
                     break;
                 default:
-                    throw new PatchException(patch, "Unsupported DB Server. DB: " + Config.getDatabase());
+                    statement = getFallbackStatement(table, databaseColumn, newFieldType);
+
+                    if (statement == null) {
+                        throw new PatchException(patch, "Unsupported DB Server. DB: " + Config.getDatabase());
+                    }
             }
             pstmt = conn.prepareStatement(statement);
             pstmt.execute();
@@ -74,5 +78,10 @@ public class PatchChangeFieldTypeAction implements PatchAction<PatchContextDescr
         } finally {
             Utilities.tryToCloseJDBC(conn, pstmt, null);
         }
+    }
+
+    @Nullable
+    protected String getFallbackStatement(final String table, final String databaseColumn, final String newFieldType) {
+        return null;
     }
 }
