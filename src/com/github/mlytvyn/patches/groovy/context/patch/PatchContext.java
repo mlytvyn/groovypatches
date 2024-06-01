@@ -56,6 +56,7 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     protected PatchDataFolderRelation patchDataFolderRelation = PatchDataFolderRelation.RELEASE;
     protected ImpexImportConfig impexImportConfig;
     protected List<ImpexContext> impexes;
+    protected Set<String> resetUserRightsForPrincipals;
     protected EnumSet<EnvironmentEnum> environments = EnumSet.allOf(EnvironmentEnum.class);
     protected Consumer<SystemSetupContext> beforeConsumer;
     protected Consumer<SystemSetupContext> afterConsumer;
@@ -384,6 +385,18 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     @Override
     public PatchContextDescriber createRelatedPatch() {
         return new PatchContext<>(globalContext, releaseContext, extensionName, number, id);
+    }
+
+    @Override
+    public PatchContextDescriber resetUserRightsForPrincipals(final String... principalUIDs) {
+        if (isNotApplicable()) {
+            return this;
+        }
+
+        if (ArrayUtils.isNotEmpty(principalUIDs)) {
+            globalContext.resetUserRightsForPrincipals(Arrays.asList(principalUIDs));
+        }
+        return this;
     }
 
     @Override

@@ -287,4 +287,18 @@ public interface PatchContextDescriber {
      */
     PatchContextDescriber createRelatedPatch();
 
+    /**
+     * This method will register all listed principals for resetting UserRights by removing all ACL entries from the aclentries table.
+     * <p>
+     * Only existing principals will be processed, any non-existing principal will be logged and excluded from the processing.
+     * <p>
+     * This action will be executed as part of the GlobalContext before any patches.
+     * <p>
+     * See {@link de.hybris.platform.persistence.security.ACLEntryJDBC}.
+     *
+     * @param principalUIDs array of principals UIDs
+     * @return current patch
+     */
+    PatchContextDescriber resetUserRightsForPrincipals(String... principalUIDs);
+
 }

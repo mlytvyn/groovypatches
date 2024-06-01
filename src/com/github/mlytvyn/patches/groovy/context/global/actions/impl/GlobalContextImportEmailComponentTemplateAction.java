@@ -1,9 +1,9 @@
 package com.github.mlytvyn.patches.groovy.context.global.actions.impl;
 
-import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
-import com.github.mlytvyn.patches.groovy.context.global.actions.GlobalContextAction;
 import com.github.mlytvyn.patches.groovy.EmailComponentTemplateEnum;
 import com.github.mlytvyn.patches.groovy.SiteEnum;
+import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
+import com.github.mlytvyn.patches.groovy.context.global.actions.GlobalContextAction;
 import com.github.mlytvyn.patches.groovy.util.ConfigurationProvider;
 import com.github.mlytvyn.patches.groovy.util.EmailTemplateImporter;
 import com.github.mlytvyn.patches.groovy.util.LogReporter;
@@ -32,7 +32,7 @@ public class GlobalContextImportEmailComponentTemplateAction implements GlobalCo
         logReporter.logInfo(context, "[Global] completed Email Component Templates import");
     }
 
-    private void importEmailComponentTemplate(final SystemSetupContext context, final GlobalContext globalContext, final EmailComponentTemplateEnum emailComponentTemplate, final Set<SiteEnum> sites) {
+    protected void importEmailComponentTemplate(final SystemSetupContext context, final GlobalContext globalContext, final EmailComponentTemplateEnum emailComponentTemplate, final Set<SiteEnum> sites) {
         sites.forEach(site -> {
             final String siteCode = configurationProvider.getSiteCode(site);
             final String template = configurationProvider.getEmailComponentTemplate(emailComponentTemplate);

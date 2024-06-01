@@ -94,10 +94,14 @@
     <alias name="defaultGlobalContextImportEmailTemplateAction" alias="groovyGlobalContextImportEmailTemplateAction"/>
     <bean id="defaultGlobalContextImportEmailTemplateAction" class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextImportEmailTemplateAction"/>
 
+    <alias name="defaultGlobalContextResetUserRightsAction" alias="groovyGlobalContextResetUserRightsAction"/>
+    <bean id="defaultGlobalContextResetUserRightsAction" class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextResetUserRightsAction"/>
+
     <alias name="globalGroovyPatchesGlobalContextBeforeActions" alias="groovyPatchesGlobalContextBeforeActions"/>
     <util:list id="globalGroovyPatchesGlobalContextBeforeActions">
         <ref bean="groovyGlobalContextValidateAction"/>
         <ref bean="groovyGlobalContextRemoveOrphanedTypesAction"/>
+        <ref bean="groovyGlobalContextResetUserRightsAction"/>
     </util:list>
 
     <alias name="globalGroovyPatchesGlobalContextAfterActions" alias="groovyPatchesGlobalContextAfterActions"/>

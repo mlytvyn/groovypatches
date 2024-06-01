@@ -260,6 +260,8 @@ patch
         )
 // Specify optional description, which will be
         .description("<Optional description of the patch>")
+// Specify principal UIDs for which User Rights should be removed from the aclentries table
+        .resetUserRightsForPrincipals("sampleEmployee@email.com", "employeegrouo", "backofficerole")
 // If specified will override default Impex Import Configuration set via properties for current Patch only, can be overridden for individual Impex via ImpexContext
         .impexImportConfig(
                 ImpexImportConfig.create().failOnError(true)
