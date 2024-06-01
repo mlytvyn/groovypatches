@@ -1,6 +1,17 @@
 Groovy-based patching framework for SAP Commerce Cloud (Hybris)
 =====================
 
+To ensure smooth release process it is crucial to have an automated patching process, the process which will do variety of activities without any manual interaction during the deployment or system update.
+
+Its main concept is - independent patch for every feature/bug/change request/etc. Every patch should be part of the release, and releases can be also grouped.
+
+Each patch is represented by the Groovy file in which developer can request specific activities to be performed in scope of the patch, associated release or the whole deployment process.
+For example: import ImpEx files, re-import Email templates, request SOLR reindex, request catalog synchronisation, reset UserRights, remove orphaned types, execute custom groovy code, etc.
+
+Under the hood it is using existing OOTB SystemSetupAudit type for applied patches.
+
+Such an approach benefits with: maintainability, zero code conflicts, classpath is not affected, highly customisable and flexible patching process, outstanding performance.
+
 ## How to use
 
 * Create new blank extension from `ygroovypatches` template extension - https://github.com/mlytvyn/ygroovypatches
