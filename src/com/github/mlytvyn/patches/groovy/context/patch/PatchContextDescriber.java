@@ -127,6 +127,22 @@ public interface PatchContextDescriber {
     PatchContextDescriber withImpexes(String... impexes);
 
     /**
+     * This method will register ALL impexes of defined impexes for importing by their path related to the extension_name/resources/extension_name/import.
+     * Default {@link ImpexContext} will be created for each passed impex.
+     * <p>
+     * If no args provided - all impexes will be imported according to default sort by file name
+     * <br>
+     * If some args provided - those specific impexes in exact order will be imported
+     * <br>
+     * If method IS NOT used in the patch - impexes will not be imported at all
+     * <p>
+     *
+     * @param impexes blank | array of impexes
+     * @return current patch
+     */
+    PatchContextDescriber withFqnImpexes(String... impexes);
+
+    /**
      * This method will register ALL impexes of defined impexes for importing.
      * This method gives more flexibility for import configuration for individual Impex
      * <p>

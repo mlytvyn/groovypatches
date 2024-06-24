@@ -17,6 +17,7 @@ import com.github.mlytvyn.patches.groovy.setup.GroovyPatchesSystemSetup;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 import org.apache.commons.lang3.ArrayUtils;
 
+import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -177,6 +178,20 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
                 ? Collections.emptyList()
                 : Stream.of(impexes)
                 .map(ImpexContext::of)
+                .collect(Collectors.toList());
+        return this;
+    }
+
+    @Override
+    public PatchContextDescriber withFqnImpexes(final String... impexes) {
+        if (isNotApplicable()) {
+            return this;
+        }
+
+        this.impexes = ArrayUtils.isEmpty(impexes)
+                ? Collections.emptyList()
+                : Stream.of(impexes)
+                .map(ImpexContext::fqn)
                 .collect(Collectors.toList());
         return this;
     }

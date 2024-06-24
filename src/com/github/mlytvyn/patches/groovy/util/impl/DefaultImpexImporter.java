@@ -30,9 +30,12 @@ public class DefaultImpexImporter implements ImpexImporter {
     public void importSingleImpex(final SystemSetupContext context, final String patchesFolder, final ImpexContext impex, final ImpexImportConfig impexImportConfig, final Map<String, Object> macroParameters) {
         logReporter.logInfo(context, String.format("Import: %s", impex.name()));
 
-        final String impexPath = impex.name().contains(patchesFolder)
-            ? impex.name().startsWith("/") ? impex.name() : String.format("/%s", impex.name())
-            : getImpexPath(patchesFolder, impex);
+        final String impexPath = impex.isFqn()
+                ? getFqnImpExPath(impex)
+                : impex.name().contains(patchesFolder)
+                ? getImpExName(impex)
+                : getImpexPath(patchesFolder, impex);
+
         setupImpexService.importImpexFile(impexPath, impexImportConfig, macroParameters);
     }
 
@@ -50,11 +53,29 @@ public class DefaultImpexImporter implements ImpexImporter {
     @Override
     public List<String> getImpexesForPatch(final String patchesFolder, final List<ImpexContext> impexes) {
         return impexes.stream()
-            .map(impex -> getImpexPath(patchesFolder, impex))
-            .collect(Collectors.toList());
+                .map(impex -> impex.isFqn()
+                        ? getFqnImpExPath(impex)
+                        : getImpexPath(patchesFolder, impex))
+                .collect(Collectors.toList());
     }
 
-    private String getImpexPath(final String patchesFolder, final ImpexContext impex) {
+    protected String getFqnImpExPath(final ImpexContext impex) {
+        return "/" + getFolderForFqnImpExFiles() + getImpExName(impex);
+    }
+
+    protected String getImpExName(final ImpexContext impex) {
+        return impex.name().startsWith("/")
+                ? impex.name()
+                : "/" + impex.name();
+    }
+
+    protected String getFolderForFqnImpExFiles() {
+        final String extensionName = configurationService.getConfiguration().getString("patches.groovy.project.extension.name");
+
+        return Paths.get(extensionName, "import").toString();
+    }
+
+    protected String getImpexPath(final String patchesFolder, final ImpexContext impex) {
         return String.format("/%s%s%s", patchesFolder, File.separator, impex.name());
     }
 }

@@ -7,13 +7,19 @@ public class ImpexContext {
 
     private final String name;
     private ImpexImportConfig config;
+    private final boolean fqn;
 
-    private ImpexContext(final String name) {
+    private ImpexContext(final String name, final boolean fqn) {
         this.name = name;
+        this.fqn = fqn;
     }
 
     public static ImpexContext of(final String name) {
-        return new ImpexContext(name);
+        return new ImpexContext(name, false);
+    }
+
+    public static ImpexContext fqn(final String name) {
+        return new ImpexContext(name, true);
     }
 
     public ImpexContext legacyMode(final boolean legacyMode) {
@@ -63,6 +69,10 @@ public class ImpexContext {
         return name;
     }
 
+    public boolean isFqn() {
+        return fqn;
+    }
+
     public ImpexContext config(final ImpexImportConfig config) {
         this.config = config;
         return this;
@@ -73,6 +83,7 @@ public class ImpexContext {
         return "ImpexContext{" +
                 "name='" + name + '\'' +
                 ", config=" + config +
+                ", fqn=" + fqn +
                 '}';
     }
 
