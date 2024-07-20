@@ -270,7 +270,7 @@ patch
                         .dbFieldType(Config.DatabaseName.MYSQL, "TEXT")
                         .dbFieldType(Config.DatabaseName.SQLSERVER, "NCLOB")
         )
-// Allows simple removal of the DB column for existing Type, it will execute SQL query, customize `PatchDropColumnAction` in case of a need
+// Allows simple removal of the DB column for existing Type by execution of the SQL query, customize `PatchDropColumnAction` in case of a need
 // Important: various edge cases may cause this operation to fail, for example, if column is being used in the DB Index. 
         .dropColumn(
                 DropColumnContext.of(ProductModel.class, "p_legacy_column")
