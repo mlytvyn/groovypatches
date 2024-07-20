@@ -3,6 +3,8 @@ package com.github.mlytvyn.patches.groovy.context.patch;
 import com.github.mlytvyn.patches.groovy.ContentCatalogEnum;
 import com.github.mlytvyn.patches.groovy.EnvironmentEnum;
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext;
+import com.github.mlytvyn.patches.groovy.context.CurrentEnvironmentProvider;
+import com.github.mlytvyn.patches.groovy.context.DropColumnContext;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
@@ -38,7 +40,7 @@ public interface PatchContextDescriptor {
     String getName();
 
     /**
-     * Acts as a decorator for {@link GlobalContext#currentEnvironment()} and return current environment, which was identified via {@link EnvironmentInfoService#getEnvironment()}
+     * Acts as a decorator for {@link GlobalContext#currentEnvironment()} and return current environment, which was identified via {@link CurrentEnvironmentProvider#getCurrentEnvironment()}
      *
      * @return current {@link EnvironmentEnum}
      */
@@ -50,6 +52,13 @@ public interface PatchContextDescriptor {
      * @return unmodifiable list of all requests or empty list
      */
     List<ChangeFieldTypeContext> getChangeFieldTypeContexts();
+
+    /**
+     * This method will return all requests to drop a column for current patch.
+     *
+     * @return unmodifiable list of all requests or empty list
+     */
+    List<DropColumnContext> getDropColumnContexts();
 
     /**
      * This method will return patch # for current Patch.

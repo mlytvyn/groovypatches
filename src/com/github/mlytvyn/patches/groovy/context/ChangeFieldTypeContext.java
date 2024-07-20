@@ -9,11 +9,10 @@ import java.util.Map;
 /**
  * Sample usage:
  * <pre>{@code
- * ChangeFieldTypeContext.builder(ProductModel.class, ProductModel.NAME)
- *                         .dbFieldType(Config.DatabaseName.HANA, "TEXT")
- *                         .dbFieldType(Config.DatabaseName.MYSQL, "TEXT")
- *                         .dbFieldType(Config.DatabaseName.SQLSERVER, "NCLOB")
- *                         .build()
+ * ChangeFieldTypeContext.of(ProductModel.class, ProductModel.NAME)
+ *                       .dbFieldType(Config.DatabaseName.HANA, "TEXT")
+ *                       .dbFieldType(Config.DatabaseName.MYSQL, "TEXT")
+ *                       .dbFieldType(Config.DatabaseName.SQLSERVER, "NCLOB")
  * }</pre>
  */
 public class ChangeFieldTypeContext {
