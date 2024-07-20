@@ -33,11 +33,11 @@ public class PatchChangeFieldTypeAction implements PatchAction<PatchContextDescr
         if (CollectionUtils.isEmpty(patch.getChangeFieldTypeContexts())) return;
 
         logReporter.logInfo(context, "Change field type started");
-        patch.getChangeFieldTypeContexts().forEach(changeFieldTypeContext -> changeFieldTypeInternal(patch, changeFieldTypeContext));
+        patch.getChangeFieldTypeContexts().forEach(changeFieldTypeContext -> changeFieldTypeInternal(context, patch, changeFieldTypeContext));
         logReporter.logInfo(context, "Change field type completed");
     }
 
-    protected void changeFieldTypeInternal(final PatchContextDescriptor patch, final ChangeFieldTypeContext changeFieldTypeContext) throws PatchException {
+    protected void changeFieldTypeInternal(final SystemSetupContext context, final PatchContextDescriptor patch, final ChangeFieldTypeContext changeFieldTypeContext) throws PatchException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         try {
@@ -73,8 +73,10 @@ public class PatchChangeFieldTypeAction implements PatchAction<PatchContextDescr
             }
             pstmt = conn.prepareStatement(statement);
             pstmt.execute();
+
+            logReporter.logInfo(context, String.format("Changed column '%s' type to '%s' for composed type '%s'", changeFieldTypeContext.fieldName(), newFieldType, composedType.getCode()));
         } catch (final SQLException | SystemException e) {
-            throw new PatchException(patch, String.format("Cannot change '%s' column '%s' type", changeFieldTypeContext.targetClass().getTypeName(), changeFieldTypeContext.fieldName()), e);
+            throw new PatchException(patch, String.format("Cannot change '%s' column '%s' type", changeFieldTypeContext.targetClass().getSimpleName(), changeFieldTypeContext.fieldName()), e);
         } finally {
             Utilities.tryToCloseJDBC(conn, pstmt, null);
         }

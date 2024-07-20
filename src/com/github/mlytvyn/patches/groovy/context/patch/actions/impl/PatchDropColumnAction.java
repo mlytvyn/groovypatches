@@ -30,11 +30,11 @@ public class PatchDropColumnAction implements PatchAction<PatchContextDescriptor
         if (CollectionUtils.isEmpty(patch.getDropColumnContexts())) return;
 
         logReporter.logInfo(context, "Drop table column started");
-        patch.getDropColumnContexts().forEach(dropColumnContexts -> dropColumnsInternal(patch, dropColumnContexts));
+        patch.getDropColumnContexts().forEach(dropColumnContexts -> dropColumnsInternal(context, patch, dropColumnContexts));
         logReporter.logInfo(context, "Drop table column completed");
     }
 
-    protected void dropColumnsInternal(final PatchContextDescriptor patch, final DropColumnContext dropColumnContext) throws PatchException {
+    protected void dropColumnsInternal(final SystemSetupContext context, final PatchContextDescriptor patch, final DropColumnContext dropColumnContext) throws PatchException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         try {
@@ -46,6 +46,8 @@ public class PatchDropColumnAction implements PatchAction<PatchContextDescriptor
 
             pstmt = conn.prepareStatement(statement);
             pstmt.execute();
+
+            logReporter.logInfo(context, String.format("Dropped column '%s' for '%s' type", databaseColumn, composedType.getCode()));
         } catch (final SQLException | SystemException e) {
             throw new PatchException(patch, String.format("Cannot drop '%s' column '%s' type", dropColumnContext.targetClass().getTypeName(), dropColumnContext.columnName()), e);
         } finally {
