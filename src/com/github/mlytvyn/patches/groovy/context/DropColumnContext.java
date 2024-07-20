@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Sample usage:
  * <pre>{@code
- * ChangeFieldTypeContext.of(ProductModel.class, ProductModel.NAME)
+ * DropColumnContext.of(ProductModel.class, "p_legacy_column_name")
  * }</pre>
  */
 public class DropColumnContext {
