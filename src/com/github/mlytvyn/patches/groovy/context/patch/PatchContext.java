@@ -324,7 +324,7 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     }
 
     @Override
-    public PatchContextDescriber changeFieldType(final DropColumnContext... dropColumnContexts) {
+    public PatchContextDescriber dropColumn(final DropColumnContext... dropColumnContexts) {
         if (isNotApplicable()) {
             return this;
         }
