@@ -8,6 +8,7 @@ import com.github.mlytvyn.patches.groovy.SiteEnum;
 import com.github.mlytvyn.patches.groovy.SolrEnum;
 import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum;
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext;
+import com.github.mlytvyn.patches.groovy.context.DropColumnContext;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
@@ -17,7 +18,6 @@ import com.github.mlytvyn.patches.groovy.setup.GroovyPatchesSystemSetup;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 import org.apache.commons.lang3.ArrayUtils;
 
-import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -40,6 +40,7 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
 
     protected final List<ImpexTemplateContext> impexTemplateContexts = new ArrayList<>();
     protected final List<ChangeFieldTypeContext> changeFieldTypeContexts = new ArrayList<>();
+    protected final List<DropColumnContext> dropColumnContexts = new ArrayList<>();
     protected final Map<ContentCatalogEnum, Boolean> contentCatalogsToBeSyncedNow = new LinkedHashMap<>();
 
     protected final G globalContext;
@@ -323,6 +324,18 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     }
 
     @Override
+    public PatchContextDescriber changeFieldType(final DropColumnContext... dropColumnContexts) {
+        if (isNotApplicable()) {
+            return this;
+        }
+
+        if (ArrayUtils.isNotEmpty(dropColumnContexts)) {
+            this.dropColumnContexts.addAll(Arrays.asList(dropColumnContexts));
+        }
+        return this;
+    }
+
+    @Override
     public PatchContextDescriber removeOrphanedTypes() {
         if (isNotApplicable()) {
             return this;
@@ -427,6 +440,11 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     @Override
     public List<ChangeFieldTypeContext> getChangeFieldTypeContexts() {
         return Collections.unmodifiableList(changeFieldTypeContexts);
+    }
+
+    @Override
+    public List<DropColumnContext> getDropColumnContexts() {
+        return Collections.unmodifiableList(dropColumnContexts);
     }
 
     @Override

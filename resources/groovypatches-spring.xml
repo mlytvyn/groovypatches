@@ -135,6 +135,9 @@
     <alias name="defaultPatchChangeFieldTypeAction" alias="groovyPatchChangeFieldTypeAction"/>
     <bean id="defaultPatchChangeFieldTypeAction" class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchChangeFieldTypeAction"/>
 
+    <alias name="defaultPatchDropColumnAction" alias="groovyPatchDropColumnAction"/>
+    <bean id="defaultPatchDropColumnAction" class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchDropColumnAction"/>
+
     <alias name="defaultPatchImpexImportAction" alias="groovyPatchImpexImportAction"/>
     <bean id="defaultPatchImpexImportAction" class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchImpexImportAction"/>
 
@@ -148,6 +151,7 @@
     <util:list id="globalGroovyPatchesPatchContextActions">
         <ref bean="groovyPatchBeforeConsumerAction"/>
         <ref bean="groovyPatchChangeFieldTypeAction"/>
+        <ref bean="groovyPatchDropColumnAction"/>
         <ref bean="groovyPatchImpexImportAction"/>
         <ref bean="groovyPatchSyncContentCatalogNowAction"/>
         <ref bean="groovyPatchAfterConsumerAction"/>

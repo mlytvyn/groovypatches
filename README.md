@@ -230,6 +230,7 @@ import com.github.mlytvyn.patches.groovy.EnvironmentEnum
 import com.github.mlytvyn.patches.groovy.SolrEnum
 import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext
+import com.github.mlytvyn.patches.groovy.context.DropColumnContext
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexTemplateContext
@@ -268,6 +269,11 @@ patch
                         .dbFieldType(Config.DatabaseName.HANA, "TEXT")
                         .dbFieldType(Config.DatabaseName.MYSQL, "TEXT")
                         .dbFieldType(Config.DatabaseName.SQLSERVER, "NCLOB")
+        )
+// Allows simple removal of the DB column for existing Type, it will execute SQL query, customize `PatchDropColumnAction` in case of a need
+// Important: various edge cases may cause this operation to fail, for example, if column is being used in the DB Index. 
+        .dropColumn(
+                DropColumnContext.of(ProductModel.class, "p_legacy_column")
         )
 // Specify optional description, which will be
         .description("<Optional description of the patch>")

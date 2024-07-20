@@ -13,7 +13,7 @@ import de.hybris.platform.servicelayer.exceptions.SystemException;
 import de.hybris.platform.servicelayer.type.TypeService;
 import de.hybris.platform.util.Config;
 import de.hybris.platform.util.Utilities;
-import org.fest.util.Collections;
+import org.apache.commons.collections4.CollectionUtils;
 
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
@@ -30,11 +30,11 @@ public class PatchChangeFieldTypeAction implements PatchAction<PatchContextDescr
 
     @Override
     public void execute(final SystemSetupContext context, final PatchContextDescriptor patch) {
-        if (!Collections.isEmpty(patch.getChangeFieldTypeContexts())) {
-            logReporter.logInfo(context, "Change field type started");
-            patch.getChangeFieldTypeContexts().forEach(changeFieldTypeContext -> changeFieldTypeInternal(patch, changeFieldTypeContext));
-            logReporter.logInfo(context, "Change field type completed");
-        }
+        if (CollectionUtils.isEmpty(patch.getChangeFieldTypeContexts())) return;
+
+        logReporter.logInfo(context, "Change field type started");
+        patch.getChangeFieldTypeContexts().forEach(changeFieldTypeContext -> changeFieldTypeInternal(patch, changeFieldTypeContext));
+        logReporter.logInfo(context, "Change field type completed");
     }
 
     protected void changeFieldTypeInternal(final PatchContextDescriptor patch, final ChangeFieldTypeContext changeFieldTypeContext) throws PatchException {

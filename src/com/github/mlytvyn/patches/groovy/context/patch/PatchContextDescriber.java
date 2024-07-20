@@ -8,6 +8,7 @@ import com.github.mlytvyn.patches.groovy.SiteEnum;
 import com.github.mlytvyn.patches.groovy.SolrEnum;
 import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum;
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext;
+import com.github.mlytvyn.patches.groovy.context.DropColumnContext;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
@@ -247,6 +248,16 @@ public interface PatchContextDescriber {
      * @return current patch
      */
     PatchContextDescriber changeFieldType(ChangeFieldTypeContext... changeFieldTypeContexts);
+
+    /**
+     * This method will register request for column removal, which will be executed AFTER current Patch.
+     * <p>
+     * Provide class of the Type and actual DB column name for each {@link DropColumnContext}
+     *
+     * @param dropColumnContexts drop column contexts
+     * @return current patch
+     */
+    PatchContextDescriber dropColumn(DropColumnContext... dropColumnContexts);
 
     /**
      * This method request orphaned types removal BEFORE all patches
