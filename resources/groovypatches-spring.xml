@@ -97,15 +97,15 @@
     <alias name="defaultGlobalContextResetUserRightsAction" alias="groovyGlobalContextResetUserRightsAction"/>
     <bean id="defaultGlobalContextResetUserRightsAction" class="com.github.mlytvyn.patches.groovy.context.global.actions.impl.GlobalContextResetUserRightsAction"/>
 
-    <alias name="globalGroovyPatchesGlobalContextBeforeActions" alias="groovyPatchesGlobalContextBeforeActions"/>
-    <util:list id="globalGroovyPatchesGlobalContextBeforeActions">
+    <alias name="defaultGroovyPatchesGlobalContextBeforeActions" alias="groovyPatchesGlobalContextBeforeActions"/>
+    <util:list id="defaultGroovyPatchesGlobalContextBeforeActions">
         <ref bean="groovyGlobalContextValidateAction"/>
         <ref bean="groovyGlobalContextRemoveOrphanedTypesAction"/>
         <ref bean="groovyGlobalContextResetUserRightsAction"/>
     </util:list>
 
-    <alias name="globalGroovyPatchesGlobalContextAfterActions" alias="groovyPatchesGlobalContextAfterActions"/>
-    <util:list id="globalGroovyPatchesGlobalContextAfterActions">
+    <alias name="defaultGroovyPatchesGlobalContextAfterActions" alias="groovyPatchesGlobalContextAfterActions"/>
+    <util:list id="defaultGroovyPatchesGlobalContextAfterActions">
         <ref bean="groovyGlobalContextImportEmailComponentTemplateAction"/>
         <ref bean="groovyGlobalContextImportEmailTemplateAction"/>
         <ref bean="groovyGlobalContextSolrRemoveCoreAction"/>
@@ -113,8 +113,8 @@
         <ref bean="groovyGlobalContextSolrPartialReIndexAction"/>
     </util:list>
 
-    <alias name="globalGroovyPatchesReleaseContextBeforeActions" alias="groovyPatchesReleaseContextBeforeActions"/>
-    <util:list id="globalGroovyPatchesReleaseContextBeforeActions">
+    <alias name="defaultGroovyPatchesReleaseContextBeforeActions" alias="groovyPatchesReleaseContextBeforeActions"/>
+    <util:list id="defaultGroovyPatchesReleaseContextBeforeActions">
     </util:list>
 
     <alias name="defaultReleaseContextRemoveContentCatalogsAction" alias="groovyReleaseContextRemoveContentCatalogsAction"/>
@@ -123,8 +123,8 @@
     <alias name="defaultReleaseContextSyncContentCatalogsAction" alias="groovyReleaseContextSyncContentCatalogsAction"/>
     <bean id="defaultReleaseContextSyncContentCatalogsAction" class="com.github.mlytvyn.patches.groovy.context.release.actions.impl.ReleaseContextSyncContentCatalogsAction"/>
 
-    <alias name="globalGroovyPatchesReleaseContextAfterActions" alias="groovyPatchesReleaseContextAfterActions"/>
-    <util:list id="globalGroovyPatchesReleaseContextAfterActions">
+    <alias name="defaultGroovyPatchesReleaseContextAfterActions" alias="groovyPatchesReleaseContextAfterActions"/>
+    <util:list id="defaultGroovyPatchesReleaseContextAfterActions">
         <ref bean="groovyReleaseContextRemoveContentCatalogsAction"/>
         <ref bean="groovyReleaseContextSyncContentCatalogsAction"/>
     </util:list>
@@ -147,8 +147,8 @@
     <alias name="defaultPatchAfterConsumerAction" alias="groovyPatchAfterConsumerAction"/>
     <bean id="defaultPatchAfterConsumerAction" class="com.github.mlytvyn.patches.groovy.context.patch.actions.impl.PatchAfterConsumerAction"/>
 
-    <alias name="globalGroovyPatchesPatchContextActions" alias="groovyPatchesPatchContextActions"/>
-    <util:list id="globalGroovyPatchesPatchContextActions">
+    <alias name="defaultGroovyPatchesPatchContextActions" alias="groovyPatchesPatchContextActions"/>
+    <util:list id="defaultGroovyPatchesPatchContextActions">
         <ref bean="groovyPatchBeforeConsumerAction"/>
         <ref bean="groovyPatchChangeFieldTypeAction"/>
         <ref bean="groovyPatchDropColumnAction"/>
