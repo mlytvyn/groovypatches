@@ -5,11 +5,13 @@ import com.github.mlytvyn.patches.groovy.EmailTemplateEnum;
 import com.github.mlytvyn.patches.groovy.EnvironmentEnum;
 import com.github.mlytvyn.patches.groovy.SiteEnum;
 import com.github.mlytvyn.patches.groovy.SolrEnum;
+import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
 import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -27,10 +29,10 @@ public class GlobalContext implements Serializable {
     private final EnvironmentEnum currentEnvironment;
     private ImpexImportConfig impexImportConfig;
     private boolean removeOrphanedTypes;
-    private final Set<SolrEnum> indexesToBeReindexed = new LinkedHashSet<>();
-    private final Set<SolrEnum> coresToBeRemoved = new LinkedHashSet<>();
+    private final Set<SolrEnum> solrCoresForReIndex = new LinkedHashSet<>();
+    private final Set<SolrEnum> solrCoresForRemoval = new LinkedHashSet<>();
     private final Set<EmailTemplateEnum> importEmailTemplates = new LinkedHashSet<>();
-    private final Map<SolrEnum, Set<String>> partialUpdateProperties = new HashMap<>();
+    private final Map<SolrIndexedTypeEnum, Set<String>> solrIndexedTypesForPartialReIndex = new HashMap<>();
     private final Map<EmailComponentTemplateEnum, EnumSet<SiteEnum>> importEmailComponentTemplates = new LinkedHashMap<>();
     // following values executed Before all patches and can be skipped
     private transient List<ReleaseContext> releases = Collections.emptyList();
@@ -43,12 +45,21 @@ public class GlobalContext implements Serializable {
         return new GlobalContext(environment);
     }
 
-    public void schedulePartialUpdate(final SolrEnum solrIndex, final Set<String> indexedProperties) {
+    public void scheduleSolrIndexedTypePartialReIndex(final SolrIndexedTypeEnum indexedType, final Collection<String> indexedProperties) {
         if (indexedProperties.isEmpty()) {
             return;
         }
-        partialUpdateProperties().computeIfAbsent(solrIndex, index -> new HashSet<>())
+        partiallyReIndexedSolrIndexedTypes()
+                .computeIfAbsent(indexedType, type -> new HashSet<>())
                 .addAll(indexedProperties);
+    }
+
+    public void scheduleSolrCoreFullReIndex(final List<SolrEnum> solrCores) {
+        solrCoresForFullReIndex().addAll(solrCores);
+    }
+
+    public void scheduleSolrCoresForRemoval(final List<SolrEnum> solrCores) {
+        solrCoresForRemoval().addAll(solrCores);
     }
 
     public ImpexImportConfig impexImportConfig() {
@@ -60,20 +71,20 @@ public class GlobalContext implements Serializable {
         return this;
     }
 
-    public Map<SolrEnum, Set<String>> partialUpdateProperties() {
-        return partialUpdateProperties;
+    public Map<SolrIndexedTypeEnum, Set<String>> partiallyReIndexedSolrIndexedTypes() {
+        return solrIndexedTypesForPartialReIndex;
     }
 
     public Set<EmailTemplateEnum> importEmailTemplates() {
         return importEmailTemplates;
     }
 
-    public Set<SolrEnum> coresToBeRemoved() {
-        return coresToBeRemoved;
+    public Set<SolrEnum> solrCoresForRemoval() {
+        return solrCoresForRemoval;
     }
 
-    public Set<SolrEnum> indexesToBeReindexed() {
-        return indexesToBeReindexed;
+    public Set<SolrEnum> solrCoresForFullReIndex() {
+        return solrCoresForReIndex;
     }
 
     public boolean removeOrphanedTypes() {

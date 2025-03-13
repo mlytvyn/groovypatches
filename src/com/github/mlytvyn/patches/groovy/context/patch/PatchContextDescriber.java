@@ -4,8 +4,10 @@ import com.github.mlytvyn.patches.groovy.ContentCatalogEnum;
 import com.github.mlytvyn.patches.groovy.EmailComponentTemplateEnum;
 import com.github.mlytvyn.patches.groovy.EmailTemplateEnum;
 import com.github.mlytvyn.patches.groovy.EnvironmentEnum;
+import com.github.mlytvyn.patches.groovy.ProductCatalogEnum;
 import com.github.mlytvyn.patches.groovy.SiteEnum;
 import com.github.mlytvyn.patches.groovy.SolrEnum;
+import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum;
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext;
@@ -15,7 +17,6 @@ import de.hybris.platform.core.initialization.SystemSetupContext;
 
 import java.nio.file.Path;
 import java.util.EnumSet;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -175,7 +176,7 @@ public interface PatchContextDescriber {
     /**
      * This method will register specified content catalogs to be synced AFTER current Patch release
      * <p>
-     * By default such catalog sync will not be FORCED
+     * By default, such catalog sync will not be FORCED
      *
      * @param contentCatalogs content catalogs
      * @return current patch
@@ -183,14 +184,34 @@ public interface PatchContextDescriber {
     PatchContextDescriber syncContentCatalogs(ContentCatalogEnum... contentCatalogs);
 
     /**
+     * This method will register specified product catalogs to be synced AFTER current Patch release
+     * <p>
+     * By default, such catalog sync will not be FORCED
+     *
+     * @param productCatalogs product catalogs
+     * @return current patch
+     */
+    PatchContextDescriber syncProductCatalogs(ProductCatalogEnum... productCatalogs);
+
+    /**
      * This method will register specified content catalogs to be FORCED synced AFTER current Patch release
      * <p>
      * If there is already a content catalog registered for sync, it will be overridden due FORCE
      *
-     * @param contentCatalogs contetn catalogs
+     * @param contentCatalogs content catalogs
      * @return current patch
      */
     PatchContextDescriber forcedSyncContentCatalogs(ContentCatalogEnum... contentCatalogs);
+
+    /**
+     * This method will register specified product catalogs to be FORCED synced AFTER current Patch release
+     * <p>
+     * If there is already a product catalog registered for sync, it will be overridden due FORCE
+     *
+     * @param productCatalogs product catalogs
+     * @return current patch
+     */
+    PatchContextDescriber forcedSyncProductCatalogs(ProductCatalogEnum... productCatalogs);
 
     /**
      * This method will register content catalogs for removal AFTER current Patch release
@@ -201,6 +222,14 @@ public interface PatchContextDescriber {
     PatchContextDescriber removeContentCatalogs(ContentCatalogEnum... contentCatalogs);
 
     /**
+     * This method will register product catalogs for removal AFTER current Patch release
+     *
+     * @param productCatalogs product catalogs
+     * @return current patch
+     */
+    PatchContextDescriber removeProductCatalogs(ProductCatalogEnum... productCatalogs);
+
+    /**
      * This method will register specified content catalogs to be synced AFTER current Patch
      *
      * @param contentCatalogs content catalogs
@@ -209,12 +238,28 @@ public interface PatchContextDescriber {
     PatchContextDescriber syncContentCatalogsNow(ContentCatalogEnum... contentCatalogs);
 
     /**
+     * This method will register specified product catalogs to be synced AFTER current Patch
+     *
+     * @param productCatalogs product catalogs
+     * @return current patch
+     */
+    PatchContextDescriber syncProductCatalogsNow(ProductCatalogEnum... productCatalogs);
+
+    /**
      * This method will register specified content catalogs to be FORCED synced AFTER current Patch
      *
      * @param contentCatalogs content catalogs
      * @return current patch
      */
     PatchContextDescriber forcedSyncContentCatalogsNow(ContentCatalogEnum... contentCatalogs);
+
+    /**
+     * This method will register specified product catalogs to be FORCED synced AFTER current Patch
+     *
+     * @param productCatalogs product catalogs
+     * @return current patch
+     */
+    PatchContextDescriber forcedSyncProductCatalogsNow(ProductCatalogEnum... productCatalogs);
 
     /**
      * This method will register additional impex contexts for current Patch which should be used during impex import
@@ -240,13 +285,13 @@ public interface PatchContextDescriber {
     PatchContextDescriber removeOrphanedTypes();
 
     /**
-     * This method will register reindex for specific Solr Core and specific indexed properties
+     * This method will register partial reindex for specific Solr Core and indexed properties of the Indexed Type
      *
-     * @param solrIndex         solr core
+     * @param indexedType       indexed type
      * @param indexedProperties solr indexed properties
      * @return current patch
      */
-    PatchContextDescriber schedulePartialUpdate(SolrEnum solrIndex, Set<String> indexedProperties);
+    PatchContextDescriber partialReIndex(SolrIndexedTypeEnum indexedType, String... indexedProperties);
 
     /**
      * This method will register request for full reindex of the Solr Core

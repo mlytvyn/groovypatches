@@ -1,11 +1,18 @@
 package com.github.mlytvyn.patches.groovy.context.release;
 
 import com.github.mlytvyn.patches.groovy.ContentCatalogEnum;
+import com.github.mlytvyn.patches.groovy.ProductCatalogEnum;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /*
   List of Content Catalogs for synchronization can be updated in a way that: FORCED sync will always override previous value
@@ -19,6 +26,8 @@ public class ReleaseContext implements Serializable {
     private final String id;
     private final Map<ContentCatalogEnum, Boolean> contentCatalogsToBeSynced = new LinkedHashMap<>();
     private final Set<ContentCatalogEnum> contentCatalogsToBeRemoved = new LinkedHashSet<>();
+    private final Map<ProductCatalogEnum, Boolean> productCatalogsToBeSynced = new LinkedHashMap<>();
+    private final Set<ProductCatalogEnum> productCatalogsToBeRemoved = new LinkedHashSet<>();
     private transient Set<PatchContextDescriptor> patches = new LinkedHashSet<>();
 
     private ReleaseContext(final String version, final String id) {
@@ -34,8 +43,16 @@ public class ReleaseContext implements Serializable {
         contentCatalogs.forEach((final ContentCatalogEnum contentCatalog) -> contentCatalogsToBeSynced().putIfAbsent(contentCatalog, false));
     }
 
+    public void syncProductCatalogs(final List<ProductCatalogEnum> contentCatalogs) {
+        contentCatalogs.forEach((final ProductCatalogEnum productCatalog) -> productCatalogsToBeSynced().putIfAbsent(productCatalog, false));
+    }
+
     public void forcedSyncContentCatalogs(final List<ContentCatalogEnum> contentCatalogs) {
         contentCatalogs.forEach((final ContentCatalogEnum contentCatalog) -> contentCatalogsToBeSynced().put(contentCatalog, true));
+    }
+
+    public void forcedSyncProductCatalogs(final List<ProductCatalogEnum> productCatalogs) {
+        productCatalogs.forEach((final ProductCatalogEnum productCatalog) -> productCatalogsToBeSynced().put(productCatalog, true));
     }
 
     public Set<PatchContextDescriptor> patches() {
@@ -55,6 +72,14 @@ public class ReleaseContext implements Serializable {
 
     public Map<ContentCatalogEnum, Boolean> contentCatalogsToBeSynced() {
         return contentCatalogsToBeSynced;
+    }
+
+    public Set<ProductCatalogEnum> productCatalogsToBeRemoved() {
+        return productCatalogsToBeRemoved;
+    }
+
+    public Map<ProductCatalogEnum, Boolean> productCatalogsToBeSynced() {
+        return productCatalogsToBeSynced;
     }
 
     public String version() {
