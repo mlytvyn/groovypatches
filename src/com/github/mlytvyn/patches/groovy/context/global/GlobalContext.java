@@ -29,6 +29,7 @@ public class GlobalContext implements Serializable {
     private final EnvironmentEnum currentEnvironment;
     private ImpexImportConfig impexImportConfig;
     private boolean removeOrphanedTypes;
+    private final Set<String> resetUserRightsForPrincipals = new HashSet<>();
     private final Set<SolrEnum> solrCoresForReIndex = new LinkedHashSet<>();
     private final Set<SolrEnum> solrCoresForRemoval = new LinkedHashSet<>();
     private final Set<EmailTemplateEnum> importEmailTemplates = new LinkedHashSet<>();
@@ -60,6 +61,14 @@ public class GlobalContext implements Serializable {
 
     public void scheduleSolrCoresForRemoval(final List<SolrEnum> solrCores) {
         solrCoresForRemoval().addAll(solrCores);
+    }
+
+    public void resetUserRightsForPrincipals(final List<String> principalUIDs) {
+        resetUserRightsForPrincipals.addAll(principalUIDs);
+    }
+
+    public Set<String> resetUserRightsForPrincipals() {
+        return resetUserRightsForPrincipals;
     }
 
     public ImpexImportConfig impexImportConfig() {

@@ -9,6 +9,7 @@ import com.github.mlytvyn.patches.groovy.SiteEnum;
 import com.github.mlytvyn.patches.groovy.SolrEnum;
 import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum;
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext;
+import com.github.mlytvyn.patches.groovy.context.DropColumnContext;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
@@ -126,6 +127,22 @@ public interface PatchContextDescriber {
      * @return current patch
      */
     PatchContextDescriber withImpexes(String... impexes);
+
+    /**
+     * This method will register ALL impexes of defined impexes for importing by their path related to the extension_name/resources/extension_name/import.
+     * Default {@link ImpexContext} will be created for each passed impex.
+     * <p>
+     * If no args provided - all impexes will be imported according to default sort by file name
+     * <br>
+     * If some args provided - those specific impexes in exact order will be imported
+     * <br>
+     * If method IS NOT used in the patch - impexes will not be imported at all
+     * <p>
+     *
+     * @param impexes blank | array of impexes
+     * @return current patch
+     */
+    PatchContextDescriber withFqnImpexes(String... impexes);
 
     /**
      * This method will register ALL impexes of defined impexes for importing.
@@ -278,6 +295,16 @@ public interface PatchContextDescriber {
     PatchContextDescriber changeFieldType(ChangeFieldTypeContext... changeFieldTypeContexts);
 
     /**
+     * This method will register request for column removal, which will be executed AFTER current Patch.
+     * <p>
+     * Provide class of the Type and actual DB column name for each {@link DropColumnContext}
+     *
+     * @param dropColumnContexts drop column contexts
+     * @return current patch
+     */
+    PatchContextDescriber dropColumn(DropColumnContext... dropColumnContexts);
+
+    /**
      * This method request orphaned types removal BEFORE all patches
      *
      * @return current patch
@@ -331,5 +358,19 @@ public interface PatchContextDescriber {
      * @return current patch
      */
     PatchContextDescriber createRelatedPatch();
+
+    /**
+     * This method will register all listed principals for resetting UserRights by removing all ACL entries from the aclentries table.
+     * <p>
+     * Only existing principals will be processed, any non-existing principal will be logged and excluded from the processing.
+     * <p>
+     * This action will be executed as part of the GlobalContext before any patches.
+     * <p>
+     * See {@link de.hybris.platform.persistence.security.ACLEntryJDBC}.
+     *
+     * @param principalUIDs array of principals UIDs
+     * @return current patch
+     */
+    PatchContextDescriber resetUserRightsForPrincipals(String... principalUIDs);
 
 }

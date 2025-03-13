@@ -9,6 +9,7 @@ import com.github.mlytvyn.patches.groovy.SiteEnum;
 import com.github.mlytvyn.patches.groovy.SolrEnum;
 import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum;
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext;
+import com.github.mlytvyn.patches.groovy.context.DropColumnContext;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
@@ -40,6 +41,7 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
 
     protected final List<ImpexTemplateContext> impexTemplateContexts = new ArrayList<>();
     protected final List<ChangeFieldTypeContext> changeFieldTypeContexts = new ArrayList<>();
+    protected final List<DropColumnContext> dropColumnContexts = new ArrayList<>();
     protected final Map<ContentCatalogEnum, Boolean> contentCatalogsToBeSyncedNow = new LinkedHashMap<>();
     protected final Map<ProductCatalogEnum, Boolean> productCatalogsToBeSyncedNow = new LinkedHashMap<>();
 
@@ -58,6 +60,7 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     protected PatchDataFolderRelation patchDataFolderRelation = PatchDataFolderRelation.RELEASE;
     protected ImpexImportConfig impexImportConfig;
     protected List<ImpexContext> impexes;
+    protected Set<String> resetUserRightsForPrincipals;
     protected EnumSet<EnvironmentEnum> environments = EnumSet.allOf(EnvironmentEnum.class);
     protected Consumer<SystemSetupContext> beforeConsumer;
     protected Consumer<SystemSetupContext> afterConsumer;
@@ -178,6 +181,20 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
                 ? Collections.emptyList()
                 : Stream.of(impexes)
                 .map(ImpexContext::of)
+                .collect(Collectors.toList());
+        return this;
+    }
+
+    @Override
+    public PatchContextDescriber withFqnImpexes(final String... impexes) {
+        if (isNotApplicable()) {
+            return this;
+        }
+
+        this.impexes = ArrayUtils.isEmpty(impexes)
+                ? Collections.emptyList()
+                : Stream.of(impexes)
+                .map(ImpexContext::fqn)
                 .collect(Collectors.toList());
         return this;
     }
@@ -363,6 +380,18 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     }
 
     @Override
+    public PatchContextDescriber dropColumn(final DropColumnContext... dropColumnContexts) {
+        if (isNotApplicable()) {
+            return this;
+        }
+
+        if (ArrayUtils.isNotEmpty(dropColumnContexts)) {
+            this.dropColumnContexts.addAll(Arrays.asList(dropColumnContexts));
+        }
+        return this;
+    }
+
+    @Override
     public PatchContextDescriber removeOrphanedTypes() {
         if (isNotApplicable()) {
             return this;
@@ -443,6 +472,18 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     }
 
     @Override
+    public PatchContextDescriber resetUserRightsForPrincipals(final String... principalUIDs) {
+        if (isNotApplicable()) {
+            return this;
+        }
+
+        if (ArrayUtils.isNotEmpty(principalUIDs)) {
+            globalContext.resetUserRightsForPrincipals(Arrays.asList(principalUIDs));
+        }
+        return this;
+    }
+
+    @Override
     public String getName() {
         return getReleaseContext().id() + " | " + getNumber() + " | " + getId();
     }
@@ -455,6 +496,11 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     @Override
     public List<ChangeFieldTypeContext> getChangeFieldTypeContexts() {
         return Collections.unmodifiableList(changeFieldTypeContexts);
+    }
+
+    @Override
+    public List<DropColumnContext> getDropColumnContexts() {
+        return Collections.unmodifiableList(dropColumnContexts);
     }
 
     @Override

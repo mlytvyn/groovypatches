@@ -1,10 +1,10 @@
 package com.github.mlytvyn.patches.groovy.context.release.actions.impl;
 
+import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchException;
 import com.github.mlytvyn.patches.groovy.context.patch.actions.PatchAction;
 import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
 import com.github.mlytvyn.patches.groovy.context.release.actions.ReleaseContextAction;
-import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;
 import com.github.mlytvyn.patches.groovy.util.LogReporter;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
@@ -47,7 +47,7 @@ public class ReleaseContextApplyPatchesAction implements ReleaseContextAction {
         }
     }
 
-    private void executeSinglePatch(final SystemSetupContext context, final PatchContextDescriptor patch) {
+    protected void executeSinglePatch(final SystemSetupContext context, final PatchContextDescriptor patch) {
         if (patch.isNotApplicable()) {
             logReporter.logInfo(
                 context,

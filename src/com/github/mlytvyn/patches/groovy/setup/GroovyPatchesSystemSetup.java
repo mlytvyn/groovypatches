@@ -34,26 +34,24 @@ public abstract class GroovyPatchesSystemSetup {
     protected LogReporter logReporter;
     @Resource(name = "groovyPatchContextService")
     protected GroovyPatchContextService groovyPatchContextService;
-    @Resource(name = "configurationService")
-    protected ConfigurationService configurationService;
     @Resource(name = "groovyPatchesGlobalContextBeforeActions")
     protected List<GlobalContextAction<GlobalContext>> beforeActions;
     @Resource(name = "groovyPatchesGlobalContextAfterActions")
     protected List<GlobalContextAction<GlobalContext>> afterActions;
 
-    protected void executePatches(final SystemSetupContext context, final String pattern) {
+    protected void executePatches(final SystemSetupContext context, final String... patterns) {
         try {
-            applyPatches(context, configurationService.getConfiguration().getString("patches.groovy.project.extension.name") + pattern);
+            applyPatches(context, patterns);
         } catch (final ContextSerializationException e) {
             LOG.fatal(e.getMessage(), e);
         }
     }
 
-    private void applyPatches(final SystemSetupContext context, final String locationPattern) throws ContextSerializationException {
+    private void applyPatches(final SystemSetupContext context, final String... patterns) throws ContextSerializationException {
         try {
             final GlobalContext globalContext = groovyPatchContextService.restoreOrCreateGlobalContext();
 
-            releasesCollector.collect(globalContext, locationPattern);
+            releasesCollector.collect(globalContext, patterns);
 
             if (globalContext.releases().isEmpty()) {
                 logReporter.logInfo(context, "No pending patches found.");
