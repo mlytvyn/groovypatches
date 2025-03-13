@@ -2,6 +2,7 @@ package com.github.mlytvyn.patches.groovy.context.patch;
 
 import com.github.mlytvyn.patches.groovy.ContentCatalogEnum;
 import com.github.mlytvyn.patches.groovy.EnvironmentEnum;
+import com.github.mlytvyn.patches.groovy.ProductCatalogEnum;
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext;
 import com.github.mlytvyn.patches.groovy.context.CurrentEnvironmentProvider;
 import com.github.mlytvyn.patches.groovy.context.DropColumnContext;
@@ -116,6 +117,18 @@ public interface PatchContextDescriptor {
      * @return empty | unmodifiable map of content catalogs
      */
     Map<ContentCatalogEnum, Boolean> getContentCatalogsToBeSyncedNow();
+
+    /**
+     * This method will return all product catalogs which were registered for synchronization withing the patch.
+     * <br/>
+     * It means that synchronization for those specific product catalogs will be executed right after the patch, not after the Release!
+     * <p>
+     * map.key - ProductCatalog id
+     * map.value - is FORCED sync
+     *
+     * @return empty | unmodifiable map of content catalogs
+     */
+    Map<ProductCatalogEnum, Boolean> getProductCatalogsToBeSyncedNow();
 
     /**
      * This method will return set of environments for which this Patch is applicable.

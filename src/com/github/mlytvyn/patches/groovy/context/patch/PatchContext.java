@@ -4,6 +4,7 @@ import com.github.mlytvyn.patches.groovy.ContentCatalogEnum;
 import com.github.mlytvyn.patches.groovy.EmailComponentTemplateEnum;
 import com.github.mlytvyn.patches.groovy.EmailTemplateEnum;
 import com.github.mlytvyn.patches.groovy.EnvironmentEnum;
+import com.github.mlytvyn.patches.groovy.ProductCatalogEnum;
 import com.github.mlytvyn.patches.groovy.SiteEnum;
 import com.github.mlytvyn.patches.groovy.SolrEnum;
 import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum;
@@ -42,6 +43,7 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     protected final List<ChangeFieldTypeContext> changeFieldTypeContexts = new ArrayList<>();
     protected final List<DropColumnContext> dropColumnContexts = new ArrayList<>();
     protected final Map<ContentCatalogEnum, Boolean> contentCatalogsToBeSyncedNow = new LinkedHashMap<>();
+    protected final Map<ProductCatalogEnum, Boolean> productCatalogsToBeSyncedNow = new LinkedHashMap<>();
 
     protected final G globalContext;
     protected final R releaseContext;
@@ -256,6 +258,16 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     }
 
     @Override
+    public PatchContextDescriber syncProductCatalogs(final ProductCatalogEnum... productCatalogs) {
+        if (isNotApplicable() || ArrayUtils.isEmpty(productCatalogs)) {
+            return this;
+        }
+
+        releaseContext.syncProductCatalogs(Arrays.asList(productCatalogs));
+        return this;
+    }
+
+    @Override
     public PatchContextDescriber forcedSyncContentCatalogs(final ContentCatalogEnum... contentCatalogs) {
         if (isNotApplicable() || ArrayUtils.isEmpty(contentCatalogs)) {
             return this;
@@ -266,12 +278,32 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     }
 
     @Override
+    public PatchContextDescriber forcedSyncProductCatalogs(final ProductCatalogEnum... productCatalogs) {
+        if (isNotApplicable() || ArrayUtils.isEmpty(productCatalogs)) {
+            return this;
+        }
+
+        releaseContext.forcedSyncProductCatalogs(Arrays.asList(productCatalogs));
+        return this;
+    }
+
+    @Override
     public PatchContextDescriber removeContentCatalogs(final ContentCatalogEnum... contentCatalogs) {
         if (isNotApplicable() || ArrayUtils.isEmpty(contentCatalogs)) {
             return this;
         }
 
         releaseContext.contentCatalogsToBeRemoved().addAll(Arrays.asList(contentCatalogs));
+        return this;
+    }
+
+    @Override
+    public PatchContextDescriber removeProductCatalogs(final ProductCatalogEnum... productCatalogs) {
+        if (isNotApplicable() || ArrayUtils.isEmpty(productCatalogs)) {
+            return this;
+        }
+
+        releaseContext.productCatalogsToBeRemoved().addAll(Arrays.asList(productCatalogs));
         return this;
     }
 
@@ -287,6 +319,17 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     }
 
     @Override
+    public PatchContextDescriber syncProductCatalogsNow(final ProductCatalogEnum... productCatalogs) {
+        if (isNotApplicable()) {
+            return this;
+        }
+
+        Arrays.stream(productCatalogs)
+                .forEach(productCatalog -> productCatalogsToBeSyncedNow.putIfAbsent(productCatalog, false));
+        return this;
+    }
+
+    @Override
     public PatchContextDescriber forcedSyncContentCatalogsNow(final ContentCatalogEnum... contentCatalogs) {
         if (isNotApplicable()) {
             return this;
@@ -295,6 +338,19 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
         if (ArrayUtils.isNotEmpty(contentCatalogs)) {
             Arrays.stream(contentCatalogs)
                     .forEach(contentCatalog -> contentCatalogsToBeSyncedNow.put(contentCatalog, true));
+        }
+        return this;
+    }
+
+    @Override
+    public PatchContextDescriber forcedSyncProductCatalogsNow(final ProductCatalogEnum... productCatalogs) {
+        if (isNotApplicable()) {
+            return this;
+        }
+
+        if (ArrayUtils.isNotEmpty(productCatalogs)) {
+            Arrays.stream(productCatalogs)
+                    .forEach(productCatalog -> productCatalogsToBeSyncedNow.put(productCatalog, true));
         }
         return this;
     }
@@ -477,6 +533,11 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     @Override
     public Map<ContentCatalogEnum, Boolean> getContentCatalogsToBeSyncedNow() {
         return contentCatalogsToBeSyncedNow;
+    }
+
+    @Override
+    public Map<ProductCatalogEnum, Boolean> getProductCatalogsToBeSyncedNow() {
+        return productCatalogsToBeSyncedNow;
     }
 
     @Override

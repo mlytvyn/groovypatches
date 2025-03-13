@@ -5,7 +5,7 @@ import de.hybris.platform.core.initialization.SystemSetupContext;
 
 import java.util.Map;
 
-public interface ContentCatalogSynchronizer {
+public interface ContentCatalogSynchronizer extends CatalogSynchronizer<ContentCatalogEnum> {
 
     void synchronize(SystemSetupContext context, Map<ContentCatalogEnum, Boolean> contentCatalogsToBeSynced, boolean parallelSync);
 }

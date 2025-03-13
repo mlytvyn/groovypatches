@@ -116,6 +116,10 @@ patches.groovy.emailTemplate.TEST_EMAIL_TEMPLATE.template=email-testEmail.impex
 # --------
 patches.groovy.catalog.content.TEST_CONTENT_CATALOG.id=${test.content.catalog}
 # --------
+# Product Catalogs configuration
+# --------
+patches.groovy.catalog.product.TEST_PRODUCT_CATALOG.id=${test.product.catalog}
+# --------
 # Sites configuration
 # --------
 patches.groovy.site.TEST_SITE_ID.uid=${test.site.uid}
@@ -308,14 +312,25 @@ patch
         .before({ setup -> })
 // Executes custom groovy logic after everything else, `setup` argument points to `SystemSetupContext`
         .after({ setup -> })
+
 // Registers Content Catalog synchronization with `force=true` attribute, will be executed after the release
         .forcedSyncContentCatalogs(ContentCatalogEnum.DUMMY)
 // Registers Content Catalog synchronization with `force=true` attribute, will be executed after current patch
         .forcedSyncContentCatalogsNow(ContentCatalogEnum.DUMMY)
 // Registers Content Catalog synchronization with `force=false` attribute, will be executed after current release
-        .syncContentCatalogs()
+        .syncContentCatalogs(ContentCatalogEnum.DUMMY)
 // Registers Content Catalog synchronization with `force=false` attribute, will be executed after current patch
-        .syncContentCatalogsNow()
+        .syncContentCatalogsNow(ContentCatalogEnum.DUMMY)
+
+// Registers Product Catalog synchronization with `force=true` attribute, will be executed after the release
+        .forcedSyncProductCatalogs(ProductCatalogEnum.DUMMY)
+// Registers Product Catalog synchronization with `force=true` attribute, will be executed after current patch
+        .forcedSyncProductCatalogsNow(ProductCatalogEnum.DUMMY)
+// Registers Product Catalog synchronization with `force=false` attribute, will be executed after current release
+        .syncProductCatalogs(ProductCatalogEnum.DUMMY)
+// Registers Product Catalog synchronization with `force=false` attribute, will be executed after current patch
+        .syncProductCatalogsNow(ProductCatalogEnum.DUMMY)
+
 // Registering this operation will remove all orphaned types
         .removeOrphanedTypes()
 // Specify email templates which should be re-imported

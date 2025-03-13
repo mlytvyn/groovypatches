@@ -1,6 +1,6 @@
 package com.github.mlytvyn.patches.groovy.context.release.actions.impl;
 
-import com.github.mlytvyn.patches.groovy.ContentCatalogEnum;
+import com.github.mlytvyn.patches.groovy.ProductCatalogEnum;
 import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
 import com.github.mlytvyn.patches.groovy.context.release.actions.ReleaseContextAction;
 import com.github.mlytvyn.patches.groovy.util.ConfigurationProvider;
@@ -16,7 +16,7 @@ import de.hybris.platform.servicelayer.user.UserService;
 
 import javax.annotation.Resource;
 
-public class ReleaseContextRemoveContentCatalogsAction implements ReleaseContextAction {
+public class ReleaseContextRemoveProductCatalogsAction implements ReleaseContextAction {
 
     @Resource(name = "cronJobService")
     protected CronJobService cronJobService;
@@ -35,30 +35,30 @@ public class ReleaseContextRemoveContentCatalogsAction implements ReleaseContext
 
     @Override
     public void execute(final SystemSetupContext context, final ReleaseContext release) {
-        release.contentCatalogsToBeRemoved().forEach(contentCatalog -> {
-            if (checkIfCatalogCanBeRemoved(contentCatalog)) {
-                final String catalogUid = configurationProvider.getContentCatalogId(contentCatalog);
+        release.productCatalogsToBeRemoved().forEach(productCatalog -> {
+            if (checkIfCatalogCanBeRemoved(productCatalog)) {
+                final String catalogUid = configurationProvider.getProductCatalogId(productCatalog);
                 logReporter.logInfo(context, String.format("Starting catalog %s removal", catalogUid));
 
-                removeContentCatalog(catalogUid);
+                removeProductCatalog(catalogUid);
 
                 logReporter.logInfo(context, String.format("Completed catalog %s removal", catalogUid));
             } else {
-                logReporter.logInfo(context, String.format("Catalog %s cannot be removed", contentCatalog), "red");
+                logReporter.logInfo(context, String.format("Catalog %s cannot be removed", productCatalog), "red");
             }
         });
     }
 
-    protected boolean checkIfCatalogCanBeRemoved(final ContentCatalogEnum catalog) {
+    protected boolean checkIfCatalogCanBeRemoved(final ProductCatalogEnum catalog) {
         return true;
     }
 
-    protected void removeContentCatalog(final String catalogUid) {
+    private void removeProductCatalog(final String catalogUid) {
         final RemoveCatalogVersionCronJobModel cronJob = createRemoveCatalogVersionCronJob(catalogUid);
         cronJobService.performCronJob(cronJob, true);
     }
 
-    protected RemoveCatalogVersionCronJobModel createRemoveCatalogVersionCronJob(final String catalogUid) {
+    private RemoveCatalogVersionCronJobModel createRemoveCatalogVersionCronJob(final String catalogUid) {
         final CatalogModel catalog = catalogService.getCatalogForId(catalogUid);
 
         final RemoveCatalogVersionCronJobModel cronJob = modelService.create(RemoveCatalogVersionCronJobModel.class);
