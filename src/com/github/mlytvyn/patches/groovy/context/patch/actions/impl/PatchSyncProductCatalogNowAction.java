@@ -2,7 +2,6 @@ package com.github.mlytvyn.patches.groovy.context.patch.actions.impl;
 
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;
 import com.github.mlytvyn.patches.groovy.context.patch.actions.PatchAction;
-import com.github.mlytvyn.patches.groovy.util.ContentCatalogSynchronizer;
 import com.github.mlytvyn.patches.groovy.util.ProductCatalogSynchronizer;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 

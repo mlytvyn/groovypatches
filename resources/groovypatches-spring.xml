@@ -168,6 +168,7 @@
         <ref bean="groovyPatchDropColumnAction"/>
         <ref bean="groovyPatchImpexImportAction"/>
         <ref bean="groovyPatchSyncContentCatalogNowAction"/>
+        <ref bean="groovyPatchSyncProductCatalogNowAction"/>
         <ref bean="groovyPatchAfterConsumerAction"/>
     </util:list>
 
