@@ -44,7 +44,7 @@ public class ReleaseContextRemoveContentCatalogsAction implements ReleaseContext
 
                 logReporter.logInfo(context, String.format("Completed catalog %s removal", catalogUid));
             } else {
-                logReporter.logInfo(context, String.format("Catalog %s cannot be removed, because it is brand or global content catalog", contentCatalog), "red");
+                logReporter.logInfo(context, String.format("Catalog %s cannot be removed", contentCatalog), "red");
             }
         });
     }
