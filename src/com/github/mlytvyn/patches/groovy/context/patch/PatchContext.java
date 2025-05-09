@@ -1,13 +1,6 @@
 package com.github.mlytvyn.patches.groovy.context.patch;
 
-import com.github.mlytvyn.patches.groovy.ContentCatalogEnum;
-import com.github.mlytvyn.patches.groovy.EmailComponentTemplateEnum;
-import com.github.mlytvyn.patches.groovy.EmailTemplateEnum;
-import com.github.mlytvyn.patches.groovy.EnvironmentEnum;
-import com.github.mlytvyn.patches.groovy.ProductCatalogEnum;
-import com.github.mlytvyn.patches.groovy.SiteEnum;
-import com.github.mlytvyn.patches.groovy.SolrEnum;
-import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum;
+import com.github.mlytvyn.patches.groovy.*;
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext;
 import com.github.mlytvyn.patches.groovy.context.DropColumnContext;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
@@ -17,7 +10,6 @@ import com.github.mlytvyn.patches.groovy.context.impex.ImpexTemplateContext;
 import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
 import com.github.mlytvyn.patches.groovy.setup.GroovyPatchesSystemSetup;
 import de.hybris.platform.core.initialization.SystemSetupContext;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
@@ -27,7 +19,6 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PatchContext<G extends GlobalContext, R extends ReleaseContext> implements PatchContextDescriber, PatchContextDescriptor {
