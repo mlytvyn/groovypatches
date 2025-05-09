@@ -1,12 +1,13 @@
 package com.github.mlytvyn.patches.groovy.context.impex;
 
 
-import java.util.Optional;
+import javax.annotation.Nullable;import java.util.ArrayList;import java.util.Collection;import java.util.Optional;
 
 public class ImpexContext {
 
     private final String name;
     private ImpexImportConfig config;
+    private Collection<ImpexTemplateContext> templateContexts;
     private final boolean fqn;
 
     private ImpexContext(final String name, final boolean fqn) {
@@ -20,6 +21,26 @@ public class ImpexContext {
 
     public static ImpexContext fqn(final String name) {
         return new ImpexContext(name, true);
+    }
+
+    @Nullable
+    public Collection<ImpexTemplateContext> templateContexts() {
+        return this.templateContexts;
+    }
+
+    /**
+     * Corresponding ImpEx file will be executed for each passed Template Content
+     *
+     * @param templateContext Template Contexts
+     * @return this
+     */
+    public ImpexContext addTemplateContext(final ImpexTemplateContext templateContext) {
+        if (this.templateContexts == null) {
+            this.templateContexts = new ArrayList<>();
+        }
+        this.templateContexts.add(templateContext);
+
+        return this;
     }
 
     public ImpexContext legacyMode(final boolean legacyMode) {

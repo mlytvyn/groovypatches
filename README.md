@@ -305,11 +305,23 @@ patch
                 ImpexContext.of("import_1.impex").legacyMode(true).enableCodeExecution(true).failOnError(true),
                 ImpexContext.of("import_2.impex")
         )
+// Besides that it is possible to specify multiple Template Contexts per ImpEx
+        .withImpexes(
+                ImpexContext.of("import_3.impex")
+                        .addTemplateContext(ImpexTemplateContext.of("first execution")
+                                .macroParameter("siteUid", cp.getSiteCode(SiteEnum.DUMMY))
+                        )
+                        .addTemplateContext(ImpexTemplateContext.of("first execution")
+                                .macroParameter("siteUid", cp.getSiteCode(SiteEnum.NOT_DUMMY)
+                                )
+                        )
+        )
 
 // It is possible to specify custom Impex Template Contexts, it will lead to import of all impexes specified via `.withImpexes` with each defined ImpexTemplateContext
 // enables possibility to create "template" based impexes and pass different params as a Map
 // similar approach is used for Impexes imported via Addon, see AddOnConfigDataImportService
 // in the Impex file each parameter will be injected as `$parameterName`
+// take a note that ImpEx with own Template Contexts will be executed also for each Template Context set per Patch via below method
         .withImpexTemplateContexts(
                 ImpexTemplateContext.of("Site Dummy")
                         .macroParameter("siteUid", cp.getSiteCode(SiteEnum.DUMMY)),
