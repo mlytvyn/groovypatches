@@ -1,13 +1,6 @@
 package com.github.mlytvyn.patches.groovy.context.patch;
 
-import com.github.mlytvyn.patches.groovy.ContentCatalogEnum;
-import com.github.mlytvyn.patches.groovy.EmailComponentTemplateEnum;
-import com.github.mlytvyn.patches.groovy.EmailTemplateEnum;
-import com.github.mlytvyn.patches.groovy.EnvironmentEnum;
-import com.github.mlytvyn.patches.groovy.ProductCatalogEnum;
-import com.github.mlytvyn.patches.groovy.SiteEnum;
-import com.github.mlytvyn.patches.groovy.SolrEnum;
-import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum;
+import com.github.mlytvyn.patches.groovy.*;
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext;
 import com.github.mlytvyn.patches.groovy.context.DropColumnContext;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
@@ -19,22 +12,13 @@ import com.github.mlytvyn.patches.groovy.setup.GroovyPatchesSystemSetup;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 import org.apache.commons.lang3.ArrayUtils;
 
+import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PatchContext<G extends GlobalContext, R extends ReleaseContext> implements PatchContextDescriber, PatchContextDescriptor {
@@ -173,42 +157,26 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
 
     @Override
     public PatchContextDescriber withImpexes(final String... impexes) {
-        if (isNotApplicable()) {
-            return this;
-        }
-
-        this.impexes = ArrayUtils.isEmpty(impexes)
-                ? Collections.emptyList()
-                : Stream.of(impexes)
-                .map(ImpexContext::of)
-                .collect(Collectors.toList());
-        return this;
+        return withImpexes(
+                ImpexContext::of,
+                impexes == null ? null : Arrays.asList(impexes)
+        );
     }
 
     @Override
     public PatchContextDescriber withFqnImpexes(final String... impexes) {
-        if (isNotApplicable()) {
-            return this;
-        }
-
-        this.impexes = ArrayUtils.isEmpty(impexes)
-                ? Collections.emptyList()
-                : Stream.of(impexes)
-                .map(ImpexContext::fqn)
-                .collect(Collectors.toList());
-        return this;
+        return withImpexes(
+                ImpexContext::fqn,
+                impexes == null ? null : Arrays.asList(impexes)
+        );
     }
 
     @Override
     public PatchContextDescriber withImpexes(final ImpexContext... impexContexts) {
-        if (isNotApplicable()) {
-            return this;
-        }
-
-        this.impexes = ArrayUtils.isEmpty(impexContexts)
-                ? Collections.emptyList()
-                : Arrays.asList(impexContexts);
-        return this;
+        return withImpexes(
+                impexContext -> impexContext,
+                impexContexts == null ? null : Arrays.asList(impexContexts)
+        );
     }
 
     @Override
@@ -599,5 +567,24 @@ public class PatchContext<G extends GlobalContext, R extends ReleaseContext> imp
     @Override
     public PatchDataFolderRelation getPatchDataFolderRelation() {
         return patchDataFolderRelation;
+    }
+
+    private <S> PatchContext<G, R> withImpexes(
+            final Function<S, ImpexContext> mapper,
+            @Nullable final Collection<S> impexes
+    ) {
+        if (isNotApplicable()) {
+            return this;
+        }
+
+        if (this.impexes == null) {
+            this.impexes = new ArrayList<>();
+        }
+
+        if (impexes != null) {
+            impexes.forEach(impex -> this.impexes.add(mapper.apply(impex)));
+        }
+
+        return this;
     }
 }
