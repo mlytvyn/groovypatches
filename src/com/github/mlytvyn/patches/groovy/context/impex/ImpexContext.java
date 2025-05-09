@@ -1,7 +1,10 @@
 package com.github.mlytvyn.patches.groovy.context.impex;
 
 
-import javax.annotation.Nullable;import java.util.ArrayList;import java.util.Collection;import java.util.Optional;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 
 public class ImpexContext {
 
