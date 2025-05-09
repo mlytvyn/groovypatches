@@ -312,8 +312,7 @@ patch
                                 .macroParameter("siteUid", cp.getSiteCode(SiteEnum.DUMMY))
                         )
                         .addTemplateContext(ImpexTemplateContext.of("first execution")
-                                .macroParameter("siteUid", cp.getSiteCode(SiteEnum.NOT_DUMMY)
-                                )
+                                .macroParameter("siteUid", cp.getSiteCode(SiteEnum.NOT_DUMMY))
                         )
         )
 
