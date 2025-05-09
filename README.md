@@ -287,6 +287,13 @@ patch
         .impexImportConfig(
                 ImpexImportConfig.create().failOnError(true)
         )
+
+/*
+  It is possible to import various ImpEx files according to the following import rules:
+    1. It is allowed to specify ImpEx files to import via multiple declaration of the `withImpexes(...)` method
+    2. All ImpEx files within the Path Folder will be imported only in case of `withImpexes()` method usage, without any parameters
+    3. If `withImpexes` method (with/out parameters) used several times, only those ImpEx files explicitly passed as parameters will be imported 
+ */
 // If specified without any parameters, all impexes will be imported in natural order, otherwise only specified impexes will be imported according to defined order  
         .withImpexes()
         .withImpexes(
@@ -298,6 +305,7 @@ patch
                 ImpexContext.of("import_1.impex").legacyMode(true).enableCodeExecution(true).failOnError(true),
                 ImpexContext.of("import_2.impex")
         )
+
 // It is possible to specify custom Impex Template Contexts, it will lead to import of all impexes specified via `.withImpexes` with each defined ImpexTemplateContext
 // enables possibility to create "template" based impexes and pass different params as a Map
 // similar approach is used for Impexes imported via Addon, see AddOnConfigDataImportService
@@ -308,6 +316,7 @@ patch
                 ImpexTemplateContext.of("Site Not Dummy")
                         .macroParameter("siteUid", cp.getSiteCode(SiteEnum.NOT_DUMMY))
         )
+
 // Executes custom groovy logic before anything else, `setup` argument points to `SystemSetupContext`
         .before({ setup -> })
 // Executes custom groovy logic after everything else, `setup` argument points to `SystemSetupContext`
