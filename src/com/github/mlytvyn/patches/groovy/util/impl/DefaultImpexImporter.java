@@ -3,6 +3,7 @@ package com.github.mlytvyn.patches.groovy.util.impl;
 import com.github.mlytvyn.patches.groovy.commerceservices.setup.SetupImpexService;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
+import com.github.mlytvyn.patches.groovy.context.impex.ImpexTemplateContext;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchDataFolderRelation;
 import com.github.mlytvyn.patches.groovy.util.ImpexImporter;
@@ -13,7 +14,8 @@ import de.hybris.platform.servicelayer.config.ConfigurationService;
 import javax.annotation.Resource;
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -32,11 +34,21 @@ public class DefaultImpexImporter implements ImpexImporter {
 
         final String impexPath = impex.isFqn()
                 ? getFqnImpExPath(impex)
-                : impex.name().contains(patchesFolder)
-                ? getImpExName(impex)
-                : getImpexPath(patchesFolder, impex);
+                : impex.name().contains(patchesFolder) ? getImpExName(impex) : getImpexPath(patchesFolder, impex);
 
-        setupImpexService.importImpexFile(impexPath, impexImportConfig, macroParameters);
+        final Collection<ImpexTemplateContext> impexTemplateContexts = impex.templateContexts();
+        if (impexTemplateContexts == null) {
+            setupImpexService.importImpexFile(impexPath, impexImportConfig, macroParameters);
+        } else {
+            impexTemplateContexts.forEach(impexTemplateContext -> {
+                logReporter.logInfo(context, "Importing with impex context: " + impexTemplateContext.description());
+
+                final Map<String,Object> combinedMacroParameters = new HashMap<>(macroParameters);
+                combinedMacroParameters.putAll(impexTemplateContext.macroParameters());
+
+                setupImpexService.importImpexFile(impexPath, impexImportConfig, combinedMacroParameters);
+            });
+        }
     }
 
     @Override

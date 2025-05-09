@@ -59,7 +59,6 @@ public class ExtendedSetupImpexService extends DefaultSetupImpexService implemen
             importConfig.setFailOnError(impexImportConfig.failOnError());
             importConfig.setRemoveOnSuccess(impexImportConfig.removeOnSuccess());
             importConfig.setSynchronous(impexImportConfig.synchronous());
-            importConfig.setLegacyMode(impexImportConfig.legacyMode());
 
             final ImportResult importResult = getImportService().importData(importConfig);
             if (importResult.isError()) {
