@@ -9,11 +9,11 @@ import de.hybris.platform.scripting.engine.internal.cache.ScriptExecutablesCache
 import de.hybris.platform.scripting.engine.repository.CacheableScriptsRepository;
 import de.hybris.platform.scripting.engine.repository.ScriptRepositoriesRegistry;
 import de.hybris.platform.scripting.engine.repository.ScriptsRepository;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Optional;
 
 public class ExtendedScriptingLanguagesService extends DefaultScriptingLanguagesService implements ScriptingLanguagesService {

@@ -8,7 +8,7 @@ import de.hybris.platform.servicelayer.config.ConfigurationService;
 import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.user.UserService;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 public class PatchSaveSystemSetupAuditAction implements PatchAction<PatchContextDescriptor> {
 

@@ -14,7 +14,7 @@ import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.session.SessionService;
 import de.hybris.platform.servicelayer.user.UserService;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 public class ReleaseContextRemoveContentCatalogsAction implements ReleaseContextAction {
 

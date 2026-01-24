@@ -6,7 +6,7 @@ import com.github.mlytvyn.patches.groovy.context.patch.PatchContextFactory;
 import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 public class DefaultPatchContextFactory implements PatchContextFactory<GlobalContext, ReleaseContext, PatchContext<GlobalContext, ReleaseContext>> {
 

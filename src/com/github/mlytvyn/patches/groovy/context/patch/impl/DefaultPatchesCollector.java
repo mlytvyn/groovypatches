@@ -16,7 +16,7 @@ import de.hybris.platform.servicelayer.config.ConfigurationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;

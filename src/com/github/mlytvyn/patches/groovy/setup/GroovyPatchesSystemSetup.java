@@ -1,5 +1,7 @@
 package com.github.mlytvyn.patches.groovy.setup;
 
+import com.github.mlytvyn.patches.groovy.context.ContextSerializationException;
+import com.github.mlytvyn.patches.groovy.context.GroovyPatchContextService;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalPatchesException;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalPatchesValidationException;
@@ -12,14 +14,11 @@ import com.github.mlytvyn.patches.groovy.context.release.ReleasesCollector;
 import com.github.mlytvyn.patches.groovy.util.LogReporter;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
-import com.github.mlytvyn.patches.groovy.context.ContextSerializationException;
-import com.github.mlytvyn.patches.groovy.context.GroovyPatchContextService;
 import de.hybris.platform.core.initialization.SystemSetupContext;
-import de.hybris.platform.servicelayer.config.ConfigurationService;
+import jakarta.annotation.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 public abstract class GroovyPatchesSystemSetup {

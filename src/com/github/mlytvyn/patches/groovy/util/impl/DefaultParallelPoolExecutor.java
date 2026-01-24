@@ -5,7 +5,7 @@ import com.github.mlytvyn.patches.groovy.util.ForkJoinWorkerThread;
 import com.github.mlytvyn.patches.groovy.util.ParallelPoolExecutor;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Consumer;

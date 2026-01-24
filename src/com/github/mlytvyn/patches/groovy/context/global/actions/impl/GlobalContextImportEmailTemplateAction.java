@@ -8,7 +8,7 @@ import com.github.mlytvyn.patches.groovy.util.LogReporter;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Collections;
 import java.util.Objects;
 

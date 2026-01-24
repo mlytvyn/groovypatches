@@ -15,8 +15,8 @@ import de.hybris.platform.util.Config;
 import de.hybris.platform.util.Utilities;
 import org.apache.commons.collections4.CollectionUtils;
 
-import javax.annotation.Nullable;
-import javax.annotation.Resource;
+import jakarta.annotation.Nullable;
+import jakarta.annotation.Resource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

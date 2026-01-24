@@ -20,7 +20,7 @@ import de.hybris.platform.solrfacetsearch.solr.SolrSearchProvider;
 import de.hybris.platform.solrfacetsearch.solr.SolrSearchProviderFactory;
 import de.hybris.platform.solrfacetsearch.solr.exceptions.SolrServiceException;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Set;
 

@@ -9,7 +9,7 @@ import com.github.mlytvyn.patches.groovy.util.EmailTemplateImporter;
 import com.github.mlytvyn.patches.groovy.util.LogReporter;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Collections;
 import java.util.Set;
 
