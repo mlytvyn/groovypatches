@@ -13,7 +13,7 @@ import de.hybris.platform.core.initialization.SystemSetupContext;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;

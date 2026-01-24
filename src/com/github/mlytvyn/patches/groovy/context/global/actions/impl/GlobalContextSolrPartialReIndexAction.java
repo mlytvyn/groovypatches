@@ -25,7 +25,7 @@ import de.hybris.platform.solrfacetsearch.model.config.SolrIndexerQueryModel;
 import de.hybris.platform.solrfacetsearch.model.indexer.cron.SolrExtIndexerCronJobModel;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;

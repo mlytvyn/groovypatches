@@ -1,6 +1,7 @@
 package com.github.mlytvyn.patches.groovy.context.impex;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;

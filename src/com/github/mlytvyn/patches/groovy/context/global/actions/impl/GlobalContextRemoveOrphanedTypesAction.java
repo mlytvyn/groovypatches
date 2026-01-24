@@ -6,7 +6,7 @@ import com.github.mlytvyn.patches.groovy.util.LogReporter;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 import de.hybris.platform.cronjob.util.TypeRemovalUtil;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Map;
 
 public class GlobalContextRemoveOrphanedTypesAction implements GlobalContextAction<GlobalContext> {

@@ -13,7 +13,7 @@ import de.hybris.platform.servicelayer.type.TypeService;
 import de.hybris.platform.util.Utilities;
 import org.apache.commons.collections4.CollectionUtils;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

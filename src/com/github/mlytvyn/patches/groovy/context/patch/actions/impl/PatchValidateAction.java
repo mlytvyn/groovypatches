@@ -7,7 +7,7 @@ import com.github.mlytvyn.patches.groovy.util.ImpexImporter;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 

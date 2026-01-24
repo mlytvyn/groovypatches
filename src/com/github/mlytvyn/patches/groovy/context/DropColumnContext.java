@@ -2,7 +2,7 @@ package com.github.mlytvyn.patches.groovy.context;
 
 import de.hybris.platform.core.model.ItemModel;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Sample usage:

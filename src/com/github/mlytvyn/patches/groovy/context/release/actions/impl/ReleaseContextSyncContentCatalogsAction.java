@@ -5,7 +5,7 @@ import com.github.mlytvyn.patches.groovy.context.release.actions.ReleaseContextA
 import com.github.mlytvyn.patches.groovy.util.ContentCatalogSynchronizer;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 public class ReleaseContextSyncContentCatalogsAction implements ReleaseContextAction {
 

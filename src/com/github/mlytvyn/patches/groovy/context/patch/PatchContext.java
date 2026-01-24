@@ -12,7 +12,7 @@ import com.github.mlytvyn.patches.groovy.setup.GroovyPatchesSystemSetup;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 import org.apache.commons.lang3.ArrayUtils;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;

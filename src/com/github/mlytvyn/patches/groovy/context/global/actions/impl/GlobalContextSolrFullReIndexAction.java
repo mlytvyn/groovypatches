@@ -13,7 +13,7 @@ import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.solrfacetsearch.daos.SolrFacetSearchConfigDao;
 import de.hybris.platform.solrfacetsearch.model.config.SolrFacetSearchConfigModel;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;

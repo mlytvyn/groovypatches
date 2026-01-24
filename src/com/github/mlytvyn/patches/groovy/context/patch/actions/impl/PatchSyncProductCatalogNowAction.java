@@ -5,7 +5,7 @@ import com.github.mlytvyn.patches.groovy.context.patch.actions.PatchAction;
 import com.github.mlytvyn.patches.groovy.util.ProductCatalogSynchronizer;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 public class PatchSyncProductCatalogNowAction implements PatchAction<PatchContextDescriptor> {
 

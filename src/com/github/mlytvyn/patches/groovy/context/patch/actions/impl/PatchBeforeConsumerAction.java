@@ -5,7 +5,7 @@ import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriptor;
 import com.github.mlytvyn.patches.groovy.util.LogReporter;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 public class PatchBeforeConsumerAction implements PatchAction<PatchContextDescriptor> {
 

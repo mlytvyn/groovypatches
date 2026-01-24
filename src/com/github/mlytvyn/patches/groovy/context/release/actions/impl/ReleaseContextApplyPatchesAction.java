@@ -10,7 +10,7 @@ import de.hybris.platform.core.initialization.SystemSetupContext;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 import org.apache.logging.log4j.ThreadContext;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 
 public class ReleaseContextApplyPatchesAction implements ReleaseContextAction {

@@ -11,7 +11,7 @@ import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum;
 import com.github.mlytvyn.patches.groovy.util.ConfigurationProvider;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 public class DefaultConfigurationProvider implements ConfigurationProvider {
 

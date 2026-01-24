@@ -5,9 +5,8 @@ import com.github.mlytvyn.patches.groovy.context.global.GlobalContext;
 import com.github.mlytvyn.patches.groovy.context.global.GlobalContextFactory;
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
-import org.apache.commons.configuration.Configuration;
-
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
+import org.apache.commons.configuration2.Configuration;
 
 public class DefaultGlobalContextFactory implements GlobalContextFactory<GlobalContext> {
 
