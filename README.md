@@ -14,7 +14,10 @@ Such an approach benefits with: maintainability, zero code conflicts, classpath 
 
 ## How to use
 
+* Clone this repository to your `hybris/bin/custom`
+* Add `groovypatches` in the `localextensions.xml`
 * Create new blank extension from `ygroovypatches` template extension - https://github.com/mlytvyn/ygroovypatches
+* Add newly create project specific extension to the `localextensions.xml`
 * Create/customize `SystemSetup` class in the newly created custom extension. It is possible to have different set of patches for `Init` and `Update` (just in case of existing solution)
 
 ```java
