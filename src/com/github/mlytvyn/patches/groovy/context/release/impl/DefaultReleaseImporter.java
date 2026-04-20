@@ -32,7 +32,7 @@ public class DefaultReleaseImporter implements ReleaseImporter {
             try {
                 final Set<PatchContextDescriptor> patches = release.patches();
 
-                if (configurationService.getConfiguration().getBoolean("log4j2.threadContext.ReleaseId.enabled", false)) {
+                if (configurationService.getConfiguration().getBoolean("groovypatches.log4j2.threadContext.ReleaseId.enabled", false)) {
                     ThreadContext.put("ReleaseId", release.id());
                 }
                 logReporter.logInfo(context, String.format("[Release: %s] started [%s] patches", release.id(), patches.size()), "green");

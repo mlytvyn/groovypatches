@@ -95,9 +95,9 @@ public class CustomPatchesSystemSetup extends GroovyPatchesSystemSetup {
 
 ```properties
 # Adds release ID to the log4j2 context map
-log4j2.threadContext.ReleaseId.enabled=true
+groovypatches.log4j2.threadContext.ReleaseId.enabled=true
 # Adds patch ID to the log4j2 context map
-log4j2.threadContext.PatchId.enabled=true
+groovypatches.log4j2.threadContext.PatchId.enabled=true
 patches.groovy.project.extension.name=custompatches
 patches.groovy.emails.folder=custompatches/import/emails
 # --------
