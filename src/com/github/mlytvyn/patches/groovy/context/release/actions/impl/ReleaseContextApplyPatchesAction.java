@@ -28,7 +28,7 @@ public class ReleaseContextApplyPatchesAction implements ReleaseContextAction {
     public void execute(final SystemSetupContext context, final ReleaseContext release) {
         for (final PatchContextDescriptor patch : release.patches()) {
             try {
-                if (configurationService.getConfiguration().getBoolean("log4j2.threadContext.PatchId.enabled", false)) {
+                if (configurationService.getConfiguration().getBoolean("groovypatches.log4j2.threadContext.PatchId.enabled", false)) {
                     ThreadContext.put("PatchId", patch.getId());
                 }
 
