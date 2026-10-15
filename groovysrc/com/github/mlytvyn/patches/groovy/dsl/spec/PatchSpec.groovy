@@ -86,36 +86,12 @@ class PatchSpec {
         context.importEmailComponentTemplates(emailComponentTemplates)
     }
 
-    void syncContentCatalogs(ContentCatalogEnum... contentCatalogs) { context.syncContentCatalogs(contentCatalogs) }
-
-    void syncProductCatalogs(ProductCatalogEnum... productCatalogs) { context.syncProductCatalogs(productCatalogs) }
-
-    void forcedSyncContentCatalogs(ContentCatalogEnum... contentCatalogs) {
-        context.forcedSyncContentCatalogs(contentCatalogs)
-    }
-
-    void forcedSyncProductCatalogs(ProductCatalogEnum... productCatalogs) {
-        context.forcedSyncProductCatalogs(productCatalogs)
-    }
-
-    void removeContentCatalogs(ContentCatalogEnum... contentCatalogs) { context.removeContentCatalogs(contentCatalogs) }
-
-    void removeProductCatalogs(ProductCatalogEnum... productCatalogs) { context.removeProductCatalogs(productCatalogs) }
-
-    void syncContentCatalogsNow(ContentCatalogEnum... contentCatalogs) {
-        context.syncContentCatalogsNow(contentCatalogs)
-    }
-
-    void syncProductCatalogsNow(ProductCatalogEnum... productCatalogs) {
-        context.syncProductCatalogsNow(productCatalogs)
-    }
-
-    void forcedSyncContentCatalogsNow(ContentCatalogEnum... contentCatalogs) {
-        context.forcedSyncContentCatalogsNow(contentCatalogs)
-    }
-
-    void forcedSyncProductCatalogsNow(ProductCatalogEnum... productCatalogs) {
-        context.forcedSyncProductCatalogsNow(productCatalogs)
+    void catalogs(
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = CatalogsSpec) Closure closure
+    ) {
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.delegate = new CatalogsSpec(context)
+        closure()
     }
 
     void withImpexTemplateContexts(ImpexTemplateContext... impexTemplateContexts) {
