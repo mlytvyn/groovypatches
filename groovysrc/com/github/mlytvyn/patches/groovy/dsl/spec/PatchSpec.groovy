@@ -76,13 +76,11 @@ class PatchSpec {
 
     void withImpexes(ImpexContext... impexContexts) { context.withImpexes(impexContexts) }
 
-    void importEmailTemplates(EmailTemplateEnum... emailTemplates) { context.importEmailTemplates(emailTemplates) }
-
-    void emailComponentTemplates(
-            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmailComponentTemplatesSpec) Closure closure
+    void emails(
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmailsSpec) Closure closure
     ) {
         closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure.delegate = new EmailComponentTemplatesSpec(context)
+        closure.delegate = new EmailsSpec(context)
         closure()
     }
 
