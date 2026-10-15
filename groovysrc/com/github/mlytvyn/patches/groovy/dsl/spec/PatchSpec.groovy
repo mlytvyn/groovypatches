@@ -1,13 +1,10 @@
 package com.github.mlytvyn.patches.groovy.dsl.spec
 
 import com.github.mlytvyn.patches.groovy.*
-import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext
-import com.github.mlytvyn.patches.groovy.context.DropColumnContext
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriber
 import com.github.mlytvyn.patches.groovy.dsl.PatchDsl
 import de.hybris.platform.core.initialization.SystemSetupContext
-import de.hybris.platform.core.model.ItemModel
 
 import java.util.function.Consumer
 
@@ -88,22 +85,12 @@ class PatchSpec {
         context.withImpexTemplateContexts(ImpexTemplateContextSpec.build(description, closure))
     }
 
-    void changeFieldType(ChangeFieldTypeContext... changeFieldTypeContexts) {
-        context.changeFieldType(changeFieldTypeContexts)
-    }
-
-    void changeFieldType(
-            Class<? extends ItemModel> targetClass,
-            String fieldName,
-            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = ChangeFieldTypeSpec) Closure closure
+    void db(
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = DbSpec) Closure closure
     ) {
-        context.changeFieldType(ChangeFieldTypeSpec.build(targetClass, fieldName, closure))
-    }
-
-    void dropColumn(DropColumnContext... dropColumnContexts) { context.dropColumn(dropColumnContexts) }
-
-    void dropColumn(Class<? extends ItemModel> targetClass, String columnName) {
-        context.dropColumn(DropColumnContext.of(targetClass, columnName))
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.delegate = new DbSpec(context)
+        closure()
     }
 
     void removeOrphanedTypes() { context.removeOrphanedTypes() }

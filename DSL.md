@@ -43,8 +43,8 @@ Every `PatchContextDescriber` method is available inside the block without the `
 | `solr { fullReIndex ... }`                    | `fullReIndex(...)`                                               |
 | `solr { partialReIndex { } }`                 | `partialReIndex(type, properties...)`                            |
 | `solr { removeCores ... }`                    | `removeSolrCore(...)`                                            |
-| `changeFieldType(Type, "field") { }`          | `changeFieldType(ChangeFieldTypeContext.of(Type, "field")...)`   |
-| `dropColumn Type, "column"`                   | `dropColumn(DropColumnContext.of(Type, "column"))`               |
+| `db { changeFieldType(Type, "field") { } }`   | `changeFieldType(ChangeFieldTypeContext.of(Type, "field")...)`   |
+| `db { dropColumn Type, "column" }`            | `dropColumn(DropColumnContext.of(Type, "column"))`               |
 | `customPatchDataFolder { release "folder" }`  | `customPatchDataFolder(Paths.get("folder"))`                     |
 | `customPatchDataFolder { root "folder" }`     | `customPatchDataFolder(Paths.get("folder"), ...Relation.ROOT)`   |
 
@@ -52,7 +52,7 @@ Notes:
 
 * Every block resolves with `Closure.DELEGATE_FIRST`, so Script context variables, like `configurationProvider`, remain accessible within any block
 * An environment specific patch is restricted to its environments before the block is evaluated, so on a non-matching environment its operations are skipped instead of being applied to the Global Context
-* `withNestedPatch`, `withImpexes`, `withFqnImpexes`, `withImpexTemplateContexts` and `withEnvironmentPatch` were dropped from `PatchSpec` - every one of them is fully superseded by a nested block (`nestedPatch { }`, `impexes { }`, `templateContext(...) { }`, `environmentPatch(...) { }`). The raw `changeFieldType(ChangeFieldTypeContext...)` and `dropColumn(DropColumnContext...)` passthroughs stay, next to their block equivalents, since they accept pre-built context objects that a block cannot represent any more concisely
+* `withNestedPatch`, `withImpexes`, `withFqnImpexes`, `withImpexTemplateContexts` and `withEnvironmentPatch` were dropped from `PatchSpec` - every one of them is fully superseded by a nested block (`nestedPatch { }`, `impexes { }`, `templateContext(...) { }`, `environmentPatch(...) { }`). The raw `changeFieldType(ChangeFieldTypeContext...)` and `dropColumn(DropColumnContext...)` passthroughs moved into `db { }` alongside their block/one-liner equivalents, since they accept pre-built context objects a block cannot represent any more concisely, but are still schema-level DB operations worth grouping together - `dropColumn Type, "column"` can be repeated as many times as needed inside the same `db { }` block
 * `customPatchDataFolder`, the catalog operations, `emails` and `solr` are the exceptions, they are available as a block only - `release` / `root` replace the `PatchDataFolderRelation` parameter, `catalogs { content { } / product { } }` replaces the ten `[forced]Sync[Content|Product]Catalogs[Now]` / `remove[Content|Product]Catalogs` methods, `emails { templates ... / componentTemplates { allSites { } / forSites([...]) { } } }` replaces `importEmailTemplates` and the two `importEmailComponentTemplates` overloads - `forSites` takes a `Collection<SiteEnum>` (list literal) followed by a `template(...)` block, and `solr { fullReIndex / partialReIndex { } / removeCores }` replaces the flat `fullReIndex`, `partialReIndex` and `removeSolrCore` methods, with `partialReIndex` itself being block-only (`type` / `properties`)
 * Any method not declared on `PatchSpec` (including the removed `with...` ones) is still forwarded to the underlying `patchContext` if it exists there, see [Project specific operations](#project-specific-operations)
 
@@ -138,16 +138,20 @@ patch {
 // Specify principal UIDs for which User Rights should be removed from the aclentries table
     resetUserRightsForPrincipals "sampleEmployee@email.com", "employeegroup", "backofficerole"
 
+    db {
 // Allows simple modification of the field type in the DB, it will execute SQL query, customize `PatchChangeFieldTypeAction` to adjust SQL or introduce new DB
 // see OOTB `core-advanced-deployment.xml` for allowed DB specific column types, use DB value, not Hybris one
-    changeFieldType(ProductModel, ProductModel.NAME) {
-        dbFieldType Config.DatabaseName.HANA, "TEXT"
-        dbFieldType Config.DatabaseName.MYSQL, "TEXT"
-        dbFieldType Config.DatabaseName.SQLSERVER, "NCLOB"
-    }
+        changeFieldType(ProductModel, ProductModel.NAME) {
+            dbFieldType Config.DatabaseName.HANA, "TEXT"
+            dbFieldType Config.DatabaseName.MYSQL, "TEXT"
+            dbFieldType Config.DatabaseName.SQLSERVER, "NCLOB"
+        }
 // Allows simple removal of the DB column for existing Type by execution of the SQL query, customize `PatchDropColumnAction` in case of a need
 // Important: various edge cases may cause this operation to fail, for example, if column is being used in the DB Index.
-    dropColumn ProductModel, "p_legacy_column"
+// repeat as many times as needed, one line per column
+        dropColumn ProductModel, "p_legacy_column"
+        dropColumn ProductModel, "p_legacy_column_2"
+    }
 
     /*
       It is possible to import various ImpEx files according to the following import rules:
