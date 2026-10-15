@@ -2,7 +2,7 @@ package com.github.mlytvyn.patches.groovy.dsl.spec
 
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext
 
-class ImpexSpec {
+class ImpexSpec implements ImpexConfigFlags {
 
     private final String name
     private boolean fqn = false
@@ -14,17 +14,8 @@ class ImpexSpec {
 
     void fqn(boolean fqn) { this.fqn = fqn }
 
-    void legacyMode(boolean enabled) { configurators << { ImpexContext ctx -> ctx.legacyMode(enabled) } }
-
-    void failOnError(boolean enabled) { configurators << { ImpexContext ctx -> ctx.failOnError(enabled) } }
-
-    void errorIfMissing(boolean enabled) { configurators << { ImpexContext ctx -> ctx.errorIfMissing(enabled) } }
-
-    void removeOnSuccess(boolean enabled) { configurators << { ImpexContext ctx -> ctx.removeOnSuccess(enabled) } }
-
-    void synchronous(boolean enabled) { configurators << { ImpexContext ctx -> ctx.synchronous(enabled) } }
-
-    void enableCodeExecution(boolean enabled) { configurators << { ImpexContext ctx -> ctx.enableCodeExecution(enabled) } }
+    @Override
+    void applyFlag(String flag, boolean value) { configurators << { ImpexContext ctx -> ctx."$flag"(value) } }
 
     void templateContext(
             String description,

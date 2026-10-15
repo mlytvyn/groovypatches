@@ -24,7 +24,7 @@ class ChangeFieldTypeSpec {
         changeFieldTypeContext
     }
 
-    void dbFieldType(Config.DatabaseName databaseName, String fieldType) {
+    void newType(Config.DatabaseName databaseName, String fieldType) {
         changeFieldTypeContext.dbFieldType(databaseName, fieldType)
     }
 }
