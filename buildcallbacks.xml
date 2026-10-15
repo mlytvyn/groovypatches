@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
 <project name="groovypatches_buildcallbacks">
-
+    <macrodef name="groovypatches_after_compile_core">
+        <sequential>
+            <groovynature_compile_core extname="groovypatches" />
+        </sequential>
+    </macrodef>
 </project>

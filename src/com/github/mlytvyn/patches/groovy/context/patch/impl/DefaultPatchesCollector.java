@@ -7,6 +7,7 @@ import com.github.mlytvyn.patches.groovy.context.patch.PatchContextFactory;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchException;
 import com.github.mlytvyn.patches.groovy.context.patch.PatchesCollector;
 import com.github.mlytvyn.patches.groovy.context.release.ReleaseContext;
+import com.github.mlytvyn.patches.groovy.dsl.PatchDslRegistrar;
 import com.github.mlytvyn.patches.groovy.scripting.engine.ScriptingLanguagesService;
 import de.hybris.platform.core.initialization.SystemSetupAuditDAO;
 import de.hybris.platform.scripting.engine.ScriptExecutable;
@@ -34,6 +35,8 @@ public class DefaultPatchesCollector implements PatchesCollector<GlobalContext> 
     protected ScriptingLanguagesService scriptingLanguagesService;
     @Resource(name = "groovyPatchContextFactory")
     protected PatchContextFactory<GlobalContext, ReleaseContext, PatchContext<GlobalContext, ReleaseContext>> patchContextFactory;
+    @Resource(name = "patchDslRegistrar")
+    protected PatchDslRegistrar patchDslRegistrar;
 
     @Override
     public LinkedHashSet<PatchContextDescriptor> collect(final GlobalContext globalContext, final ReleaseContext release, final List<String> plainPatches) {
@@ -88,7 +91,8 @@ public class DefaultPatchesCollector implements PatchesCollector<GlobalContext> 
 
         try {
             final ScriptExecutionResult scriptExecutionResult = scriptExecutable.execute(Map.of(
-                    PATCH_CONTEXT_PARAM, patchContext
+                    PATCH_CONTEXT_PARAM, patchContext,
+                    PATCH_PARAM, patchDslRegistrar.createPatchClosure(patchContext)
             ));
             if (!scriptExecutionResult.isSuccessful()) {
                 throw new PatchException(patchContext, "Script evaluation failed with: " + scriptExecutionResult.getErrorWriter().toString());

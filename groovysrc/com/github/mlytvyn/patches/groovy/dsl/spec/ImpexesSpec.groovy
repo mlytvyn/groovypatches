@@ -13,9 +13,9 @@ class ImpexesSpec {
     }
 
     void config(
-            @DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = ImpexImportConfigSpec) Closure closure
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = ImpexImportConfigSpec) Closure closure
     ) {
-        closure.resolveStrategy = Closure.DELEGATE_ONLY
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
 
         if (importConfig == null) {
             importConfig = ImpexImportConfig.create()
@@ -24,6 +24,19 @@ class ImpexesSpec {
 
         closure.delegate = new ImpexImportConfigSpec(context, importConfig)
         closure()
+    }
+
+    void all() { context.withImpexes() }
+
+    void impex(
+            String name,
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = ImpexSpec) Closure closure = {}
+    ) {
+        def spec = new ImpexSpec(name)
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.delegate = spec
+        closure()
+        context.withImpexes(spec.build())
     }
 }
 

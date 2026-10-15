@@ -1,23 +1,29 @@
 package com.github.mlytvyn.patches.groovy.dsl.spec
 
 import com.github.mlytvyn.patches.groovy.*
-import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext
-import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext
-import com.github.mlytvyn.patches.groovy.context.impex.ImpexTemplateContext
+import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriber
-import com.github.mlytvyn.patches.groovy.context.patch.PatchDataFolderRelation
+import com.github.mlytvyn.patches.groovy.dsl.PatchDsl
 import de.hybris.platform.core.initialization.SystemSetupContext
 
-import java.nio.file.Path
 import java.util.function.Consumer
-import java.util.function.Supplier
 
 class PatchSpec {
 
-    private final PatchContextDescriber context
+    protected final PatchContextDescriber context
 
     PatchSpec(PatchContextDescriber context) {
         this.context = context
+    }
+
+    protected PatchSpec createSpec(PatchContextDescriber relatedContext) { new PatchSpec(relatedContext) }
+
+    def methodMissing(String name, args) {
+        if (context.metaClass.respondsTo(context, name, args as Object[])) {
+            return context.invokeMethod(name, args)
+        }
+
+        throw new MissingMethodException(name, getClass(), args as Object[])
     }
 
     void hash(String hash) { context.hash(hash) }
@@ -27,89 +33,97 @@ class PatchSpec {
     void description(String description) { context.description(description) }
 
     void impexes(
-            @DelegatesTo(strategy = Closure.DELEGATE_ONLY, value = ImpexesSpec) Closure closure
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = ImpexesSpec) Closure closure
     ) {
-        closure.resolveStrategy = Closure.DELEGATE_ONLY
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure.delegate = new ImpexesSpec(context)
         closure()
     }
 
-
-    /*
-
-
-
-
-
-
-
-
-     */
+    void impexImportConfig(ImpexImportConfig config) { context.impexImportConfig(config) }
 
     void before(Consumer<SystemSetupContext> consumer) { context.before(consumer) }
 
     void after(Consumer<SystemSetupContext> consumer) { context.after(consumer) }
 
-    void withNestedPatch(PatchContextDescriber nested) { context.withNestedPatch(nested) }
-
-    void customPatchDataFolder(Path customPatchDataFolder) { context.customPatchDataFolder(customPatchDataFolder) }
-
-    void customPatchDataFolder(Path customPatchDataFolder, PatchDataFolderRelation relation) {
-        context.customPatchDataFolder(customPatchDataFolder, relation)
+    void nestedPatch(
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = PatchSpec) Closure closure
+    ) {
+        def related = context.createRelatedPatch()
+        PatchDsl.registerPatch(createSpec(related), closure)
+        context.withNestedPatch(related)
     }
 
-//    void impexImportConfig(ImpexImportConfig config) { context.impexImportConfig(config) }
-
-    void withImpexes(String... impexes) { context.withImpexes(impexes) }
-
-    void withImpexes(ImpexContext... impexContexts) { context.withImpexes(impexContexts) }
-
-    void importEmailTemplates(EmailTemplateEnum... emailTemplates) { context.importEmailTemplates(emailTemplates) }
-
-    void importEmailComponentTemplates(EnumSet<SiteEnum> sites, EmailComponentTemplateEnum... emailComponentTemplates) {
-        context.importEmailComponentTemplates(sites, emailComponentTemplates)
+    void customPatchDataFolder(
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = PatchDataFolderSpec) Closure closure
+    ) {
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.delegate = new PatchDataFolderSpec(context)
+        closure()
     }
 
-    void importEmailComponentTemplates(EmailComponentTemplateEnum... emailComponentTemplates) {
-        context.importEmailComponentTemplates(emailComponentTemplates)
+    void emails(
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmailsSpec) Closure closure
+    ) {
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.delegate = new EmailsSpec(context)
+        closure()
     }
 
-    void syncContentCatalogs(ContentCatalogEnum... contentCatalogs) { context.syncContentCatalogs(contentCatalogs) }
-
-    void forcedSyncContentCatalogs(ContentCatalogEnum... contentCatalogs) {
-        context.forcedSyncContentCatalogs(contentCatalogs)
+    void catalogs(
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = CatalogsSpec) Closure closure
+    ) {
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.delegate = new CatalogsSpec(context)
+        closure()
     }
 
-    void removeContentCatalogs(ContentCatalogEnum... contentCatalogs) { context.removeContentCatalogs(contentCatalogs) }
-
-    void syncContentCatalogsNow(ContentCatalogEnum... contentCatalogs) {
-        context.syncContentCatalogsNow(contentCatalogs)
+    void templateContext(
+            String description,
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = ImpexTemplateContextSpec) Closure closure = {}
+    ) {
+        context.withImpexTemplateContexts(ImpexTemplateContextSpec.build(description, closure))
     }
 
-    void forcedSyncContentCatalogsNow(ContentCatalogEnum... contentCatalogs) {
-        context.forcedSyncContentCatalogsNow(contentCatalogs)
-    }
-
-    void withImpexTemplateContexts(ImpexTemplateContext... impexTemplateContexts) {
-        context.withImpexTemplateContexts(impexTemplateContexts)
-    }
-
-    void changeFieldType(ChangeFieldTypeContext... changeFieldTypeContexts) {
-        context.changeFieldType(changeFieldTypeContexts)
+    void db(
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = DbSpec) Closure closure
+    ) {
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.delegate = new DbSpec(context)
+        closure()
     }
 
     void removeOrphanedTypes() { context.removeOrphanedTypes() }
 
-    void schedulePartialUpdate(SolrEnum solrIndex, Set<String> indexedProperties) {
-        context.partialReIndex(solrIndex, indexedProperties)
+    void resetUserRightsForPrincipals(String... principalUIDs) { context.resetUserRightsForPrincipals(principalUIDs) }
+
+    void solr(
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SolrSpec) Closure closure
+    ) {
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.delegate = new SolrSpec(context)
+        closure()
     }
 
-    void fullReIndex(SolrEnum... solrIndexes) { context.fullReIndex(solrIndexes) }
+    void environmentPatch(
+            EnvironmentEnum environment,
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = PatchSpec) Closure closure
+    ) {
+        environmentPatch(EnumSet.of(environment), closure)
+    }
 
-    void removeSolrCore(SolrEnum... solrIndexes) { context.removeSolrCore(solrIndexes) }
+    void environmentPatch(
+            Collection<EnvironmentEnum> environments,
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = PatchSpec) Closure closure
+    ) {
+        def targetEnvironments = EnumSet.copyOf(environments)
 
-    void withEnvironmentPatch(EnumSet<EnvironmentEnum> environments, Supplier<PatchContextDescriber> supplier) {
-        context.withEnvironmentPatch(environments, supplier)
+        context.withEnvironmentPatch(targetEnvironments, { ->
+            def related = context.createRelatedPatch()
+            related.environment(targetEnvironments as EnvironmentEnum[])
+            PatchDsl.registerPatch(createSpec(related), closure)
+            related
+        })
     }
 
     void createRelatedPatch() { context.createRelatedPatch() }

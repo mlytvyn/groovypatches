@@ -132,7 +132,8 @@ patches.groovy.site.TEST_SITE_ID.uid=${test.site.uid}
 
 * Create new groovy-based Patch files and optional related ImpEx files.
     * Each patch name must follow naming pattern: `<int number>`.`<patch name>`.groovy, sample `0001_HYB-1.groovy`
-* Provided with `ygroovypatches` `com.github.mlytvyn.patches.groovy.dsl.patch_contributor.gdsl` should provide Script context specific variable `patchContext` in the Intellij IDEA
+    * A patch can be declared either via `patchContext`, see [Sample Groovy patch](#sample-groovy-patch), or as a `patch { }` block, see [DSL.md](DSL.md)
+* Provided with `ygroovypatches` `com.github.mlytvyn.patches.groovy.patch_contributor.gdsl` should provide Script context specific variable `patchContext` and the `patch { }` block in the Intellij IDEA
 
 ## Delayed SOLR re-index
 
@@ -314,10 +315,10 @@ patch
         .withImpexes(
                 ImpexContext.of("import_3.impex")
                         .addTemplateContext(ImpexTemplateContext.of("first execution")
-                                .macroParameter("siteUid", cp.getSiteCode(SiteEnum.DUMMY))
+                                .macroParameter("siteUid", configurationProvider.getSiteCode(SiteEnum.DUMMY))
                         )
                         .addTemplateContext(ImpexTemplateContext.of("first execution")
-                                .macroParameter("siteUid", cp.getSiteCode(SiteEnum.NOT_DUMMY))
+                                .macroParameter("siteUid", configurationProvider.getSiteCode(SiteEnum.NOT_DUMMY))
                         )
         )
 
@@ -328,9 +329,9 @@ patch
 // take a note that ImpEx with own Template Contexts will be executed also for each Template Context set per Patch via below method
         .withImpexTemplateContexts(
                 ImpexTemplateContext.of("Site Dummy")
-                        .macroParameter("siteUid", cp.getSiteCode(SiteEnum.DUMMY)),
+                        .macroParameter("siteUid", configurationProvider.getSiteCode(SiteEnum.DUMMY)),
                 ImpexTemplateContext.of("Site Not Dummy")
-                        .macroParameter("siteUid", cp.getSiteCode(SiteEnum.NOT_DUMMY))
+                        .macroParameter("siteUid", configurationProvider.getSiteCode(SiteEnum.NOT_DUMMY))
         )
 
 // Executes custom groovy logic before anything else, `setup` argument points to `SystemSetupContext`
@@ -376,3 +377,19 @@ patch
 // Schedule delayed partial reindex of the SOLR core, executed after the patching process, on next server start up
         .partialReIndex(SolrIndexedTypeEnum.DUMMY, "name", "id", "etc")
 ```
+
+## DSL-driven patch declaration
+
+The same patch can be declared as a `patch { }` block, with nested blocks instead of static factory chains:
+
+```groovy
+patch {
+    description "HYB-1 | Sample patch"
+
+    impexes {
+        impex "import.impex"
+    }
+}
+```
+
+See [DSL.md](DSL.md) for the complete reference, the DSL based sample patch and the way to expose project specific operations.
