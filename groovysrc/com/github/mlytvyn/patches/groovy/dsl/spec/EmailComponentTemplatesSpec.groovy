@@ -12,25 +12,31 @@ class EmailComponentTemplatesSpec {
         this.context = context
     }
 
-    void all(EmailComponentTemplateEnum... emailComponentTemplates) {
-        context.importEmailComponentTemplates(emailComponentTemplates)
-    }
-
-    void forSites(
-            SiteEnum site,
+    void allSites(
             @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmailComponentTemplatesListSpec) Closure closure
     ) {
-        forSites(EnumSet.of(site), closure)
+        context.importEmailComponentTemplates(collectTemplates(closure))
     }
 
     void forSites(
-            Collection<SiteEnum> sites,
+            Object... siteArgsThenClosure
+    ) {
+        final Closure closure = siteArgsThenClosure[-1] as Closure
+        final List<Object> siteArgs = siteArgsThenClosure[0..-2]
+        final Collection<SiteEnum> sites = (siteArgs.size() == 1 && siteArgs[0] instanceof Collection)
+                ? siteArgs[0] as Collection<SiteEnum>
+                : siteArgs as Collection<SiteEnum>
+
+        context.importEmailComponentTemplates(EnumSet.copyOf(sites), collectTemplates(closure))
+    }
+
+    private EmailComponentTemplateEnum[] collectTemplates(
             @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmailComponentTemplatesListSpec) Closure closure
     ) {
         def spec = new EmailComponentTemplatesListSpec()
         closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure.delegate = spec
         closure()
-        context.importEmailComponentTemplates(EnumSet.copyOf(sites), spec.emailComponentTemplates() as EmailComponentTemplateEnum[])
+        spec.emailComponentTemplates() as EmailComponentTemplateEnum[]
     }
 }

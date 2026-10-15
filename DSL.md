@@ -35,7 +35,7 @@ Every `PatchContextDescriber` method is available inside the block without the `
 | `impexes { config { } }`                      | `impexImportConfig(ImpexImportConfig.create()...)`               |
 | `catalogs { content { sync ... } }`            | `syncContentCatalogs(...)`                                       |
 | `catalogs { product { forcedSyncNow ... } }`   | `forcedSyncProductCatalogsNow(...)`                              |
-| `emailComponentTemplates { all ... }`         | `importEmailComponentTemplates(...)`                             |
+| `emailComponentTemplates { allSites { } }`    | `importEmailComponentTemplates(...)`                             |
 | `emailComponentTemplates { forSites(...) { } }` | `importEmailComponentTemplates(EnumSet.of(...), ...)`          |
 | `solr { fullReIndex ... }`                    | `fullReIndex(...)`                                               |
 | `solr { partialReIndex { } }`                 | `partialReIndex(type, properties...)`                            |
@@ -51,7 +51,7 @@ Notes:
 * Every block resolves with `Closure.DELEGATE_FIRST`, so Script context variables, like `configurationProvider`, remain accessible within any block
 * An environment specific patch is restricted to its environments before the block is evaluated, so on a non-matching environment its operations are skipped instead of being applied to the Global Context
 * The raw methods (`withNestedPatch`, `withEnvironmentPatch`, `withImpexes(ImpexContext...)`, `changeFieldType(ChangeFieldTypeContext...)`, ...) remain available, the nested blocks are an addition, not a replacement
-* `customPatchDataFolder`, the catalog operations, `emailComponentTemplates` and `solr` are the exceptions, they are available as a block only - `release` / `root` replace the `PatchDataFolderRelation` parameter, `catalogs { content { } / product { } }` replaces the ten `[forced]Sync[Content|Product]Catalogs[Now]` / `remove[Content|Product]Catalogs` methods, `emailComponentTemplates { all ... / forSites ... }` replaces the two `importEmailComponentTemplates` overloads, and `solr { fullReIndex / partialReIndex { } / removeCores }` replaces the flat `fullReIndex`, `partialReIndex` and `removeSolrCore` methods, with `partialReIndex` itself being block-only (`type` / `properties`)
+* `customPatchDataFolder`, the catalog operations, `emailComponentTemplates` and `solr` are the exceptions, they are available as a block only - `release` / `root` replace the `PatchDataFolderRelation` parameter, `catalogs { content { } / product { } }` replaces the ten `[forced]Sync[Content|Product]Catalogs[Now]` / `remove[Content|Product]Catalogs` methods, `emailComponentTemplates { allSites { } / forSites(...) { } }` replaces the two `importEmailComponentTemplates` overloads - `forSites` accepts one or more `SiteEnum` directly, or a single `Collection<SiteEnum>`, followed by a `template(...)` block, and `solr { fullReIndex / partialReIndex { } / removeCores }` replaces the flat `fullReIndex`, `partialReIndex` and `removeSolrCore` methods, with `partialReIndex` itself being block-only (`type` / `properties`)
 
 ## Project specific operations
 
@@ -230,13 +230,15 @@ patch {
     importEmailTemplates EmailTemplateEnum.DUMMY
     emailComponentTemplates {
 // Specify email component templates which should be re-imported for all Sites
-        all EmailComponentTemplateEnum.BANNER_COMPONENT
+        allSites() {
+            template EmailComponentTemplateEnum.BANNER_COMPONENT
+        }
 // Specify email component templates which should be re-imported for a single Site
         forSites(SiteEnum.DUMMY) {
             template EmailComponentTemplateEnum.CMS_IMAGE_COMPONENT
         }
 // Specify email component templates which should be re-imported for defined Sites, one template per line
-        forSites([SiteEnum.DUMMY, SiteEnum.NOT_DUMMY]) {
+        forSites(SiteEnum.DUMMY, SiteEnum.NOT_DUMMY) {
             template EmailComponentTemplateEnum.CMS_LINK_COMPONENT
             template EmailComponentTemplateEnum.CMS_PARAGRAPH_COMPONENT
         }
