@@ -127,13 +127,13 @@ class PatchSpec {
 
     void resetUserRightsForPrincipals(String... principalUIDs) { context.resetUserRightsForPrincipals(principalUIDs) }
 
-    void partialReIndex(SolrIndexedTypeEnum indexedType, String... indexedProperties) {
-        context.partialReIndex(indexedType, indexedProperties)
+    void solr(
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SolrSpec) Closure closure
+    ) {
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.delegate = new SolrSpec(context)
+        closure()
     }
-
-    void fullReIndex(SolrEnum... solrIndexes) { context.fullReIndex(solrIndexes) }
-
-    void removeSolrCore(SolrEnum... solrIndexes) { context.removeSolrCore(solrIndexes) }
 
     void withEnvironmentPatch(EnumSet<EnvironmentEnum> environments, Supplier<PatchContextDescriber> supplier) {
         context.withEnvironmentPatch(environments, supplier)
