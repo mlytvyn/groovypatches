@@ -236,7 +236,7 @@ patch {
             template EmailComponentTemplateEnum.CMS_IMAGE_COMPONENT
         }
 // Specify email component templates which should be re-imported for defined Sites, one template per line
-        forSites(SiteEnum.DUMMY, SiteEnum.NOT_DUMMY) {
+        forSites([SiteEnum.DUMMY, SiteEnum.NOT_DUMMY]) {
             template EmailComponentTemplateEnum.CMS_LINK_COMPONENT
             template EmailComponentTemplateEnum.CMS_PARAGRAPH_COMPONENT
         }
