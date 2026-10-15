@@ -30,6 +30,9 @@
     <alias name="defaultPatchesCollector" alias="patchesCollector"/>
     <bean id="defaultPatchesCollector" class="com.github.mlytvyn.patches.groovy.context.patch.impl.DefaultPatchesCollector"/>
 
+    <alias name="defaultPatchDslRegistrar" alias="patchDslRegistrar"/>
+    <bean id="defaultPatchDslRegistrar" class="com.github.mlytvyn.patches.groovy.dsl.DefaultPatchDslRegistrar"/>
+
     <alias name="defaultReleaseImporter" alias="releaseImporter"/>
     <bean id="defaultReleaseImporter" class="com.github.mlytvyn.patches.groovy.context.release.impl.DefaultReleaseImporter"/>
 

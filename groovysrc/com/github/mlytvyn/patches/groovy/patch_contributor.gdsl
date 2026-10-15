@@ -4,4 +4,11 @@ def groovletContext = context(filetypes: ['groovy'], scope: scriptScope())
 
 contributor(groovletContext) {
     property name: 'patchContext', type: 'com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriber'
+    method name: 'patch', type: 'void', params: [closure: 'groovy.lang.Closure']
+}
+
+contributor(context(filetypes: ['groovy'], scope: closureScope(isArg: true))) {
+    if (enclosingCall('patch')) {
+        delegatesTo(findClass('com.github.mlytvyn.patches.groovy.dsl.spec.PatchSpec'))
+    }
 }
