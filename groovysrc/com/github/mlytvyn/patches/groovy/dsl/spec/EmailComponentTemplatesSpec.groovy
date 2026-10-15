@@ -16,14 +16,6 @@ class EmailComponentTemplatesSpec {
         context.importEmailComponentTemplates(emailComponentTemplates)
     }
 
-    void forSites(SiteEnum site, EmailComponentTemplateEnum... emailComponentTemplates) {
-        forSites(EnumSet.of(site), emailComponentTemplates)
-    }
-
-    void forSites(Collection<SiteEnum> sites, EmailComponentTemplateEnum... emailComponentTemplates) {
-        context.importEmailComponentTemplates(EnumSet.copyOf(sites), emailComponentTemplates)
-    }
-
     void forSites(
             SiteEnum site,
             @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmailComponentTemplatesListSpec) Closure closure

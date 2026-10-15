@@ -36,8 +36,7 @@ Every `PatchContextDescriber` method is available inside the block without the `
 | `catalogs { content { sync ... } }`            | `syncContentCatalogs(...)`                                       |
 | `catalogs { product { forcedSyncNow ... } }`   | `forcedSyncProductCatalogsNow(...)`                              |
 | `emailComponentTemplates { all ... }`         | `importEmailComponentTemplates(...)`                             |
-| `emailComponentTemplates { forSites ... }`    | `importEmailComponentTemplates(EnumSet.of(...), ...)`            |
-| `forSites(...) { template ... }`              | `importEmailComponentTemplates(EnumSet.of(...), ...)`            |
+| `emailComponentTemplates { forSites(...) { } }` | `importEmailComponentTemplates(EnumSet.of(...), ...)`          |
 | `solr { fullReIndex ... }`                    | `fullReIndex(...)`                                               |
 | `solr { partialReIndex ... }`                 | `partialReIndex(...)`                                            |
 | `solr { removeCore ... }`                     | `removeSolrCore(...)`                                            |
@@ -233,7 +232,9 @@ patch {
 // Specify email component templates which should be re-imported for all Sites
         all EmailComponentTemplateEnum.BANNER_COMPONENT
 // Specify email component templates which should be re-imported for a single Site
-        forSites SiteEnum.DUMMY, EmailComponentTemplateEnum.CMS_IMAGE_COMPONENT
+        forSites(SiteEnum.DUMMY) {
+            template EmailComponentTemplateEnum.CMS_IMAGE_COMPONENT
+        }
 // Specify email component templates which should be re-imported for defined Sites, one template per line
         forSites(SiteEnum.DUMMY, SiteEnum.NOT_DUMMY) {
             template EmailComponentTemplateEnum.CMS_LINK_COMPONENT
