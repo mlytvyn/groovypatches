@@ -78,12 +78,12 @@ class PatchSpec {
 
     void importEmailTemplates(EmailTemplateEnum... emailTemplates) { context.importEmailTemplates(emailTemplates) }
 
-    void importEmailComponentTemplates(EnumSet<SiteEnum> sites, EmailComponentTemplateEnum... emailComponentTemplates) {
-        context.importEmailComponentTemplates(sites, emailComponentTemplates)
-    }
-
-    void importEmailComponentTemplates(EmailComponentTemplateEnum... emailComponentTemplates) {
-        context.importEmailComponentTemplates(emailComponentTemplates)
+    void emailComponentTemplates(
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmailComponentTemplatesSpec) Closure closure
+    ) {
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.delegate = new EmailComponentTemplatesSpec(context)
+        closure()
     }
 
     void catalogs(
