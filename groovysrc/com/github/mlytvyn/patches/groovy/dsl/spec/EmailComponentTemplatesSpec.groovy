@@ -19,14 +19,37 @@ class EmailComponentTemplatesSpec {
     }
 
     void forSites(
-            Object... siteArgsThenClosure
+            SiteEnum site,
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmailComponentTemplatesListSpec) Closure closure
     ) {
-        final Closure closure = siteArgsThenClosure[-1] as Closure
-        final List<Object> siteArgs = siteArgsThenClosure[0..-2]
-        final Collection<SiteEnum> sites = (siteArgs.size() == 1 && siteArgs[0] instanceof Collection)
-                ? siteArgs[0] as Collection<SiteEnum>
-                : siteArgs as Collection<SiteEnum>
+        forSites([site], closure)
+    }
 
+    void forSites(
+            SiteEnum site1, SiteEnum site2,
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmailComponentTemplatesListSpec) Closure closure
+    ) {
+        forSites([site1, site2], closure)
+    }
+
+    void forSites(
+            SiteEnum site1, SiteEnum site2, SiteEnum site3,
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmailComponentTemplatesListSpec) Closure closure
+    ) {
+        forSites([site1, site2, site3], closure)
+    }
+
+    void forSites(
+            SiteEnum site1, SiteEnum site2, SiteEnum site3, SiteEnum site4,
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmailComponentTemplatesListSpec) Closure closure
+    ) {
+        forSites([site1, site2, site3, site4], closure)
+    }
+
+    void forSites(
+            Collection<SiteEnum> sites,
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmailComponentTemplatesListSpec) Closure closure
+    ) {
         context.importEmailComponentTemplates(EnumSet.copyOf(sites), collectTemplates(closure))
     }
 
