@@ -3,16 +3,13 @@ package com.github.mlytvyn.patches.groovy.dsl.spec
 import com.github.mlytvyn.patches.groovy.*
 import com.github.mlytvyn.patches.groovy.context.ChangeFieldTypeContext
 import com.github.mlytvyn.patches.groovy.context.DropColumnContext
-import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig
-import com.github.mlytvyn.patches.groovy.context.impex.ImpexTemplateContext
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriber
 import com.github.mlytvyn.patches.groovy.dsl.PatchDsl
 import de.hybris.platform.core.initialization.SystemSetupContext
 import de.hybris.platform.core.model.ItemModel
 
 import java.util.function.Consumer
-import java.util.function.Supplier
 
 class PatchSpec {
 
@@ -46,11 +43,11 @@ class PatchSpec {
         closure()
     }
 
+    void impexImportConfig(ImpexImportConfig config) { context.impexImportConfig(config) }
+
     void before(Consumer<SystemSetupContext> consumer) { context.before(consumer) }
 
     void after(Consumer<SystemSetupContext> consumer) { context.after(consumer) }
-
-    void withNestedPatch(PatchContextDescriber nested) { context.withNestedPatch(nested) }
 
     void nestedPatch(
             @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = PatchSpec) Closure closure
@@ -68,14 +65,6 @@ class PatchSpec {
         closure()
     }
 
-    void impexImportConfig(ImpexImportConfig config) { context.impexImportConfig(config) }
-
-    void withImpexes(String... impexes) { context.withImpexes(impexes) }
-
-    void withFqnImpexes(String... impexes) { context.withFqnImpexes(impexes) }
-
-    void withImpexes(ImpexContext... impexContexts) { context.withImpexes(impexContexts) }
-
     void emails(
             @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmailsSpec) Closure closure
     ) {
@@ -90,10 +79,6 @@ class PatchSpec {
         closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure.delegate = new CatalogsSpec(context)
         closure()
-    }
-
-    void withImpexTemplateContexts(ImpexTemplateContext... impexTemplateContexts) {
-        context.withImpexTemplateContexts(impexTemplateContexts)
     }
 
     void templateContext(
@@ -131,10 +116,6 @@ class PatchSpec {
         closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure.delegate = new SolrSpec(context)
         closure()
-    }
-
-    void withEnvironmentPatch(EnumSet<EnvironmentEnum> environments, Supplier<PatchContextDescriber> supplier) {
-        context.withEnvironmentPatch(environments, supplier)
     }
 
     void environmentPatch(

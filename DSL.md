@@ -29,10 +29,12 @@ Every `PatchContextDescriber` method is available inside the block without the `
 | `nestedPatch { }`                             | `withNestedPatch(patch.createRelatedPatch())`                    |
 | `environmentPatch(env) { }`                   | `withEnvironmentPatch(EnumSet.of(env), { -> ... })`              |
 | `environmentPatch([env1, env2]) { }`          | `withEnvironmentPatch(EnumSet.of(env1, env2), { -> ... })`       |
-| `impexes { impex("x.impex") { } }`            | `withImpexes(ImpexContext.of("x.impex")...)`                     |
-| `impexes { fqnImpex("x.impex") { } }`         | `withFqnImpexes("x.impex")`                                      |
+| `impexes { impex("x.impex") { } }`            | `withImpexes(ImpexContext.of("x.impex"))`                        |
+| `impexes { impex "x.impex" }`                 | `withImpexes("x.impex")`                                         |
+| `impexes { fqnImpex "x.impex" }`              | `withFqnImpexes("x.impex")`                                      |
 | `impexes { all() }`                           | `withImpexes()`                                                  |
 | `impexes { config { } }`                      | `impexImportConfig(ImpexImportConfig.create()...)`               |
+| `templateContext("...") { }`                  | `withImpexTemplateContexts(ImpexTemplateContext.of("...")...)`   |
 | `catalogs { content { sync ... } }`            | `syncContentCatalogs(...)`                                       |
 | `catalogs { product { forcedSyncNow ... } }`   | `forcedSyncProductCatalogsNow(...)`                              |
 | `emails { templates ... } `                   | `importEmailTemplates(...)`                                      |
@@ -41,7 +43,6 @@ Every `PatchContextDescriber` method is available inside the block without the `
 | `solr { fullReIndex ... }`                    | `fullReIndex(...)`                                               |
 | `solr { partialReIndex { } }`                 | `partialReIndex(type, properties...)`                            |
 | `solr { removeCores ... }`                    | `removeSolrCore(...)`                                            |
-| `templateContext("...") { }`                  | `withImpexTemplateContexts(ImpexTemplateContext.of("...")...)`   |
 | `changeFieldType(Type, "field") { }`          | `changeFieldType(ChangeFieldTypeContext.of(Type, "field")...)`   |
 | `dropColumn Type, "column"`                   | `dropColumn(DropColumnContext.of(Type, "column"))`               |
 | `customPatchDataFolder { release "folder" }`  | `customPatchDataFolder(Paths.get("folder"))`                     |
@@ -51,8 +52,9 @@ Notes:
 
 * Every block resolves with `Closure.DELEGATE_FIRST`, so Script context variables, like `configurationProvider`, remain accessible within any block
 * An environment specific patch is restricted to its environments before the block is evaluated, so on a non-matching environment its operations are skipped instead of being applied to the Global Context
-* The raw methods (`withNestedPatch`, `withEnvironmentPatch`, `withImpexes(ImpexContext...)`, `changeFieldType(ChangeFieldTypeContext...)`, ...) remain available, the nested blocks are an addition, not a replacement
+* `withNestedPatch`, `withImpexes`, `withFqnImpexes`, `withImpexTemplateContexts` and `withEnvironmentPatch` were dropped from `PatchSpec` - every one of them is fully superseded by a nested block (`nestedPatch { }`, `impexes { }`, `templateContext(...) { }`, `environmentPatch(...) { }`). The raw `changeFieldType(ChangeFieldTypeContext...)` and `dropColumn(DropColumnContext...)` passthroughs stay, next to their block equivalents, since they accept pre-built context objects that a block cannot represent any more concisely
 * `customPatchDataFolder`, the catalog operations, `emails` and `solr` are the exceptions, they are available as a block only - `release` / `root` replace the `PatchDataFolderRelation` parameter, `catalogs { content { } / product { } }` replaces the ten `[forced]Sync[Content|Product]Catalogs[Now]` / `remove[Content|Product]Catalogs` methods, `emails { templates ... / componentTemplates { allSites { } / forSites([...]) { } } }` replaces `importEmailTemplates` and the two `importEmailComponentTemplates` overloads - `forSites` takes a `Collection<SiteEnum>` (list literal) followed by a `template(...)` block, and `solr { fullReIndex / partialReIndex { } / removeCores }` replaces the flat `fullReIndex`, `partialReIndex` and `removeSolrCore` methods, with `partialReIndex` itself being block-only (`type` / `properties`)
+* Any method not declared on `PatchSpec` (including the removed `with...` ones) is still forwarded to the underlying `patchContext` if it exists there, see [Project specific operations](#project-specific-operations)
 
 ## Project specific operations
 
