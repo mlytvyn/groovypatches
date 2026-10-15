@@ -23,5 +23,5 @@ class SolrSpec {
         context.partialReIndex(spec.indexedType(), spec.indexedProperties() as String[])
     }
 
-    void removeCore(SolrEnum... solrIndexes) { context.removeSolrCore(solrIndexes) }
+    void removeCores(SolrEnum... solrIndexes) { context.removeSolrCore(solrIndexes) }
 }
