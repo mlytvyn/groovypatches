@@ -31,7 +31,7 @@ Every `PatchContextDescriber` method is available inside the block without the `
 | `environmentPatch([env1, env2]) { }`          | `withEnvironmentPatch(EnumSet.of(env1, env2), { -> ... })`       |
 | `impexes { impex("x.impex") { } }`            | `withImpexes(ImpexContext.of("x.impex"))`                        |
 | `impexes { impex "x.impex" }`                 | `withImpexes("x.impex")`                                         |
-| `impexes { fqnImpex "x.impex" }`              | `withFqnImpexes("x.impex")`                                      |
+| `impexes { impex("x.impex") { fqn true } }`   | `withFqnImpexes("x.impex")`                                      |
 | `impexes { all() }`                           | `withImpexes()`                                                  |
 | `impexes { config { } }`                      | `impexImportConfig(ImpexImportConfig.create()...)`               |
 | `templateContext("...") { }`                  | `withImpexTemplateContexts(ImpexTemplateContext.of("...")...)`   |
@@ -53,6 +53,7 @@ Notes:
 * Every block resolves with `Closure.DELEGATE_FIRST`, so Script context variables, like `configurationProvider`, remain accessible within any block
 * An environment specific patch is restricted to its environments before the block is evaluated, so on a non-matching environment its operations are skipped instead of being applied to the Global Context
 * `withNestedPatch`, `withImpexes`, `withFqnImpexes`, `withImpexTemplateContexts` and `withEnvironmentPatch` were dropped from `PatchSpec` - every one of them is fully superseded by a nested block (`nestedPatch { }`, `impexes { }`, `templateContext(...) { }`, `environmentPatch(...) { }`). The raw `changeFieldType(ChangeFieldTypeContext...)` and `dropColumn(DropColumnContext...)` passthroughs moved into `db { }` alongside their block/one-liner equivalents, since they accept pre-built context objects a block cannot represent any more concisely, but are still schema-level DB operations worth grouping together - `dropColumn Type, "column"` can be repeated as many times as needed inside the same `db { }` block
+* `impex { }` is no longer backed by an already-constructed `ImpexContext` - `fqn`, `legacyMode`, `failOnError`, etc. are collected while the block runs, and the real `ImpexContext` (via `ImpexContext.of`/`.fqn`) is only built once the block finishes, since the fqn-ness of an impex is fixed at construction time and cannot be changed afterward
 * `customPatchDataFolder`, the catalog operations, `emails` and `solr` are the exceptions, they are available as a block only - `release` / `root` replace the `PatchDataFolderRelation` parameter, `catalogs { content { } / product { } }` replaces the ten `[forced]Sync[Content|Product]Catalogs[Now]` / `remove[Content|Product]Catalogs` methods, `emails { templates ... / componentTemplates { allSites { } / forSites([...]) { } } }` replaces `importEmailTemplates` and the two `importEmailComponentTemplates` overloads - `forSites` takes a `Collection<SiteEnum>` (list literal) followed by a `template(...)` block, and `solr { fullReIndex / partialReIndex { } / removeCores }` replaces the flat `fullReIndex`, `partialReIndex` and `removeSolrCore` methods, with `partialReIndex` itself being block-only (`type` / `properties`)
 * Any method not declared on `PatchSpec` (including the removed `with...` ones) is still forwarded to the underlying `patchContext` if it exists there, see [Project specific operations](#project-specific-operations)
 
@@ -176,7 +177,9 @@ patch {
             failOnError true
         }
 // Impexes can be referenced by their path related to the `<extension>/resources/<extension>/import` as well
-        fqnImpex "common/import_4.impex"
+        impex("common/import_4.impex") {
+            fqn true
+        }
 // Besides that it is possible to specify multiple Template Contexts per ImpEx
         impex("import_5.impex") {
             templateContext("first execution") {

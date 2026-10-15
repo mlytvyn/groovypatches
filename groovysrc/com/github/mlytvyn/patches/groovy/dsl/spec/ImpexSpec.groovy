@@ -1,32 +1,42 @@
 package com.github.mlytvyn.patches.groovy.dsl.spec
 
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext
-import com.github.mlytvyn.patches.groovy.context.impex.ImpexTemplateContext
 
 class ImpexSpec {
 
-    private final ImpexContext impexContext
+    private final String name
+    private boolean fqn = false
+    private final List<Closure> configurators = []
 
-    ImpexSpec(ImpexContext impexContext) {
-        this.impexContext = impexContext
+    ImpexSpec(String name) {
+        this.name = name
     }
 
-    void legacyMode(boolean enabled) { impexContext.legacyMode(enabled) }
+    void fqn(boolean fqn) { this.fqn = fqn }
 
-    void failOnError(boolean enabled) { impexContext.failOnError(enabled) }
+    void legacyMode(boolean enabled) { configurators << { ImpexContext ctx -> ctx.legacyMode(enabled) } }
 
-    void errorIfMissing(boolean enabled) { impexContext.errorIfMissing(enabled) }
+    void failOnError(boolean enabled) { configurators << { ImpexContext ctx -> ctx.failOnError(enabled) } }
 
-    void removeOnSuccess(boolean enabled) { impexContext.removeOnSuccess(enabled) }
+    void errorIfMissing(boolean enabled) { configurators << { ImpexContext ctx -> ctx.errorIfMissing(enabled) } }
 
-    void synchronous(boolean enabled) { impexContext.synchronous(enabled) }
+    void removeOnSuccess(boolean enabled) { configurators << { ImpexContext ctx -> ctx.removeOnSuccess(enabled) } }
 
-    void enableCodeExecution(boolean enabled) { impexContext.enableCodeExecution(enabled) }
+    void synchronous(boolean enabled) { configurators << { ImpexContext ctx -> ctx.synchronous(enabled) } }
+
+    void enableCodeExecution(boolean enabled) { configurators << { ImpexContext ctx -> ctx.enableCodeExecution(enabled) } }
 
     void templateContext(
             String description,
             @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = ImpexTemplateContextSpec) Closure closure = {}
     ) {
-        impexContext.addTemplateContext(ImpexTemplateContextSpec.build(description, closure))
+        def templateContext = ImpexTemplateContextSpec.build(description, closure)
+        configurators << { ImpexContext ctx -> ctx.addTemplateContext(templateContext) }
+    }
+
+    ImpexContext build() {
+        def impexContext = fqn ? ImpexContext.fqn(name) : ImpexContext.of(name)
+        configurators.each { it(impexContext) }
+        impexContext
     }
 }

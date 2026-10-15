@@ -1,6 +1,5 @@
 package com.github.mlytvyn.patches.groovy.dsl.spec
 
-import com.github.mlytvyn.patches.groovy.context.impex.ImpexContext
 import com.github.mlytvyn.patches.groovy.context.impex.ImpexImportConfig
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriber
 
@@ -33,21 +32,11 @@ class ImpexesSpec {
             String name,
             @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = ImpexSpec) Closure closure = {}
     ) {
-        registerImpex(ImpexContext.of(name), closure)
-    }
-
-    void fqnImpex(
-            String name,
-            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = ImpexSpec) Closure closure = {}
-    ) {
-        registerImpex(ImpexContext.fqn(name), closure)
-    }
-
-    private void registerImpex(ImpexContext impexContext, Closure closure) {
+        def spec = new ImpexSpec(name)
         closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure.delegate = new ImpexSpec(impexContext)
+        closure.delegate = spec
         closure()
-        context.withImpexes(impexContext)
+        context.withImpexes(spec.build())
     }
 }
 
