@@ -1,7 +1,6 @@
 package com.github.mlytvyn.patches.groovy.dsl.spec
 
 import com.github.mlytvyn.patches.groovy.SolrEnum
-import com.github.mlytvyn.patches.groovy.SolrIndexedTypeEnum
 import com.github.mlytvyn.patches.groovy.context.patch.PatchContextDescriber
 
 class SolrSpec {
@@ -14,8 +13,14 @@ class SolrSpec {
 
     void fullReIndex(SolrEnum... solrIndexes) { context.fullReIndex(solrIndexes) }
 
-    void partialReIndex(SolrIndexedTypeEnum indexedType, String... indexedProperties) {
-        context.partialReIndex(indexedType, indexedProperties)
+    void partialReIndex(
+            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = PartialReIndexSpec) Closure closure
+    ) {
+        def spec = new PartialReIndexSpec()
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.delegate = spec
+        closure()
+        context.partialReIndex(spec.indexedType(), spec.indexedProperties() as String[])
     }
 
     void removeCore(SolrEnum... solrIndexes) { context.removeSolrCore(solrIndexes) }

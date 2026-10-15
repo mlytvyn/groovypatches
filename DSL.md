@@ -38,7 +38,7 @@ Every `PatchContextDescriber` method is available inside the block without the `
 | `emailComponentTemplates { all ... }`         | `importEmailComponentTemplates(...)`                             |
 | `emailComponentTemplates { forSites(...) { } }` | `importEmailComponentTemplates(EnumSet.of(...), ...)`          |
 | `solr { fullReIndex ... }`                    | `fullReIndex(...)`                                               |
-| `solr { partialReIndex ... }`                 | `partialReIndex(...)`                                            |
+| `solr { partialReIndex { } }`                 | `partialReIndex(type, properties...)`                            |
 | `solr { removeCore ... }`                     | `removeSolrCore(...)`                                            |
 | `templateContext("...") { }`                  | `withImpexTemplateContexts(ImpexTemplateContext.of("...")...)`   |
 | `changeFieldType(Type, "field") { }`          | `changeFieldType(ChangeFieldTypeContext.of(Type, "field")...)`   |
@@ -51,7 +51,7 @@ Notes:
 * Every block resolves with `Closure.DELEGATE_FIRST`, so Script context variables, like `configurationProvider`, remain accessible within any block
 * An environment specific patch is restricted to its environments before the block is evaluated, so on a non-matching environment its operations are skipped instead of being applied to the Global Context
 * The raw methods (`withNestedPatch`, `withEnvironmentPatch`, `withImpexes(ImpexContext...)`, `changeFieldType(ChangeFieldTypeContext...)`, ...) remain available, the nested blocks are an addition, not a replacement
-* `customPatchDataFolder`, the catalog operations, `emailComponentTemplates` and `solr` are the exceptions, they are available as a block only - `release` / `root` replace the `PatchDataFolderRelation` parameter, `catalogs { content { } / product { } }` replaces the ten `[forced]Sync[Content|Product]Catalogs[Now]` / `remove[Content|Product]Catalogs` methods, `emailComponentTemplates { all ... / forSites ... }` replaces the two `importEmailComponentTemplates` overloads, and `solr { fullReIndex / partialReIndex / removeCore }` replaces the flat `fullReIndex`, `partialReIndex` and `removeSolrCore` methods
+* `customPatchDataFolder`, the catalog operations, `emailComponentTemplates` and `solr` are the exceptions, they are available as a block only - `release` / `root` replace the `PatchDataFolderRelation` parameter, `catalogs { content { } / product { } }` replaces the ten `[forced]Sync[Content|Product]Catalogs[Now]` / `remove[Content|Product]Catalogs` methods, `emailComponentTemplates { all ... / forSites ... }` replaces the two `importEmailComponentTemplates` overloads, and `solr { fullReIndex / partialReIndex { } / removeCore }` replaces the flat `fullReIndex`, `partialReIndex` and `removeSolrCore` methods, with `partialReIndex` itself being block-only (`type` / `properties`)
 
 ## Project specific operations
 
@@ -247,7 +247,10 @@ patch {
 // Schedule delayed full reindex of the SOLR core, executed after the patching process, on next server start up
         fullReIndex SolrEnum.DUMMY
 // Schedule delayed partial reindex of the SOLR core, executed after the patching process, on next server start up
-        partialReIndex SolrIndexedTypeEnum.DUMMY, "name", "id", "etc"
+        partialReIndex {
+            type SolrIndexedTypeEnum.DUMMY
+            properties "name", "id", "etc"
+        }
     }
 
 // Allows creation of the nested patches, executed after the current patch and before environment specific patches
